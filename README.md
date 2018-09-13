@@ -57,7 +57,7 @@ git clone https://github.com/Quietlywind/qingfeng.git
 第三步：启动服务端
 （1）新开一个命令行窗口
 （2）定位到项目中的server目录并安装依赖
-  > cd 你自己的位置/LitAdmin/server
+  > cd 你自己的位置/book/server
   > npm install
 （3）依赖安装成功后执行启动命令
   > npm start 
@@ -69,7 +69,7 @@ git clone https://github.com/Quietlywind/qingfeng.git
 第四步：启动前端
 （1）新开一个命令行窗口
 （2）定位到项目目录并安装依赖
-  > cd 你自己的位置/LitAdmin
+  > cd 你自己的位置/book
   > npm install
 （3）依赖安装成功后执行启动命令
   > npm run dev
