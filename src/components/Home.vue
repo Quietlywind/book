@@ -88,7 +88,7 @@
     name: 'home',
     created(){
       bus.$on('setNickName', (text) => {
-        this.nickname = text;
+        this.nickname = text; 
       })
 
       bus.$on('goto', (url) => {
