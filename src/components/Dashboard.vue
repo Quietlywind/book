@@ -24,7 +24,7 @@
                     </el-col>
                     <el-col :md="8">
                       <div class="green">
-                        <p style="margin:0px;padding: 5px 0px 5px 5px;">当前图书总量</p>
+                        <p style="margin:0px;padding: 5px 0px 5px 5px;">已借阅图书</p>
                         <div class="booktotal" style="text-align:center;font-weight:bold;">
                           <span style="font-size:35px;">{{borrowedbook.total}}</span>本
                         </div>
@@ -35,7 +35,7 @@
                     </el-col>
                     <el-col :md="8">
                       <div class="blue">
-                        <p style="margin:0px;padding: 5px 0px 5px 5px;">当前图书总量</p>
+                        <p style="margin:0px;padding: 5px 0px 5px 5px;">逾期未还图书</p>
                         <div class="booktotal" style="text-align:center;font-weight:bold;">
                           <span style="font-size:35px;">{{overduebook.total}}</span>本
                         </div>

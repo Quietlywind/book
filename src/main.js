@@ -11,9 +11,9 @@ import VueHighcharts from 'vue-highcharts';
 import "babel-polyfill";
 
 
-import 'element-ui/lib/theme-chalk/index.css'
-import '@/assets/iconfont.css'
-import '@/assets/styles/main.scss'
+import 'element-ui/lib/theme-chalk/index.css'  //element-ui样式
+import '@/assets/iconfont.css'  //字体图标样式
+import '@/assets/styles/main.scss'  //
 import 'nprogress/nprogress.css' //这个样式必须引入进度条样式
 
 Vue.config.productionTip = false

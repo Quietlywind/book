@@ -42,7 +42,7 @@ let router = new Router({
     {
       path: '/',
       component: Home,
-      name: '用户管理',
+      name: '新书上架',
       menuShow: true,
       leaf: true, // 只有一个节点
       iconCls: 'iconfont icon-users', // 图标样式class
@@ -55,10 +55,11 @@ let router = new Router({
       component: Home,
       name: '图书库存',
       menuShow: true,
+      leaf: true, // 只有一个节点
       iconCls: 'iconfont icon-books',
       children: [
-        {path: '/book/list', component: BookList, name: '图书列表', menuShow: true},
-        {path: '/book/category', component: BookCategoryList, name: '图书分类', menuShow: true}
+        {path: '/book/list', component: BookList, name: '图书库存', menuShow: true,iconCls: 'iconfont icon-books'},
+        // {path: '/book/category', component: BookCategoryList, name: '图书分类', menuShow: true,iconCls: 'iconfont icon-books'}
       ]
     },
     {
@@ -66,10 +67,11 @@ let router = new Router({
       component: Home,
       name: '借阅图书',
       menuShow: true,
+      leaf: true, // 只有一个节点
       iconCls: 'iconfont icon-setting1',
       children: [
-        {path: '/user/profile', component: UserProfile, name: '个人信息', menuShow: true},
-        {path: '/user/changepwd', component: UserChangePwd, name: '修改密码', menuShow: true}
+        {path: '/user/profile', component: UserProfile, name: '借阅图书', menuShow: true},
+        //{path: '/user/changepwd', component: UserChangePwd, name: '修改密码', menuShow: true}
       ]
     },
     {
@@ -80,7 +82,7 @@ let router = new Router({
       leaf: true,
       iconCls: 'iconfont icon-setting1',
       children: [
-        {path: '/book/list', component: BookList, name: '归还图书1', menuShow: true},
+        {path: '/book/category', component: BookCategoryList, name: '归还图书', menuShow: true},
       ]
     },
     {
@@ -91,7 +93,7 @@ let router = new Router({
       leaf: true,
       iconCls: 'iconfont icon-setting1',
       children: [
-        {path: '/bookcategory/list', component: BookCategoryList, name: '借还记录1', menuShow: true},
+        {path: '/bookcategory/list', component: BookCategoryList, name: '借还记录', menuShow: true},
       ]
     },
     {
@@ -102,14 +104,13 @@ let router = new Router({
       leaf: true,
       iconCls: 'iconfont icon-setting1',
       children: [
-        {path: '/highcharts/index', component: hight, name: '配置管理1', menuShow: true},
+        {path: '/user/changepwd', component: UserChangePwd, name: '配置管理', menuShow: true},
       ]
     }
   ]
 })
 
 router.beforeEach((to, from, next) => {
-  // console.log('to:' + to.path)
   if (to.path.startsWith('/login')) {
     window.localStorage.removeItem('access-user')
     next()

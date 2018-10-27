@@ -45,10 +45,13 @@
           <i class="iconfont icon-menuunfold" v-show="collapsed"></i>
         </div>
         <!--导航菜单-->
-        <el-menu :default-active="defaultActiveIndex" router :collapse="collapsed" @select="handleSelect">
+        <el-menu :default-active="$route.path" router :collapse="collapsed" @select="handleSelect">
           <template v-for="(item,index) in $router.options.routes"  v-if="item.menuShow">
             <el-submenu v-if="!item.leaf" :index="index+''">
-              <template slot="title"><i :class="item.iconCls"></i><span slot="title">{{item.name}}</span></template>
+              <template slot="title">
+                <i :class="item.iconCls"></i>
+                <span slot="title">{{item.name}}</span>
+              </template>
               <el-menu-item v-for="term in item.children" :key="term.path" :index="term.path" v-if="term.menuShow"
                             :class="$route.path==term.path?'is-active':''">
                 <i :class="term.iconCls"></i><span slot="title">{{term.name}}</span>
@@ -252,7 +255,12 @@
       }
 
       .el-menu-item:hover, .el-submenu .el-menu-item:hover, .el-submenu__title:hover {
-        background-color: #7ed2df;
+         background-color: #7ed2df;
+        // background-color: #00c1de;
+      }
+      .el-menu-item:hover .iconfont, .el-submenu .el-menu-item:hover .iconfont, .el-submenu__title:hover .iconfont{
+        // background-color: #7ed2df;
+         color:#fff;
       }
     }
 
@@ -275,8 +283,11 @@
         box-sizing: border-box;
       }
     }
+    // .el-menu .iconfont{
+    //   font-size: 1.375rem;
+    // }
     .el-menu .iconfont{
-      font-size: 1.375rem;
+      font-size: .95rem;
     }
     // .el-menu-item.is-active{
     //   background-color: #9DD9D5;
