@@ -1,13 +1,13 @@
 module.exports={
     bar:{
         chart: {
-            type: 'column'
+            type: 'column'  //指定图表的类型，默认是折线图(line)
           },
           title: {
             text: ''
           },
           credits:{
-            enabled:false, //隐藏版权信息
+            enabled:false, //隐藏版权信息去掉地址
           },
           xAxis: {
             categories: [

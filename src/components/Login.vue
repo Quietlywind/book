@@ -10,7 +10,7 @@
           
         </el-input>
       </el-form-item>
-      <!-- <el-checkbox v-model="checked" checked class="remember">记住密码</el-checkbox> -->
+      <el-checkbox v-model="checked" checked class="remember">记住密码</el-checkbox>
       <el-form-item style="width:100%;">
         <el-button type="primary" style="width:100%;"  @click.native.prevent="handleLogin" :loading="loading" :disabled="disa">登录</el-button>
       </el-form-item>

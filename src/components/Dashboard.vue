@@ -210,8 +210,7 @@
   import Highcharts from 'highcharts'
   import API from '../api/api_book'
   import XCharts from './highcharts/index.vue'
-  import options2 from './highcharts/testbar'
-  import options1 from './highcharts/testpie'
+  import options from './highcharts/testpie'
   export default {
     data() {
       return {
@@ -239,13 +238,13 @@
         limit: 10,
         id1:'chartPie',
         id2:'chartBar',
-        option1:options1.pie,
-        option2:options2.bar,
+        option1:options.pie,
+        option2:options.bar,
       };
     },
     mounted: function () {
       this.handleSearch()
-       var that= this;
+       let that= this;
       //  let chart=Highcharts.chart('chartPie',{
          
       //  });

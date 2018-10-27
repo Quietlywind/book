@@ -27,9 +27,10 @@
         </el-dropdown>
       </div>
       <div class="topbar-account topbar-bell">
-        <el-badge value="1">
-           <i class="el-icon-bell"></i>
-        </el-badge>
+        <!-- <el-badge value="1">
+          
+        </el-badge> -->
+         <i class="el-icon-bell"></i>
        <!-- 逾期通知 -->
       </div>
     </el-col>
@@ -114,7 +115,7 @@
         this.defaultActiveIndex = url;
         this.$router.push(url); //用go刷新
       },
-      logout(){
+      logout(){ 
         let that = this;
         this.$confirm('确认退出吗?', '提示', {
           confirmButtonClass: 'el-button--warning',

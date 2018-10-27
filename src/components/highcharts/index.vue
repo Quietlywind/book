@@ -1,7 +1,5 @@
 <template>
-  <div class="page">
       <div :id="id" :option="option"></div>
-  </div>
 </template>
 
 <script type="text/ecmascript-6">
@@ -24,15 +22,17 @@ export default {
       }
   },
   mounted(){
-    HighCharts.chart(this.id,this.option)
+    let id=HighCharts.chart(this.id,this.option)
   },
   watch:{},
   computed:{},
   methods:{},
-  created(){}
+  created(){
+    
+  }
 }
 </script>
 
 <style scoped>
-.page{}
+
 </style>
