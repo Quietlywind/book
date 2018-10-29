@@ -4,8 +4,10 @@
  */
 const Mock = require('mockjs');
 const Books = require('../data/book');
+const Record = require('../data/Record'); //借还记录假数据
 let bookController = {};
 let _Books = Books;
+let _Record = Record;
 
 /**
  * 通过书名查询，获取图书列表
@@ -32,6 +34,34 @@ bookController.find = function (req, res) {
     total: total,
     limit: limit,
     books: rltBooks
+  })
+};
+
+/**
+ * 通过书名查询，获取借还记录
+ * @param req
+ * @param res
+ */
+bookController.findRecord = function (req, res) {
+  let page = parseInt(req.query.page || 1); //页码（默认第1页）
+  let limit = parseInt(req.query.limit || 10); //每页显示条数（默认10条）
+  let name = req.query.name || ''; //图书名称
+  let total = 0;
+  let rltBooks = [];
+  if (name.length > 0) {
+    let mockBooks = _Record.filter(book => {
+      return book.name.indexOf(name) > -1;
+    });
+    total = mockBooks.length; //总条数
+    rltBooks = mockBooks.filter((u, index) => index < limit * page && index >= limit * (page - 1))
+  } else {
+    total = _Record.length; //总条数
+    rltBooks = _Record.filter((u, index) => index < limit * page && index >= limit * (page - 1))
+  }
+  res.json({
+    total: total,
+    limit: limit,
+    Records: rltBooks
   })
 };
 

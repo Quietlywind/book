@@ -14,6 +14,9 @@ router.use(userController.checkLogin);
 //返回book的集合
 router.get('/', bookController.find);
 
+//返回bookRecord的集合
+router.get('/Record', bookController.findRecord);
+
 //返回指定的book
 router.get('/:id', bookController.findById);
 
