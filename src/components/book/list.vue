@@ -194,7 +194,6 @@
           that.$message.error({showClose: true, message: err.toString(), duration: 2000});
         }).catch(function (error) {
           that.loading = false;
-          console.log(error);
           that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
         });
       },
@@ -214,13 +213,14 @@
             }
           }, function (err) {
             that.loading = false;
-            that.$message.error({show Close: true, message: err.toString(), duration: 2000});
+            that.$message.error({showClose: true, message: err.toString(), duration: 2000});
           }).catch(function (error) {
             that.loading = false;
             console.log(error);
             that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
           });
         }).catch(() => {
+          
         });
       },
       //显示编辑界面

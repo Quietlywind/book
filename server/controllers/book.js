@@ -57,16 +57,27 @@ bookController.findById = function (req, res) {
  * @param res
  */
 bookController.create = function (req, res) {
-  let name = req.body.name;
-  let author = req.body.author;
-  let description = req.body.description;
-  let publishAt = req.body.publishAt;
+  // let name = req.body.name;
+  // let author = req.body.author;
+  // let description = req.body.description;
+  // let publishAt = req.body.publishAt;
+  let name=req.body.name;
+  let region=req.body.region;
+  let press=req.body.press;
+  let publishAt=req.body.publishAt;
+  let price=req.body.price;
+  let status=req.body.status;
   _Books.push({
     id: Mock.Random.guid(),
     name: name,
-    author: author,
-    description: description,
-    publishAt: publishAt
+    region:region,
+    press:press,
+    publishAt: publishAt,
+    price:price,
+    status:status,
+    // author: author,
+    // description: description,
+    
   });
   res.json({"errcode": 0, "errmsg": "新增成功"})
 };
@@ -81,20 +92,32 @@ bookController.update = function (req, res) {
   if (!id) {
     return res.json({"errcode": 40002, "errmsg": "不合法的参数"});
   }
-  let name = req.body.name;
-  let author = req.body.author;
-  let description = req.body.description;
-  let publishAt = req.body.publishAt;
+  // let name = req.body.name;
+  // let author = req.body.author;
+  // let description = req.body.description;
+  // let publishAt = req.body.publishAt;
+  let name=req.body.name;
+  let region=req.body.region;
+  let press=req.body.press;
+  let publishAt=req.body.publishAt;
+  let price=req.body.price;
+  let status=req.body.status;
 
   let i = _.findIndex(_Books, function (u) {
     return u.id === id
   })
   if (i > -1) {
+    // _Books[i].name = name;
+    // _Books[i].author = author;
+    // _Books[i].description = description;
+    // _Books[i].publishAt = publishAt;
     _Books[i].name = name;
-    _Books[i].author = author;
-    _Books[i].description = description;
-    _Books[i].publishAt = publishAt;
-    res.json({"errcode": 0, "errmsg": "修改成功"});
+    _Books[i].region=region;
+    _Books[i].press=press;
+    _Books[i].publishAt=publishAt;
+    _Books[i].price=price;
+    _Books[i].status=status;
+    res.json({"status": 0, "message": "修改成功"});
   } else {
     res.json({"errcode": 40009, "errmsg": "处理失败"});
   }

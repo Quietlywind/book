@@ -1,8 +1,8 @@
 {
-  "name": "litadmin",
+  "name": "Quietlywind",
   "version": "1.2.1",
   "description": "A Vue.js project for admin",
-  "author": "jerry9022@qq.com",
+  "author": "1091174771@163.com",
   "private": true,
   "scripts": {
     "server": "node server/bin/www",
