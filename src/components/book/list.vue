@@ -214,7 +214,7 @@
             }
           }, function (err) {
             that.loading = false;
-            that.$message.error({showClose: true, message: err.toString(), duration: 2000});
+            that.$message.error({show Close: true, message: err.toString(), duration: 2000});
           }).catch(function (error) {
             that.loading = false;
             console.log(error);
