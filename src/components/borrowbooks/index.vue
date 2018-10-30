@@ -43,10 +43,10 @@
               <span class="title">图书信息</span>
               <el-form :inline="true" :model="books" size='small' style="margin: 5% 0;" class="input-form-inline" lable-width="0px">
                 <el-form-item label="图书编码">
-                  <el-input  style="width:140px;"  v-model="books.bookId" placeholder=""></el-input>
+                  <el-input  style="width:130px;"  v-model="books.bookId" placeholder=""></el-input>
                 </el-form-item>
                 <el-form-item label="图书名称">
-                  <el-input  style="width:140px;"  v-model="books.bookName" placeholder=""></el-input>
+                  <el-input  style="width:130px;"  v-model="books.bookName" placeholder=""></el-input>
                 </el-form-item>
                 <el-form-item>
                   <el-button type="primary" @click="bookSearch">查询</el-button>

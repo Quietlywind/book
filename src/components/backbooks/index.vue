@@ -119,10 +119,10 @@
       </el-col>
     </el-row>
     <el-row>
-      <div>
-
+      <div class="line-content">
+        <div>归还记录</div>
       </div>
-      <div style="margin-top:3%;" v-show="borrowrecordTrue">
+      <div style="margin-top:3%;padding: 0 10px;" v-show="borrowrecordTrue">
           <el-table :data="borrowrecord"  size="mini" border highlight-current-row empty-text="暂无记录"  style="width: 100%;">
               <el-table-column prop="bookname" label="图书书名"></el-table-column>
               <el-table-column prop="region" label="图书类别"></el-table-column>
@@ -338,24 +338,24 @@ export default {
       padding: 0 0.5em;
       background-color: #ffffff;
   }
-  .method_wrap_right{
-    position: relative;
-    border: 1px solid #19BD96;
-    padding: 20px;
-    box-sizing: border-box;
-    background-color: #fff;
-  }
-  .method_wrap_right .title{
-      position: absolute;
-      font-size: 16px;
-      font-weight: 700;
-      color: #666666;
-      top: -1em;
-      left: 42%;
-      line-height: 2em;
-      padding: 0 0.5em;
-      background-color: #ffffff;
-  }
+  // .method_wrap_right{
+  //   position: relative;
+  //   border: 1px solid #19BD96;
+  //   padding: 20px;
+  //   box-sizing: border-box;
+  //   background-color: #fff;
+  // }
+  // .method_wrap_right .title{
+  //     position: absolute;
+  //     font-size: 16px;
+  //     font-weight: 700;
+  //     color: #666666;
+  //     top: -1em;
+  //     left: 42%;
+  //     line-height: 2em;
+  //     padding: 0 0.5em;
+  //     background-color: #ffffff;
+  // }
   .finepayment{
     border: 1px solid #19BD96;
   }
@@ -377,4 +377,30 @@ export default {
     font-weight: 700;
     color: #666;
   }
+  .line-content{
+    position: absolute;
+    text-align: center;
+    width:100%;
+  }
+  .line-content div {
+      font: 700 16px Helvetica, Arial, sans-serif;
+      color:#666;
+      // line-height: 20px;
+  }
+  .line-content div:after, .line-content div:before {
+    background: #19BD96;
+    content: "";
+    height: 1px;
+    position: absolute;
+    top: 50%;
+    width: 45%;
+  }
+  .line-content div:before {
+    left: 10px;
+  }
+
+  .line-content div:after {
+    right: 12px;
+  }
+
 </style>

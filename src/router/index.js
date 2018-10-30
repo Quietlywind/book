@@ -19,6 +19,7 @@ const BookStock = resolve => require(['@/components/bookStock/list'], resolve) /
 const borrowRecord = resolve => require(['@/components/borrowRecord/list'], resolve) //记录查询
 const borrowbooks = resolve => require(['@/components/borrowbooks/index'], resolve) //借阅图书
 const backbooks = resolve => require(['@/components/backbooks/index'], resolve) //归还图书
+const configuremanage = resolve => require(['@/components/configuremanage/index'], resolve) //配置管理
 
 Vue.use(Router)
 
@@ -110,7 +111,7 @@ let router = new Router({
       leaf: true,
       iconCls: 'iconfont icon-setting1',
       children: [
-        {path: '/user/changepwd', component: UserChangePwd, name: '配置管理', menuShow: true},
+        {path: '/configuremanage/index', component: configuremanage, name: '配置管理', menuShow: true},
       ]
     }
   ]
