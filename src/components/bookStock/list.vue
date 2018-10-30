@@ -15,25 +15,28 @@
               <!-- @keyup.enter.native="handleSearch" -->
             <el-input  v-model="filters.name" placeholder="请输入书名进行查询" ></el-input>
           </el-form-item>
-          <el-form-item label="图书类型:" class="demo-form-inline">
+          <el-form-item label="图书类别" class="demo-form-inline">
                 <el-select  v-model="filters.region" placeholder="请选择">
                     <el-option label="请选择" value=" "></el-option>
                     <el-option v-for="item in bookCategory" :value='item.value' :key="item.index">
                     </el-option>
                 </el-select>
           </el-form-item>
-          <el-form-item label="图书状态:" class="demo-form-inline">
+           <el-form-item class="demo-form-inline" label="出版社">
+            <el-input  v-model="filters.press" placeholder="请输入出版社进行查询" ></el-input>
+          </el-form-item>
+          <!-- <el-form-item label="图书状态:" class="demo-form-inline">
             <el-select v-model="filters.status" placeholder="请选择">
                 <el-option label="请选择" value=" "></el-option>
                 <el-option v-for="item in bookeStatus" :value='item.value' :key="item.index">
                 </el-option>
             </el-select>
-          </el-form-item>
-          <el-form-item label="出版日期" class="demo-form-inline">
+          </el-form-item> -->
+          <!-- <el-form-item label="出版日期" class="demo-form-inline">
               <el-date-picker type="date" placeholder="选择日期" v-model="filters.publicationDate1" ></el-date-picker>
               <span>—</span>
               <el-date-picker type="date" placeholder="选择日期" v-model="filters.publicationDate2" ></el-date-picker>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item>
             <el-button type="primary" @click="handleSearch">查询</el-button>
           </el-form-item>
@@ -42,18 +45,21 @@
           </el-form-item>
         </el-form>
       </el-col>
-
+      <el-col :span="24" class="center_update">
+        <a href="javascript:;">批量修改</a>
+      </el-col>
       <!--列表-->
       <el-table :data="books" highlight-current-row @selection-change="selsChange" style="width: 100%;">
         <el-table-column type="selection" width="55"></el-table-column>
+        <el-table-column prop="id" label="图书编码"></el-table-column>
         <el-table-column prop="name" label="图书名称"></el-table-column>
-        <el-table-column prop="region" label="图书类型"></el-table-column>
+        <el-table-column prop="region" label="图书类别"></el-table-column>
         <!-- width="100" -->
         <el-table-column prop="press" label="出版社"></el-table-column>
-        <el-table-column prop="publishAt" label="出版日期" sortable></el-table-column>
+        <!-- <el-table-column prop="publishAt" label="出版日期" sortable></el-table-column> -->
         <el-table-column prop="bookshelf" label="书架" ></el-table-column>
         <el-table-column prop="price" label="单价" sortable></el-table-column>
-        <el-table-column prop="status" label="图书状态"></el-table-column>
+        <!-- <el-table-column prop="status" label="图书状态"></el-table-column> -->
         <el-table-column prop="stocknum" label="库存数量" sortable></el-table-column>
         <el-table-column label="操作" width="150" align="center">
           <template slot-scope="scope">
@@ -89,9 +95,9 @@
           <el-form-item label="出版社:" prop="press">
             <el-input v-model="editForm.press" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="出版日期">
+          <!-- <el-form-item label="出版日期">
             <el-date-picker type="date" placeholder="选择日期" v-model="editForm.publishAt"></el-date-picker>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item label="单价:" prop="price">
             <el-input v-model="editForm.price" auto-complete="off"></el-input>
           </el-form-item>
@@ -127,9 +133,9 @@
           <el-form-item label="出版社:" prop="press">
             <el-input v-model="addForm.press" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="出版日期">
+          <!-- <el-form-item label="出版日期">
             <el-date-picker type="date" placeholder="选择日期" v-model="addForm.publishAt"></el-date-picker>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item label="单价:" prop="price">
             <el-input v-model="addForm.price" auto-complete="off"></el-input>
           </el-form-item>
@@ -167,6 +173,7 @@ export default {
         filters:{
             name:'',  //书名
             region:'',  //图书类别
+            press:'', //出版社
             status:'',  //图书状态
             publicationDate1:'',  //出版日期起始日期
             publicationDate1:'',  //出版日期结束日期
@@ -291,10 +298,13 @@ export default {
   watch:{},
   computed:{},
   methods:{
+
+    //表格分页事件
     handleCurrentChange(val){
       this.page=val;
       this.search();
     },
+    //查询按钮事件
     handleSearch(){
       this.total=0;
       this.page=1;  
@@ -310,6 +320,7 @@ export default {
       };
       that.loading=true;
       API.findList(params).then((result)=>{
+        console.log(result)
         that.loading=false;
         if(result && result.books){
           that.total= result.total;
@@ -323,7 +334,7 @@ export default {
         that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
       })
     },
-    
+    //批量删除选中数据
     selsChange:function(sels){
       this.sels=sels;
     },
@@ -476,13 +487,19 @@ export default {
 <style>
  .top_toolbar{
     box-shadow: 1px 1px 5px 0 rgba(0,0, 0, .3);
-    margin-bottom: 10px;
-    padding:10px;background-color:#fff;
+    padding:10px;
+    background-color:#fff;
+ }
+ .center_update{
+   margin:10px 0px;
+ }
+ .center_update a{
+   
  }
  .el-form-item--mini.el-form-item, .el-form-item--small.el-form-item{
      margin-bottom: 0px;
  }
  .demo-form-inline .el-form-item__content .el-input{
-    max-width: 140px;
+    max-width: 180px;
  }
 </style>

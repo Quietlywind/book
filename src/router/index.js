@@ -14,8 +14,11 @@ import UserProfile from '@/components/user/profile'
 
 // 懒加载方式，当路由被访问的时候才加载对应组件
 const Login = resolve => require(['@/components/Login'], resolve)  //登录
+const addbook = resolve => require(['@/components/book/addbook'], resolve) //归还图书
 const BookStock = resolve => require(['@/components/bookStock/list'], resolve) //图书库存
-const borrowRecord = resolve => require(['@/components/borrowRecord/list'], resolve) //借还记录
+const borrowRecord = resolve => require(['@/components/borrowRecord/list'], resolve) //记录查询
+const borrowbooks = resolve => require(['@/components/borrowbooks/index'], resolve) //借阅图书
+const backbooks = resolve => require(['@/components/backbooks/index'], resolve) //归还图书
 
 Vue.use(Router)
 
@@ -49,7 +52,7 @@ let router = new Router({
       leaf: true, // 只有一个节点
       iconCls: 'iconfont icon-users', // 图标样式class
       children: [
-        {path: '/user/list', component: UserList, name: '新书上架', menuShow: true}
+        {path: '/book/addbook', component: addbook, name: '新书上架', menuShow: true}
       ]
     },
     {
@@ -72,7 +75,7 @@ let router = new Router({
       leaf: true, // 只有一个节点
       iconCls: 'iconfont icon-setting1',
       children: [
-        {path: '/user/profile', component: UserProfile, name: '借阅图书', menuShow: true},
+        {path: '/borrowbooks/index', component: borrowbooks, name: '借阅图书', menuShow: true},
         //{path: '/user/changepwd', component: UserChangePwd, name: '修改密码', menuShow: true}
       ]
     },
@@ -84,19 +87,19 @@ let router = new Router({
       leaf: true,
       iconCls: 'iconfont icon-setting1',
       children: [
-        {path: '/book/category', component: BookCategoryList, name: '归还图书', menuShow: true},
+        {path: '/backbooks/index', component: backbooks, name: '归还图书', menuShow: true},
       ]
     },
     {
       path: '/',
       component: Home,
-      name: '借还记录',
+      name: '记录查询',
       menuShow: true,
       leaf: true,
       iconCls: 'iconfont icon-setting1',
       children: [
         // {path: '/bookcategory/list', component: BookCategoryList, name: '借还记录', menuShow: true},
-        {path: '/borrowRecord/list', component: borrowRecord, name: '借还记录', menuShow: true},
+        {path: '/borrowRecord/list', component: borrowRecord, name: '记录查询', menuShow: true},
       ]
     },
     {
