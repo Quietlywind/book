@@ -47,15 +47,15 @@
       <el-table :data="books" highlight-current-row @selection-change="selsChange" style="width: 100%;">
         <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column prop="name" label="图书名称"></el-table-column>
-        <el-table-column prop="region" label="图书类型" width="100"></el-table-column>
+        <el-table-column prop="region" label="图书类型"></el-table-column>
         <!-- width="100" -->
         <el-table-column prop="press" label="出版社"></el-table-column>
-        <el-table-column prop="publishAt" label="出版日期" width="150" sortable></el-table-column>
-        <el-table-column prop="bookshelf" label="书架" width="150"></el-table-column>
-        <el-table-column prop="price" label="单价" width="150" sortable></el-table-column>
-        <el-table-column prop="status" label="图书状态" width="150"></el-table-column>
-        <el-table-column prop="stocknum" label="库存数量" width="150" sortable></el-table-column>
-        <el-table-column label="操作" width="150">
+        <el-table-column prop="publishAt" label="出版日期" sortable></el-table-column>
+        <el-table-column prop="bookshelf" label="书架" ></el-table-column>
+        <el-table-column prop="price" label="单价" sortable></el-table-column>
+        <el-table-column prop="status" label="图书状态"></el-table-column>
+        <el-table-column prop="stocknum" label="库存数量" sortable></el-table-column>
+        <el-table-column label="操作" width="150" align="center">
           <template slot-scope="scope">
             <el-button size="small" @click="showEditDialog(scope.$index,scope.row)">编辑</el-button>
             <el-button type="danger"  size="small" @click="delBook(scope.$index,scope.row)">删除</el-button>
@@ -74,7 +74,7 @@
       </el-col>
       <!-- 图书编辑弹框 -->
       <el-dialog center title="编辑" :visible.sync ="editFormVisible" :close-on-press-escape="true" :close-on-click-modal="false" width="30%" :before-close="closeDialog">
-        <el-form :model="editForm" status-icon label-width="100px" :rules="editFormRules" ref="editForm">
+        <el-form :model="editForm" status-icon label-width="100px"  :rules="editFormRules" ref="editForm">
           <el-form-item label="图书名称" prop="name">
             <el-input v-model="editForm.name" auto-complete="off"></el-input>
           </el-form-item>
@@ -111,7 +111,7 @@
       </el-dialog>
 
       <!--图书新增弹框-->
-      <el-dialog title="新增" :visible.sync ="addFormVisible" :close-on-click-modal="false" width="30%">
+      <el-dialog center title="新增" :visible.sync ="addFormVisible" :close-on-click-modal="false" width="30%">
         <el-form :model="addForm" label-width="100px" :rules="addFormRules" ref="addForm">
           <el-form-item label="图书名称" prop="name">
             <el-input v-model="addForm.name" auto-complete="off"></el-input>
@@ -214,10 +214,32 @@ export default {
         addFormVisible:false,//新增界面是否显示
         addLoading:false,
         addFormRules:{
-
+          name:[
+            {required:true,message:"请输入图书名称",trigger:'blur'}
+          ],
+          // region:[
+          //   {required:true,message:"请选择图书类型",trigger: 'change'}
+          // ],
+          press:[
+            {required:true,message:"请输入出版社名称",trigger:'blur'}
+          ],
+          price:[
+            {required:true,message:"请输入单价",trigger:'blur'}
+          ],
+          publishAt:[
+            {type:'data',required:true,message:'请选择出版时间',trigger:' change'}
+          ],
+          status:[
+            {required:true,message:'请选择图书状态',trigger:' change'}
+          ]
         },
         addForm:{
-
+            name:'',
+            region:'',
+            press:'',
+            publishAt:'',
+            price:'',
+            status:'',
         },
         //模拟下拉数据-图书状态
         bookeStatus:[{
@@ -461,6 +483,6 @@ export default {
      margin-bottom: 0px;
  }
  .demo-form-inline .el-form-item__content .el-input{
-    max-width: 150px;
+    max-width: 140px;
  }
 </style>

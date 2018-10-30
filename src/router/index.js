@@ -8,15 +8,14 @@ import hight from '@/components/highcharts/index'
 import BookList from '@/components/book/list'
 import BookCategoryList from '@/components/bookcategory/list'
 
-//import BookStock from '@/components/bookStock/list' 
-
 import UserList from '@/components/user/list'
 import UserChangePwd from '@/components/user/changepwd'
 import UserProfile from '@/components/user/profile'
 
 // 懒加载方式，当路由被访问的时候才加载对应组件
-const Login = resolve => require(['@/components/Login'], resolve)
+const Login = resolve => require(['@/components/Login'], resolve)  //登录
 const BookStock = resolve => require(['@/components/bookStock/list'], resolve) //图书库存
+const borrowRecord = resolve => require(['@/components/borrowRecord/list'], resolve) //借还记录
 
 Vue.use(Router)
 
@@ -61,7 +60,7 @@ let router = new Router({
       leaf: true, // 只有一个节点
       iconCls: 'iconfont icon-books',
       children: [
-        {path: '/book/list', component: BookStock, name: '图书库存', menuShow: true,iconCls: 'iconfont icon-books'},
+        {path: '/bookStock/list', component: BookStock, name: '图书库存', menuShow: true,iconCls: 'iconfont icon-books'},
         // {path: '/book/category', component: BookCategoryList, name: '图书分类', menuShow: true,iconCls: 'iconfont icon-books'}
       ]
     },
@@ -96,7 +95,8 @@ let router = new Router({
       leaf: true,
       iconCls: 'iconfont icon-setting1',
       children: [
-        {path: '/bookcategory/list', component: BookCategoryList, name: '借还记录', menuShow: true},
+        // {path: '/bookcategory/list', component: BookCategoryList, name: '借还记录', menuShow: true},
+        {path: '/borrowRecord/list', component: borrowRecord, name: '借还记录', menuShow: true},
       ]
     },
     {

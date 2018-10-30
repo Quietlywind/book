@@ -10,7 +10,10 @@ export default {
   findList: params => {
     return API.GET('/api/v1/books', params)
   },
-
+  //查询获取归还记录列表(通过page分页)
+  findRecord: params => {
+    return API.GET('/api/v1/books/Record', params)
+  },
   //查询获取一条book信息
   findById: id => {
     return API.GET(`/api/v1/books/${id}`)

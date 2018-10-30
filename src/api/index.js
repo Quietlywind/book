@@ -25,7 +25,6 @@ axios.interceptors.response.use(function (response) {
       bus.$emit('goto', '/login')
     }
   }
-
   return response;
 }, function (error) {
   // Do something with response error
