@@ -14,7 +14,7 @@ import UserProfile from '@/components/user/profile'
 
 // 懒加载方式，当路由被访问的时候才加载对应组件
 const Login = resolve => require(['@/components/Login'], resolve)  //登录
-const addbook = resolve => require(['@/components/book/addbook'], resolve) //归还图书
+const addbook = resolve => require(['@/components/book/addbook'], resolve) //新书上架
 const BookStock = resolve => require(['@/components/bookStock/list'], resolve) //图书库存
 const borrowRecord = resolve => require(['@/components/borrowRecord/list'], resolve) //记录查询
 const borrowbooks = resolve => require(['@/components/borrowbooks/index'], resolve) //借阅图书

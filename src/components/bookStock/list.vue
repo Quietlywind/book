@@ -364,7 +364,7 @@ export default {
     showEditDialog:function(index,row){
       this.editFormVisible=true;
       this.editForm=Object.assign({},row);
-      this.$refs.editForm.clearValidate();
+      // this.$refs.editForm.clearValidate();
     },
     // //关闭对话框前的回调
     closeDialog(){
@@ -495,7 +495,7 @@ export default {
  .center_update a{
    
  }
- .el-form-item--mini.el-form-item, .el-form-item--small.el-form-item{
+ .top_toolbar .el-form-item--mini.el-form-item,.top_toolbar .el-form-item--small.el-form-item{
      margin-bottom: 0px;
  }
  .demo-form-inline .el-form-item__content .el-input{

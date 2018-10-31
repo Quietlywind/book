@@ -180,7 +180,7 @@ export default {
     margin-bottom: 10px;
     padding:10px;background-color:#fff;
  }
- .el-form-item--mini.el-form-item, .el-form-item--small.el-form-item{
+ .top_toolbar1 .el-form-item--mini.el-form-item,.top_toolbar1 .el-form-item--small.el-form-item{
      margin-bottom: 0px;
  }
  .demo-form-inline .el-form-item__content .el-input{
