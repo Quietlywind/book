@@ -3,11 +3,16 @@
       <el-row :gutter="20">
         <el-col :span="24" class="warp-main" v-loading="loading" element-loading-text="拼命加载中">
             <el-col :span="24">
-                <el-col :span="6">
+                <el-col :span="4">
                     <el-input size="small" placeholder="请输入读者编号/姓名" v-model="readerInput" clearable>
                     </el-input>
+                </el-col>
+                <span style="font-size:14px;line-height: 32px;float:left;padding-left: 20px;">所属部门</span>
+                <el-col :span="4">
+                    <el-input size="small" placeholder="请输入部门" v-model="readerdepartment" clearable>
+                    </el-input>
                 </el-col>    
-                <el-col :span="6">
+                <el-col :span="2">
                     <el-button size="small" type="primary" @click="handleSearch">查询</el-button>
                 </el-col>
                 <el-col :span="12" style="text-align:right;">
@@ -15,10 +20,10 @@
                     <el-button size="small" @click="batchimport" type="primary">批量导入</el-button>
                 </el-col>
             </el-col>
-            <el-col :span="24" style="margin-top:3%;">
+            <el-col :span="24" style="margin-top:2%;">
                 <!--列表-->
                 <el-table :data="users" size="small" border style="width: 100%;">
-                  <el-table-column prop="userId" label="读者编号"></el-table-column>
+                  <el-table-column prop="userid" label="读者编号"></el-table-column>
                   <el-table-column prop="username" label="读者姓名"></el-table-column>
                   <el-table-column label="读者性别">
                     <template slot-scope="scope">
@@ -27,10 +32,15 @@
                     </template>
                   </el-table-column>
                   <el-table-column prop="userphone" label="读者电话" ></el-table-column>
-                  <el-table-column label="操作" width="150" align="center">
+                  <el-table-column prop="userdepartment" label="所属部门" ></el-table-column>
+                  <el-table-column label="操作" align="center">
                     <template slot-scope="scope">
                       <el-button type="text" @click="editshowDiglog(scope.$index,scope.row)">编辑</el-button>
-                      <el-button type="text" @click="deluser(scope.$index,scope.row)">删除</el-button>
+                      <!-- <el-button type="text" @click="deluser(scope.$index,scope.row)">删除</el-button> -->
+                      <el-switch @change="delchange(scope.$index,scope.row)" 
+                       active-text="启用" inactive-text="禁用" active-color="#409EFF" inactive-color="#dadde5" 
+                       v-model="scope.row.userstatus">
+                      </el-switch>
                     </template>
                   </el-table-column>
                 </el-table>
@@ -43,11 +53,12 @@
             </el-col>
         </el-col>
         <!--图书新增弹框-->
+        <!-- :rules="adduserForm" -->
           <el-dialog center title="新增" :visible.sync ="adduserFormVisible" :close-on-click-modal="false" width="30%">
-            <el-form :model="adduserForm" size="small" label-width="80px" :rules="adduserForm" ref="adduserForm">
-              <el-form-item label="读者编号" prop="userId">
+            <el-form :model="adduserForm" size="small" label-width="80px"  ref="adduserForm">
+              <el-form-item label="读者编号" prop="userid">
                 <el-col :span="20">
-                  <el-input v-model="adduserForm.userId" auto-complete="off"></el-input>
+                  <el-input v-model="adduserForm.userid" auto-complete="off"></el-input>
                 </el-col>
               </el-form-item>
               <el-form-item label="读者姓名" prop="username">
@@ -58,12 +69,17 @@
               <el-form-item label="读者性别" prop="usersex">
                 <el-col :span="20">
                   <el-radio v-model="adduserForm.usersex" label="1">男</el-radio>
-                  <el-radio v-model="adduserForm.usersex" label="2">女</el-radio>
+                  <el-radio v-model="adduserForm.usersex" label="0">女</el-radio>
                 </el-col>
               </el-form-item>
               <el-form-item label="读者电话" prop="userphone">
                 <el-col :span="20">
                   <el-input v-model="adduserForm.userphone" auto-complete="off"></el-input>
+                </el-col>
+              </el-form-item>
+              <el-form-item label="所属部门" prop="userdepartment">
+                <el-col :span="20">
+                  <el-input v-model="adduserForm.userdepartment" auto-complete="off"></el-input>
                 </el-col>
               </el-form-item>
             </el-form>
@@ -72,12 +88,12 @@
               <el-button type="primary" size="small" @click.native="addSubmit" :loading="addLoading">提交</el-button>
             </div>
           </el-dialog>
-          <!--图书编辑弹框-->
+          <!--图书编辑弹框 :rules="edituserForm"-->
           <el-dialog center title="编辑" :visible.sync ="edituserFormVisible" :close-on-click-modal="false" width="30%">
-            <el-form :model="edituserForm" size="small" label-width="80px" :rules="edituserForm" ref="edituserForm">
-              <el-form-item label="读者编号" prop="userId">
+            <el-form :model="edituserForm" size="small" label-width="80px"  ref="edituserForm">
+              <el-form-item label="读者编号" prop="userid">
                 <el-col :span="20">
-                  <el-input v-model="edituserForm.userId" auto-complete="off"></el-input>
+                  <el-input v-model="edituserForm.userid" auto-complete="off"></el-input>
                 </el-col>
               </el-form-item>
               <el-form-item label="读者姓名" prop="username">
@@ -88,12 +104,17 @@
               <el-form-item label="读者性别" prop="usersex">
                 <el-col :span="20">
                   <el-radio v-model="edituserForm.usersex" label="1">男</el-radio>
-                  <el-radio v-model="edituserForm.usersex" label="2">女</el-radio>
+                  <el-radio v-model="edituserForm.usersex" label="0">女</el-radio>
                 </el-col>
               </el-form-item>
               <el-form-item label="读者电话" prop="userphone">
                 <el-col :span="20">
                   <el-input v-model="edituserForm.userphone" auto-complete="off"></el-input>
+                </el-col>
+              </el-form-item>
+              <el-form-item label="所属部门" prop="userdepartment">
+                <el-col :span="20">
+                  <el-input v-model="edituserForm.userdepartment" auto-complete="off"></el-input>
                 </el-col>
               </el-form-item>
             </el-form>
@@ -107,6 +128,8 @@
 </template>
 
 <script>
+import util from '../../../common/util'
+import API from '../../../api/api_book'
 export default {
   components:{},
   props:{},
@@ -117,26 +140,28 @@ export default {
       page:1,
       limit:10,
       loading:false,
-      readerInput:'',
+      readerInput:'', //用户管理查询值
+      readerdepartment:'', //用户管理所属部门查询值
 
       //编辑用户数据
       edituserFormVisible:false,//编辑用户界面是否显示
       edituserForm:{
           id:0,
           username:'',
-          userId:'',
+          userid:'',
           usersex:'',
-          userphone:''
+          userphone:'',
+          userdepartment:''
       },
-
       //新增用户数据
       adduserFormVisible:false,//新增界面是否显示
       addLoading:false,
       adduserForm:{
-        userId:'',
+        userid:'',
         username:'',
         usersex:'',
-        userphone:''
+        userphone:'',
+        userdepartment:''
       },
     }
   },
@@ -150,7 +175,9 @@ export default {
     },
     //用户列表查询事件
     handleSearch(){
-
+      this.total=0;
+      this.page=1;  
+      this.search();
     },
     //搜索事件
     search(){
@@ -158,10 +185,26 @@ export default {
       let params={
         page:that.page,
         limit:10,
-        name:that.readerInput
+        userid:that.readerInput,
       };
-      // that.loading=true;
+      that.loading=true;
+      API.finduser(params).then((result)=>{
+        that.loading=false;
+        // console.log(!!0)
+        // console.log(!!1)
+        if(result && result.data){
+          that.total= result.count;
+          that.users=result.data;
+        }
+      },(err)=>{
+        that.loading=false;
+        that.$message.error({showClose:true,message:err.toString(),duration:2000});
+      }).catch((error)=>{
+        that.loading=false;
+        that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+      })
     },
+
     //批量导入事件
     batchimport(){
       
@@ -170,41 +213,150 @@ export default {
     editshowDiglog:function(index,row){
       this.edituserFormVisible=true;
       this.edituserForm=Object.assign({},row);
-      this.$refs.edituserForm.clearValidate();
+      // this.$refs.edituserForm.clearValidate();
     },
     //用户编辑界面提交
     editSubmit:function(){
-
+      let that=this;
+      that.loading=true;
+           let para=Object.assign({},this.edituserForm);
+           API.edituser(para).then((result)=>{
+             that.loading=false;
+             console.log(result)
+            if(result && result.status === "101"){
+              that.$message.success({showClose: true, message: '修改成功', duration: 2000});
+              that.$refs['edituserForm'].resetFields();
+              that.edituserFormVisible = false;
+              that.search();
+            }else{
+              that.$message.error({showClose: true, message: '修改失败', duration: 2000});
+            }
+           },(err)=>{
+              that.loading=false;
+             that.$message.error({showClose: true, message: err.toString(), duration: 2000});
+           }).catch((err)=>{
+             that.loading = false;
+            that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+           })
+      //  this.$refs.edituserForm.validate((valid)=>{
+      //    if(valid){
+           
+      //    }
+      //  }) 
     },
     //显示用户新增界面
     addshowDiglog:function(){
       this.adduserFormVisible = true;
         this.adduserForm = {
-          userId:'',
+          userid:'',
           username:'',
           usersex:'',
           userphone:'',
+          userdepartment:''
         };
     },
     //用户新增界面提交
     addSubmit:function(){
       let that = this;
       let para=Object.assign({},this.adduserForm);
-      this.users.push({
-        userId:para.userId,
+
+      let params={
+        userid:para.userid,
         username:para.username,
+        usersex:para.usersex,
         userphone:para.userphone,
-        usersex:para.usersex
+        userdepartment:para.userphone
+      };
+      console.log(params)
+      API.adduser(params).then((result)=>{
+        that.loading=false;
+        if (result && result.status === "101") {
+          that.$message.success({showClose: true, message: '新增成功', duration: 2000});
+          that.$refs['adduserForm'].resetFields();
+          that.adduserFormVisible = false;
+          that.search();
+        } else {
+          that.$message.error({showClose: true, message: '新增失败', duration: 2000});
+        }
+      },(err)=>{
+        that.loading=false;
+        that.$message.error({showClose:true,message:err.toString(),duration:2000});
+      }).catch((error)=>{
+        that.loading=false;
+        that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
       })
-      this.adduserFormVisible = false;
+      
     },
     //删除用户
-    deluser:function(index,row){
-
-    },
+    // deluser:function(index,row){
+    //     let that = this;
+    //     let para={
+    //       id:row.id
+    //     }
+    //     this.$confirm('确认删除该用户吗?', '提示', {type: 'warning'}).then(() => {
+    //       that.loading = true;
+    //       API.deluser(para).then(function (result) {
+    //         that.loading = false;
+    //         if (result && result.status === "101") {
+    //           that.$message.success({showClose: true, message: '删除成功', duration: 1500});
+    //           that.search();
+    //         }else if (result && result.status === "107"){
+    //           that.$message.success({showClose: true, message: '该读者用户有未还书籍，不允许删除', duration: 1500});
+    //           that.search();
+    //         }
+    //       }, function (err) {
+    //         that.loading = false;
+    //         that.$message.error({showClose: true, message: err.toString(), duration: 2000});
+    //       }).catch(function (error) {
+    //         that.loading = false;
+    //         that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+    //       });
+    //     }).catch(() => {
+          
+    //     });
+    // },
+    //禁用账户
+    delchange:function(index,row){
+        let that = this;
+        if(row.userstatus){
+          let para={
+            id:row.id
+          }
+          console.log(para)
+          API.deluser(para).then(function (result) {
+            if (result && result.status === "101") {
+              that.$message.success({showClose: true, message: '启用账户成功', duration: 1500});
+            }
+          }, function (err) {
+            that.$message.error({showClose: true, message: err.toString(), duration: 2000});
+          }).catch(function (error) {
+            that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+          });
+        }else{
+          let para={
+            id:row.id
+          }
+          console.log(para)
+          API.deluser(para).then(function (result) {
+            if (result && result.status === "101") {
+              that.$message.success({showClose: true, message: '禁用账户成功', duration: 1500});
+            }else if (result && result.status === "107"){
+              console.log(12)
+              that.$message.error({showClose: true, message: '该读者用户有未还书籍，不允许禁用', duration: 1500});
+              that.search();
+            }
+          }, function (err) {
+            that.$message.error({showClose: true, message: err.toString(), duration: 2000});
+          }).catch(function (error) {
+            that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+          });
+        }
+    }
   },
   created(){},
-  mounted(){}
+  mounted(){
+    // this.handleSearch();
+  }
 }
 </script>
 <style lang="scss" scoped>

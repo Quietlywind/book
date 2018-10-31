@@ -320,7 +320,6 @@ export default {
       };
       that.loading=true;
       API.findList(params).then((result)=>{
-        console.log(result)
         that.loading=false;
         if(result && result.books){
           that.total= result.total;

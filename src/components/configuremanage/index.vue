@@ -26,7 +26,6 @@ import bookcategory from './bookcategory/index';
 import bookshelf from './bookshelf/index';
 import fineStandard from './fineStandard/index';
 import user from './user/index';
-import operationlog from './operationlog/index';
 export default {
   data() {
     return {
@@ -42,17 +41,13 @@ export default {
           path:'bookshelf',
         },
         {
-          name:'罚金类别设置',
+          name:'罚金标准设置',
           path:'fineStandard',
         },
         {
           name:'用户管理',
           path:'user',
-        },
-        {
-          name:'操作日志',
-          path:'operationlog',
-        },
+        }
       ]
     }
   },
@@ -60,8 +55,7 @@ export default {
     bookcategory,
     bookshelf,
     fineStandard,
-    user,
-    operationlog,
+    user
   },
   props:{},
   watch:{},
@@ -103,8 +97,8 @@ export default {
   color: #fff;
 }
 .categoryBox{
-  padding:2%;
-  margin: 5% 10% 0 40px;
+  padding:30px;
+  margin: 30px 10% 0 40px;
   box-shadow: 2px 1px 10px 1px rgba(0,0, 0, .4);
 }
 </style>

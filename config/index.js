@@ -23,9 +23,12 @@ module.exports = {
   },
   dev: {
     env: require('./dev.env'),
-    host: '0.0.0.0', // can be overwritten by process.env.HOST
-    port: 8099,
+    host: 'localhost', // can be overwritten by process.env.HOST
+    port: 8080,
     autoOpenBrowser: true,
+    errorOverlay: true,
+    notifyOnErrors: true,
+    poll: false,
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
@@ -35,13 +38,22 @@ module.exports = {
         pathRewrite: {
           '^/api': '/api'
         }
-      }
+      },
+      '/info': {
+        changeOrigin: true,
+        target: 'http://zfystu.top:8080',
+        pathRewrite: {
+          '^/info': ''
+        }
+      },
     },
     // CSS Sourcemaps off by default because relative paths are "buggy"
     // with this option, according to the CSS-Loader README
     // (https://github.com/webpack/css-loader#sourcemaps)
     // In our experience, they generally work as expected,
     // just be aware of this issue when enabling this option.
-    cssSourceMap: false
+    cssSourceMap: true,
+    cacheBusting: true,
+    devtool: 'cheap-module-eval-source-map',
   }
 }

@@ -9,6 +9,7 @@ import NProgress from 'nprogress'
 import Highcharts from 'highcharts';
 import VueHighcharts from 'vue-highcharts';
 import "babel-polyfill";
+// import jquery from 'jquery'
 
 
 import 'element-ui/lib/theme-chalk/index.css'  //element-ui样式
