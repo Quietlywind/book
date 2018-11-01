@@ -11,7 +11,7 @@
                 <el-col :span="4">
                     <el-input size="small" placeholder="请输入部门" v-model="readerdepartment" clearable>
                     </el-input>
-                </el-col>    
+                </el-col>
                 <el-col :span="2">
                     <el-button size="small" type="primary" @click="handleSearch">查询</el-button>
                 </el-col>
@@ -125,16 +125,14 @@
           </el-dialog>
            <!--批量导入用户信息弹框 :rules="edituserForm"-->
           <el-dialog center title="批量导入用户" :visible.sync ="batchimportVisible" :close-on-click-modal="false" width="30%">
-            <el-row>
-              <el-col>
-                <span>文件上传</span>
-                <el-upload ref="upload" accept=".xls,.xlsx" class="upload-demo" action="/info/userinfo/uploadUsers" 
+            <div style="width: 80%;margin:auto;text-align: center;">
+                <span style="float:left;line-height:40px;padding-right: 30px;">文件上传</span>
+                <el-upload style="padding-right: 80px;margin-bottom: 10px;" ref="upload" accept=".xls,.xlsx" class="upload-demo" action="/info/userinfo/uploadUsers" 
                 :on-change="uploadChange" :on-success="uploadsuccess" :limit="1" :before-upload="uploadbefore">
                   <el-button  type="primary" icon="el-icon-upload">点击上传</el-button>
                 </el-upload>
                 <a href="../../../../static/userModule.xls" download="用户批量导入表">点击下载导入模板</a>
-              </el-col>
-            </el-row>
+            </div>
             <div slot="footer" class="dialog-footer">
                 <el-button size="small" @click.native="batchimportVisible = false">取消</el-button>
                 <el-button type="primary" size="small" @click.native="uploadSubmit">提交</el-button>
@@ -205,7 +203,8 @@ export default {
         limit:10,
         userid:that.readerInput,
       };
-      that.loading=true;
+      // that.loading=true;
+      that.loading=false;
       API.finduser(params).then((result)=>{
         that.loading=false;
         // console.log(!!0)

@@ -10,9 +10,6 @@ export default {
   finduser:params =>{
     return API.POST('/info/userinfo/list',params)
   },
-  // finduser:params =>{
-  //   return API.POST('/userinfo/list',params)
-  // },
   //查询配置管理/用户管理新增用户
   adduser:params =>{
     return API.POST('/info/userinfo/add',params)
@@ -65,6 +62,18 @@ export default {
     return API.POST('/info/record/back', params)
   },
 
+  //借阅图书页面查询读者借阅记录信息列表(通过page分页)
+  borrowrecordList: params => {
+    return API.POST('/info/record/list', params)
+  },
+  //借阅图书页面查询图书信息列表(通过page分页)
+  borrowbookList: params => {
+    return API.POST('/info/record/list', params)
+  },
+  //借阅图书页面借出操作
+  lendbook: params => {
+    return API.POST('/info/record/list', params)
+  },
 
 
 

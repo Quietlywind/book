@@ -16,38 +16,41 @@
           <el-form style="padding:20px 0;" status-icon :rules="newbookRules" :model="newbook" ref="newbook" size='small' label-width="80px">
               <el-col :md="16" class="newbookdiv">
                 <el-form-item label="图书编码" prop="bookid">
-                  <el-input v-model="newbook.bookid" placeholder="请输入图书编码" ></el-input>
+                  <el-input v-model="newbook.bookid" placeholder="请输入图书编码" clearable></el-input>
                 </el-form-item>
               </el-col>
               <el-col :md="16" class="newbookdiv">
                 <el-form-item label="图书名称" prop="bookname">
-                  <el-input v-model="newbook.bookname" placeholder="请输入图书名称" ></el-input>
+                  <el-input v-model="newbook.bookname" placeholder="请输入图书名称" clearable></el-input>
                 </el-form-item>
               </el-col>
               <el-col :md="16" class="newbookdiv">
                 <el-form-item label="图书类别" prop="bookregion">
-                  <el-select style="width:100%;" v-model="newbook.bookregion" placeholder="请选择">
-                      <el-option label="请选择" value=" "></el-option>
+                  <el-select style="width:100%;" v-model="newbook.bookregion" placeholder="请选择" clearable>
+                      <el-option label="请选择" value=""></el-option>
                       <el-option v-for="item in bookCategory" :value='item.value' :key="item.index">
                       </el-option>
+                      <!-- <el-option v-for="item in bookcategory" :value='item.id' :key="item.id" :label="item.mangeName">
+                        {{item.mangeName}}
+                      </el-option> -->
                   </el-select>
                 </el-form-item>
               </el-col>
               <el-col :md="16" class="newbookdiv" >
                 <el-form-item label="出版社" prop="bookpress">
-                  <el-input v-model="newbook.bookpress" placeholder="请输入出版社" ></el-input>
+                  <el-input v-model="newbook.bookpress" placeholder="请输入出版社" clearable></el-input>
                 </el-form-item>
               </el-col>
               <el-col :md="16" class="newbookdiv">
                 <el-form-item label="单价" prop="bookprice">
-                  <el-input v-model.number="newbook.bookprice" placeholder="请输入单价" ></el-input>
+                  <el-input v-model.number="newbook.bookprice" placeholder="请输入单价" clearable></el-input>
                 </el-form-item>
               </el-col>
               <el-col :md="16" class="newbookdiv">
                   <div style="width:50%;display: inline-block;">
                     <el-form-item label="图书书架" prop="bookshelf">
-                      <el-select  v-model="newbook.bookshelf" placeholder="请选择">
-                          <el-option label="请选择" value=" "></el-option>
+                      <el-select  v-model="newbook.bookshelf" placeholder="请选择" clearable>
+                          <el-option label="请选择" value=""></el-option>
                           <el-option v-for="item in bookCategory" :value='item.value' :key="item.index">
                           </el-option>
                       </el-select>
@@ -55,8 +58,8 @@
                   </div>
                   <div style="width:50%;float: left;">
                     <el-form-item label="层数" prop="bookshelfnum">
-                      <el-select  v-model="newbook.bookshelfnum" placeholder="请选择">
-                          <el-option label="请选择" value=" "></el-option>
+                      <el-select  v-model="newbook.bookshelfnum" placeholder="请选择" clearable>
+                          <el-option label="请选择" value=""></el-option>
                           <el-option v-for="item in bookCategory" :value='item.value' :key="item.index">
                           </el-option>
                       </el-select>
@@ -114,7 +117,8 @@ export default {
             value:'哲学'
             },
         ],
-
+        layerNum:[], //层数数组
+        bookshelf:[], //图书书架数组
         newbookRules:{
           bookid:[
             {required:true,message:"请输入图书编号",trigger:'blur'}
@@ -171,7 +175,29 @@ export default {
             })
         }
       })
-    }
+    },
+
+    //查询图书类别
+    //记录查询页请求图书类别
+    searchbookcategory(){
+      let that=this;
+      let params={
+        mangeType:"book_type"
+      };
+      API.setshelf(params).then((result)=>{
+        if (result && result.status === "101") {
+            that.bookcategory=result.data;
+        } else {
+          that.$message.error({showClose: true, message: '暂无数据', duration: 2000});
+        }
+      },(err)=>{
+        that.loading=false;
+        that.$message.error({showClose:true,message:err.toString(),duration:2000});
+      }).catch((error)=>{
+        that.loading=false;
+        that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+      })
+    },
   },
   created(){},
   mounted(){

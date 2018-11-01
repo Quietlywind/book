@@ -16,9 +16,9 @@
           <span class="el-dropdown-link userinfo-inner"><i class="iconfont icon-user"></i>您好！{{nickname}}<i
             class="iconfont icon-down"></i></span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>
+            <!-- <el-dropdown-item>
               <div @click="jumpTo('/user/profile')"><span style="color: #555;font-size: 14px;">个人信息</span></div>
-            </el-dropdown-item>
+            </el-dropdown-item> -->
             <el-dropdown-item>
               <div @click="jumpTo('/user/changepwd')"><span style="color: #555;font-size: 14px;">修改密码</span></div>
             </el-dropdown-item>
@@ -26,7 +26,7 @@
           </el-dropdown-menu>
         </el-dropdown>
       </div>
-      <div class="topbar-account topbar-bell">
+      <div class="topbar-account topbar-bell" @click="overdueNotice" style="cursor: pointer;">
         <!-- <el-badge value="1">
           
         </el-badge> -->
@@ -73,6 +73,10 @@
               <router-view></router-view>
             </transition>
           </el-col>
+          <!-- 逾期通知界面 -->
+          <el-dialog title="" fullscreen=true :visible.sync ="overdueVisible" :close-on-click-modal="false" style="width:100%;">
+              <overduenotice></overduenotice>
+          </el-dialog>
         </div>
       </section>
     </el-col>
@@ -83,14 +87,16 @@
 <script>
   import {bus} from '../bus.js'
   import API from '../api/api_user';
-
+  import overduenotice from './highcharts/overduenotice'
   export default {
     name: 'home',
+    components: {
+      overduenotice
+    },
     created(){
       bus.$on('setNickName', (text) => {
         this.nickname = text; 
       })
-
       bus.$on('goto', (url) => {
         if (url === "/login") {
           localStorage.removeItem('access-user');
@@ -104,6 +110,7 @@
         nickname: '',
         collapsed: false,
         collapicon:false,
+        overdueVisible:false,
       }
     },
     methods: {
@@ -139,6 +146,9 @@
             that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
           });
         }).catch(() => {});
+      },
+      overdueNotice(){
+        this.overdueVisible=true;
       }
     },
     mounted() {

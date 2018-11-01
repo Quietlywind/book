@@ -48,11 +48,11 @@
       <el-col :span="24" class="center_update">
         <a href="javascript:;">批量修改</a>
       </el-col>
-      <!--列表-->
+      <!--图书列表-->
       <el-table :data="books" highlight-current-row @selection-change="selsChange" style="width: 100%;">
         <el-table-column type="selection" width="55"></el-table-column>
-        <el-table-column prop="id" label="图书编码"></el-table-column>
-        <el-table-column prop="name" label="图书名称"></el-table-column>
+        <el-table-column prop="id" label="图书编码" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="name" label="图书名称" show-overflow-tooltip></el-table-column>
         <el-table-column prop="region" label="图书类别"></el-table-column>
         <!-- width="100" -->
         <el-table-column prop="press" label="出版社"></el-table-column>
@@ -63,27 +63,27 @@
         <el-table-column prop="stocknum" label="库存数量" sortable></el-table-column>
         <el-table-column label="操作" width="150" align="center">
           <template slot-scope="scope">
-            <el-button size="small" @click="showEditDialog(scope.$index,scope.row)">编辑</el-button>
-            <el-button type="danger"  size="small" @click="delBook(scope.$index,scope.row)">删除</el-button>
+            <el-button size="small" type="text" @click="showEditDialog(scope.$index,scope.row)">编辑</el-button>
+            <el-button type="text"  size="small" @click="delBook(scope.$index,scope.row)">处理</el-button>
           </template>
         </el-table-column>
       </el-table>
 
       <!--表格分页工具条-->
       <el-col :span="24" class="toolbar">
-        <el-button type="danger" :disabled="this.sels.length===0" @click="batchDeleteBook">批量删除</el-button>
+        <!-- <el-button type="danger" :disabled="this.sels.length===0" @click="batchDeleteBook">批量删除</el-button> -->
         <el-pagination background layout="prev, pager, next,jumper"  :page-size="10" :total="total" @current-change="handleCurrentChange"
                        style="float:right;">
         </el-pagination>
       </el-col>
       <!-- 图书编辑弹框 -->
-      <el-dialog center title="编辑" :visible.sync ="editFormVisible" :close-on-press-escape="true" :close-on-click-modal="false" width="30%" :before-close="closeDialog">
-        <el-form :model="editForm" status-icon label-width="100px"  :rules="editFormRules" ref="editForm">
+      <el-dialog center title="编辑图书" :visible.sync ="editFormVisible" :close-on-press-escape="true" :close-on-click-modal="false" width="30%" :before-close="closeDialog">
+        <el-form :model="editForm" size="small" status-icon label-width="100px"  :rules="editFormRules" ref="editForm">
           <el-form-item label="图书名称" prop="name">
             <el-input v-model="editForm.name" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="图书类型:" prop="region">
-                <el-select  v-model="editForm.region" placeholder="请选择">
+          <el-form-item label="图书类别:" prop="region">
+                <el-select style="width: 100%;" v-model="editForm.region" placeholder="请选择">
                     <el-option label="请选择" value=" "></el-option>
                     <el-option v-for="item in bookCategory" :value='item.value' :key="item.index">
                       {{item.name}}
@@ -99,14 +99,14 @@
           <el-form-item label="单价:" prop="price">
             <el-input v-model="editForm.price" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="图书状态:" prop="status">
-            <el-select v-model="editForm.status" placeholder="请选择">
+          <!-- <el-form-item label="图书状态:" prop="status">
+            <el-select style="width: 100%;" v-model="editForm.status" placeholder="请选择">
                 <el-option label="请选择" value=" "></el-option>
                 <el-option v-for="item in bookeStatus" :value='item.value' :key="item.index">
                   {{item.name}}
                 </el-option>
             </el-select>
-          </el-form-item>
+          </el-form-item> -->
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click.native="resetForm('editForm')" size="small">取消</el-button>
@@ -115,13 +115,13 @@
       </el-dialog>
 
       <!--图书新增弹框-->
-      <el-dialog center title="新增" :visible.sync ="addFormVisible" :close-on-click-modal="false" width="30%">
-        <el-form :model="addForm" label-width="100px" :rules="addFormRules" ref="addForm">
+      <el-dialog center title="新书上架" :visible.sync ="addFormVisible" :close-on-click-modal="false" width="30%">
+        <el-form :model="addForm" size="small" label-width="100px" :rules="addFormRules" ref="addForm">
           <el-form-item label="图书名称" prop="name">
             <el-input v-model="addForm.name" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="图书类型:" prop="region">
-                <el-select  v-model="addForm.region" placeholder="请选择">
+          <el-form-item label="图书类别:" prop="region">
+                <el-select  style="width: 100%;" v-model="addForm.region" placeholder="请选择">
                     <el-option label="请选择" value=" "></el-option>
                     <el-option v-for="item in bookCategory" :value='item.value' :key="item.index">
                       {{item.name}}
@@ -137,14 +137,14 @@
           <el-form-item label="单价:" prop="price">
             <el-input v-model="addForm.price" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="图书状态:" prop="status">
-            <el-select v-model="addForm.status" placeholder="请选择">
+          <!-- <el-form-item label="图书状态:" prop="status">
+            <el-select style="width: 100%;" v-model="addForm.status" placeholder="请选择">
                 <el-option label="请选择" value=" "></el-option>
                 <el-option v-for="item in bookeStatus" :value='item.value' :key="item.index">
                   {{item.name}}
                 </el-option>
             </el-select>
-          </el-form-item>
+          </el-form-item> -->
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click.native="addFormVisible = false">取消</el-button>
@@ -152,6 +152,43 @@
         </div>
       </el-dialog>
 
+      <!--图书处理弹框-->
+      <el-dialog center title="图书处理" :visible.sync ="handleFormVisible" :close-on-click-modal="false" width="30%">
+        <el-form :model="addForm" size="small" label-width="100px" :rules="addFormRules" ref="addForm">
+          <el-form-item label="图书名称" prop="name">
+            <el-input v-model="addForm.name" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="处理类型:" prop="region">
+                <el-select  style="width: 100%;" v-model="addForm.region" placeholder="请选择">
+                    <el-option label="请选择" value=" "></el-option>
+                    <el-option v-for="item in bookCategory" :value='item.value' :key="item.index">
+                      {{item.name}}
+                    </el-option>
+                </el-select>
+          </el-form-item>
+          <el-form-item label="出版社:" prop="press">
+            <el-input v-model="addForm.press" auto-complete="off"></el-input>
+          </el-form-item>
+          <!-- <el-form-item label="出版日期">
+            <el-date-picker type="date" placeholder="选择日期" v-model="addForm.publishAt"></el-date-picker>
+          </el-form-item> -->
+          <el-form-item label="单价:" prop="price">
+            <el-input v-model="addForm.price" auto-complete="off"></el-input>
+          </el-form-item>
+          <!-- <el-form-item label="图书状态:" prop="status">
+            <el-select style="width: 100%;" v-model="addForm.status" placeholder="请选择">
+                <el-option label="请选择" value=" "></el-option>
+                <el-option v-for="item in bookeStatus" :value='item.value' :key="item.index">
+                  {{item.name}}
+                </el-option>
+            </el-select>
+          </el-form-item> -->
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click.native="addFormVisible = false">取消</el-button>
+          <el-button type="primary" @click.native="addSubmit" :loading="addLoading">提交</el-button>
+        </div>
+      </el-dialog>
     </el-col>
   </el-row>
 </template>
@@ -246,6 +283,7 @@ export default {
             price:'',
             status:'',
         },
+        handleFormVisible:false, //图书处理界面是否显示
         //模拟下拉数据-图书状态
         bookeStatus:[{
             name:'在库',
@@ -338,25 +376,26 @@ export default {
     //删除单个图书
     delBook:function(index,row){
         let that = this;
-        this.$confirm('确认删除该图书吗?', '提示', {type: 'warning'}).then(() => {
-          that.loading = true;
-          API.remove(row.id).then(function (result) {
-            that.loading = false;
-            if (result && parseInt(result.errcode) === 0) {
-              that.$message.success({showClose: true, message: '删除成功', duration: 1500});
-              that.search();
-            }
-          }, function (err) {
-            that.loading = false;
-            that.$message.error({showClose: true, message: err.toString(), duration: 2000});
-          }).catch(function (error) {
-            that.loading = false;
-            console.log(error);
-            that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
-          });
-        }).catch(() => {
+        this.handleFormVisible=true;
+        // this.$confirm('确认删除该图书吗?', '提示', {type: 'warning'}).then(() => {
+        //   that.loading = true;
+        //   API.remove(row.id).then(function (result) {
+        //     that.loading = false;
+        //     if (result && parseInt(result.errcode) === 0) {
+        //       that.$message.success({showClose: true, message: '删除成功', duration: 1500});
+        //       that.search();
+        //     }
+        //   }, function (err) {
+        //     that.loading = false;
+        //     that.$message.error({showClose: true, message: err.toString(), duration: 2000});
+        //   }).catch(function (error) {
+        //     that.loading = false;
+        //     console.log(error);
+        //     that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+        //   });
+        // }).catch(() => {
           
-        });
+        // });
     },
     //显示图书编辑界面
     showEditDialog:function(index,row){

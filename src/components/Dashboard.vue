@@ -62,7 +62,7 @@
                             <div class="rectangle"></div>
                             <span>罚金统计</span>
                           </div>
-                          <div class="float_right">
+                          <div class="float_right" @click="fineDetail">
                             <a href="JavaScript:;">罚金详情<i class="el-icon-d-arrow-right"></i></a>
                           </div>
                         <x-charts :id="id2" :option="option2"></x-charts>
@@ -99,6 +99,10 @@
           </el-col>
          </el-row>
       </section>
+      <!--罚金详情界面-->
+      <el-dialog title="" fullscreen=true :visible.sync ="fineVisible" :close-on-click-modal="false" style="width:100%;">
+          <fine-detail></fine-detail>
+      </el-dialog>
     </el-col> 
   </el-row>
 </template>
@@ -141,7 +145,7 @@
   }
   .green{
     color:#fff;
-    background-color: #D1E17C;
+    background-color: #7ECF6D;
     box-shadow: 4px 3px 5px 0 rgba(0,0, 0, .3);
   }
   .blue{
@@ -211,6 +215,7 @@
   import API from '../api/api_book'
   import XCharts from './highcharts/index.vue'
   import options from './highcharts/testpie'
+  import fineDetail from './highcharts/fine.vue'
   export default {
     data() {
       return {
@@ -219,13 +224,13 @@
         chartPie: null,
         Total:2000,
         currentbook:{
-          "total":1300,
+          total:1300,
         },
         borrowedbook:{
-          "total":70
+          total:70
         },
         overduebook:{
-          "total":10
+          total:10
         },
         cishu:[],
         activeName2: 'first',
@@ -240,6 +245,7 @@
         id2:'chartBar',
         option1:options.pie,
         option2:options.bar,
+        fineVisible:false, //罚金详情弹框状态
       };
     },
     mounted: function () {
@@ -288,6 +294,11 @@
           that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
         });
       },
+      //打开罚金详情
+      fineDetail(){
+        this.fineVisible=true;
+      }
+
     },
     created () {
       for(var i=0;i<10;i++){
@@ -295,7 +306,8 @@
       }
     },
     components: {
-      XCharts
+      XCharts,
+      fineDetail
     }
   }
 </script>

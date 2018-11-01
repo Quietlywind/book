@@ -158,7 +158,6 @@ export default {
         that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
       })
     },
-
     //记录查询页请求图书类别
     searchbookcategory(){
       let that=this;
@@ -196,7 +195,7 @@ export default {
     padding:10px;background-color:#fff;
  }
  .top_toolbar1 .el-form-item--mini.el-form-item,.top_toolbar1 .el-form-item--small.el-form-item{
-     margin-bottom: 0px;
+     margin-bottom: 10px;
  }
  .top_toolbar1 .demo-form-inline .el-form-item__content .el-input{
     max-width: 140px;
