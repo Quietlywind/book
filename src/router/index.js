@@ -117,18 +117,18 @@ let router = new Router({
   ]
 })
 
-router.beforeEach((to, from, next) => {
-  if (to.path.startsWith('/login')) {
-    window.localStorage.removeItem('access-user')
-    next()
-  } else {
-    let user = JSON.parse(window.localStorage.getItem('access-user'))
-    if (!user) {
-      next({path: '/login'})
-    } else {
-      next()
-    }
-  }
-})
+// router.beforeEach((to, from, next) => {
+//   if (to.path.startsWith('/login')) {
+//     window.localStorage.removeItem('access-user')
+//     next()
+//   } else {
+//     let user = JSON.parse(window.localStorage.getItem('access-user'))
+//     if (!user) {
+//       next({path: '/login'})
+//     } else {
+//       next()
+//     }
+//   }
+// })
 
 export default router

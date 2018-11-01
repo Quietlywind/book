@@ -2,22 +2,23 @@
   <div class="wrapper">
       <el-row>
         <el-col style="padding-top:20px;" :span="24" v-loading="loading" element-loading-text="拼命加载中">
+          <!-- :rules="editFormrules" -->
             <el-form :model="editForm" :inline="false" status-icon label-width="80px" ref="editForm">
-              <el-form-item label="书架数量" prop="name">
-                <el-col :span="14">
-                  <el-input v-model="editForm.shelfName" auto-complete="off"></el-input>
-                </el-col>
-              </el-form-item>
-              <el-form-item label="层数" prop="name">
-                <el-col :span="14">
-                  <el-input v-model="editForm.shelfNum" auto-complete="off"></el-input>
-                </el-col>
-              </el-form-item>
-              <el-form-item>
-                <el-col :span="14" style="text-align:right;">
-                  <el-button size="small" type="primary" @click="editshelf">修改</el-button>
-                </el-col>
-              </el-form-item>
+              <el-col :span="14" style="float:none;margin:auto;">
+                <el-form-item label="书架数量" prop="shelfName">
+                  <el-input v-model.number="editForm.shelfName" auto-complete="off"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="14" style="float:none;margin:auto;">
+                <el-form-item label="层数" prop="shelfNum">
+                  <el-input v-model.number="editForm.shelfNum" auto-complete="off"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="14" style="float:none;margin:auto;text-align:right;">
+                <el-form-item>
+                    <el-button size="small" type="primary" @click="editshelf">修改</el-button>
+                </el-form-item>
+              </el-col>
             </el-form>
         </el-col>
       </el-row>
@@ -36,7 +37,17 @@ export default {
       editForm:{
         shelfName:'',
         shelfNum:'',
-      }
+      },
+      // editFormrules:{
+      //   shelfName:[
+      //       { required: true, message: '请输入书架数量', trigger: 'blur' },
+      //       { type: 'number', message: '书架数量必须为数字值'}
+      //     ],
+      //     shelfNum:[
+      //       { required: true, message: '请输入层数', trigger: 'blur' },
+      //       { type: 'number', message: '层数必须为数字值'}
+      //     ]
+      // },
     }
   },
   watch:{},
@@ -69,28 +80,33 @@ export default {
     //书架修改按钮事件
     editshelf(){
       let that=this;
-      that.loading=true;
-           let para=Object.assign({},this.editForm);
-           let params={
-              mangeType:that.shielfs,
-              mangeRemark1:para.shelfName,
-              mangeRemark2:para.shelfNum
-            };
-           API.updateshelf(params).then((result)=>{
-             that.loading=false;
-            if(result && result.status === "101"){
-              that.$message.success({showClose: true, message: '修改成功', duration: 2000});
-              that.search();
-            }else{
-              that.$message.error({showClose: true, message: '修改失败', duration: 2000});
-            }
-           },(err)=>{
+      // that.loading=true;
+      // that.$refs.editForm.validate((valid)=>{
+      //     if(valid){
+            
+      //     }
+      // })
+      let para=Object.assign({},this.editForm);
+            let params={
+                mangeType:that.shielfs,
+                mangeRemark1:para.shelfName,
+                mangeRemark2:para.shelfNum
+              };
+            API.updateshelf(params).then((result)=>{
               that.loading=false;
-             that.$message.error({showClose: true, message: err.toString(), duration: 2000});
-           }).catch((err)=>{
-             that.loading = false;
-            that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
-           })
+              if(result && result.status === "101"){
+                that.$message.success({showClose: true, message: '修改成功', duration: 2000});
+                that.search();
+              }else{
+                that.$message.error({showClose: true, message: '修改失败', duration: 2000});
+              }
+            },(err)=>{
+                that.loading=false;
+              that.$message.error({showClose: true, message: err.toString(), duration: 2000});
+            }).catch((err)=>{
+              that.loading = false;
+              that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+            })  
     },
   },
   created(){},

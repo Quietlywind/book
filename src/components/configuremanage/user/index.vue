@@ -123,13 +123,30 @@
               <el-button type="primary" size="small" @click.native="editSubmit">提交</el-button>
             </div>
           </el-dialog>
+           <!--批量导入用户信息弹框 :rules="edituserForm"-->
+          <el-dialog center title="批量导入用户" :visible.sync ="batchimportVisible" :close-on-click-modal="false" width="30%">
+            <el-row>
+              <el-col>
+                <span>文件上传</span>
+                <el-upload ref="upload" accept=".xls,.xlsx" class="upload-demo" action="/info/userinfo/uploadUsers" 
+                :on-change="uploadChange" :on-success="uploadsuccess" :limit="1" :before-upload="uploadbefore">
+                  <el-button  type="primary" icon="el-icon-upload">点击上传</el-button>
+                </el-upload>
+                <a href="../../../../static/userModule.xls" download="用户批量导入表">点击下载导入模板</a>
+              </el-col>
+            </el-row>
+            <div slot="footer" class="dialog-footer">
+                <el-button size="small" @click.native="batchimportVisible = false">取消</el-button>
+                <el-button type="primary" size="small" @click.native="uploadSubmit">提交</el-button>
+              </div>
+          </el-dialog>
       </el-row>
   </div>
 </template>
 
 <script>
-import util from '../../../common/util'
-import API from '../../../api/api_book'
+import util from '../../../common/util';
+import API from '../../../api/api_book';
 export default {
   components:{},
   props:{},
@@ -142,7 +159,7 @@ export default {
       loading:false,
       readerInput:'', //用户管理查询值
       readerdepartment:'', //用户管理所属部门查询值
-
+      batchimportVisible:false, //批量导入界面是否显示
       //编辑用户数据
       edituserFormVisible:false,//编辑用户界面是否显示
       edituserForm:{
@@ -163,6 +180,7 @@ export default {
         userphone:'',
         userdepartment:''
       },
+      fileList:[], //文件上传临时数组
     }
   },
   watch:{},
@@ -176,7 +194,7 @@ export default {
     //用户列表查询事件
     handleSearch(){
       this.total=0;
-      this.page=1;  
+      this.page=1;
       this.search();
     },
     //搜索事件
@@ -204,11 +222,56 @@ export default {
         that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
       })
     },
-
     //批量导入事件
     batchimport(){
+      this.batchimportVisible=true;
+    },
+    //文件上传changge
+    uploadChange(file,fileList){
+
+    },
+    //文件上传成功时的钩子
+    uploadsuccess :function(response,file,fileList){
+      console.log(response)
+      this.fileList=response.data.realList;
+    },
+    //文件上传之前的钩子判断
+    uploadbefore(file){
+      // console.log(file)
+    },
+    //文件上传提交按钮
+    uploadSubmit(){
+      let that=this;
+      console.log(this.fileList.length)
+      if(this.fileList.length > 0){
+        let params={
+          arrs:JSON.stringify(this.fileList)
+        }
+        that.loading=true;
+        API.batchimportantuser(params).then((result)=>{
+            console.log(result)
+            that.loading=false;
+            if(result && result.status === "101"){
+              that.$message.success({showClose: true, message: '文件上传成功', duration: 2000});
+              that.batchimportVisible = false;
+              that.search();
+            }else if(result && result.status === "102"){
+              that.$message.error({showClose: true, message: '文件上传失败,请重新上传', duration: 2000});
+              that.fileList=[];
+            }
+           },(err)=>{
+              that.loading=false;
+              that.$message.error({showClose: true, message: err.toString(), duration: 2000});
+           }).catch((err)=>{
+              that.loading = false;
+              that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+           })
+      }else{
+        that.$message.error({showClose: true, message: '解析excel文件中有重复记录', duration: 2000});
+      }
       
     },
+
     //显示用户编辑界面
     editshowDiglog:function(index,row){
       this.edituserFormVisible=true;
@@ -259,7 +322,6 @@ export default {
     addSubmit:function(){
       let that = this;
       let para=Object.assign({},this.adduserForm);
-
       let params={
         userid:para.userid,
         username:para.username,
@@ -267,7 +329,6 @@ export default {
         userphone:para.userphone,
         userdepartment:para.userphone
       };
-      console.log(params)
       API.adduser(params).then((result)=>{
         that.loading=false;
         if (result && result.status === "101") {
@@ -275,7 +336,9 @@ export default {
           that.$refs['adduserForm'].resetFields();
           that.adduserFormVisible = false;
           that.search();
-        } else {
+        } else if(result && result.status === "108"){
+          that.$message.error({showClose: true, message: '读者编号重复或已存在', duration: 2000});
+        }else if(result && result.status === "102"){
           that.$message.error({showClose: true, message: '新增失败', duration: 2000});
         }
       },(err)=>{
@@ -355,7 +418,7 @@ export default {
   },
   created(){},
   mounted(){
-    // this.handleSearch();
+    this.handleSearch();
   }
 }
 </script>

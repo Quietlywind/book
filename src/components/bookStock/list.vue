@@ -71,8 +71,6 @@
 
       <!--表格分页工具条-->
       <el-col :span="24" class="toolbar">
-          <!--  @click="batchDeleteBook" -->
-          <!-- @current-change="handleCurrentChange" -->
         <el-button type="danger" :disabled="this.sels.length===0" @click="batchDeleteBook">批量删除</el-button>
         <el-pagination background layout="prev, pager, next,jumper"  :page-size="10" :total="total" @current-change="handleCurrentChange"
                        style="float:right;">
