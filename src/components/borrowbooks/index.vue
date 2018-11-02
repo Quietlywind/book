@@ -1,15 +1,15 @@
 <template>
   <div>
-    <el-row class="warp">
+    <!-- <el-row class="warp">
       <el-col :span="24" class="warp-breadcrum">  
         <el-breadcrumb separator="/">
           <el-breadcrumb-item :to="{ path: '/' }"><b>首页</b></el-breadcrumb-item>
           <el-breadcrumb-item>借阅图书</el-breadcrumb-item>
         </el-breadcrumb>
       </el-col>
-    </el-row>
+    </el-row> -->
     <el-row :gutter="20">
-      <el-col  class="warp-main" v-loading="loading" element-loading-text="拼命加载中">
+      <el-col  class="warp-main">
         <el-col :span="14">
           <div class="method_wrap">
               <span class="title">读者信息</span>
@@ -22,16 +22,16 @@
                 </el-form-item>
               </el-form>
           </div>
-          <div class="method_wrap" ref="method" style="margin-top:30px;min-height:395px;">
+          <div class="method_wrap" ref="method" style="margin-top:30px;min-height:395px;" v-loading="loading" element-loading-text="拼命加载中">
               <span class="title">借阅记录</span>
               <div v-show="borrowtableTrue">
                   <!--借阅记录列表-->
                   <el-table :data="borrowsbook" size="small" border highlight-current-row empty-text="暂无记录"  style="width: 100%;">
-                    <el-table-column prop="id" label="图书编码" show-overflow-tooltip></el-table-column>
-                    <el-table-column prop="name" label="图书名称"></el-table-column>
-                    <el-table-column prop="region" label="图书类别"></el-table-column>
-                    <el-table-column prop="borrowDate" label="借阅日期" sortable></el-table-column>
-                    <el-table-column prop="returnDate" label="归还日期" sortable></el-table-column>
+                    <el-table-column prop="val2" label="图书编码" show-overflow-tooltip></el-table-column>
+                    <el-table-column prop="val3" label="图书名称"></el-table-column>
+                    <el-table-column prop="val4" label="图书类别"></el-table-column>
+                    <el-table-column prop="val5" label="借阅日期" sortable></el-table-column>
+                    <el-table-column prop="val7" label="归还日期" sortable></el-table-column>
                   </el-table>
                   <el-pagination style="text-align: right;" @current-change="borrowCurrentChange" background layout="prev, pager, next,jumper"  :page-size="10" :total="total1">
                   </el-pagination>
@@ -39,7 +39,7 @@
           </div>
         </el-col>
         <el-col :span="10">
-          <div class="method_wrap_right" style="min-height:500px;">
+          <div class="method_wrap_right" style="min-height:518px;">
               <span class="title">图书信息</span>
               <el-form :inline="true" :model="books" size='small' style="margin: 15px 0;" class="book-form-inline" label-width="69px">
                 <el-form-item label="图书编码">
@@ -55,11 +55,11 @@
               <div v-show="booktableTrue">
                   <!--图书信息列表-->
                   <el-table :data="booksDetail" size="small" border highlight-current-row empty-text="暂无记录"  style="width: 100%;">
-                    <el-table-column prop="bookid" label="图书编码" show-overflow-tooltip></el-table-column>
-                    <el-table-column prop="bookname" label="图书名称"></el-table-column>
-                    <el-table-column prop="stocknum" label="库存数量" sortable></el-table-column>
+                    <el-table-column prop="bookUuid" label="图书编码" show-overflow-tooltip></el-table-column>
+                    <el-table-column prop="bookName" label="图书名称"></el-table-column>
+                    <el-table-column prop="bookRemain" label="库存数量" sortable></el-table-column>
                     <el-table-column label="操作" width="60" align="center">
-                      <template slot-scope="scope">
+                      <template slot-scope="scope" v-if="scope.row.bookRemain">
                         <el-button  type="text" @click="borrowDialog(scope.$index,scope.row)">借出</el-button>
                       </template>
                     </el-table-column>
@@ -72,20 +72,20 @@
         </el-col>
         <!--图书借出弹框 :rules="edituserForm"-->
           <el-dialog center title="选择归还日期" :visible.sync ="lendFormVisible" :close-on-click-modal="false" width="400px">
-            <el-form :model="lendform" size="small" label-width="80px"  ref="lendform">
+            <el-form :model="lendform" size="small" label-width="80px"  ref="lendform"  :rules="lendrules">
               <el-form-item label="借阅日期" prop="nowdate">
-                <el-col :md="20">
+                <el-col :md="20" style="padding-right:0px;padding-left:0px;">
                   <span>{{lendform.nowdate}}</span>
                 </el-col>
               </el-form-item>
               <el-form-item label="归还日期" prop="backdate">
-                <el-col :md="20">
+                <el-col :md="20" style="padding-right:0px;padding-left:0px;">
                   <el-date-picker type="date" placeholder="选择日期" v-model="lendform.backdate"></el-date-picker>
                 </el-col>
               </el-form-item>
               <el-form-item label="借阅数量" prop="bookstock">
-                <el-col :md="20">
-                  <el-input-number v-model="lendform.bookstock" @change="lengnumChange" :min=stockmin :max=stockmax label="描述文字"></el-input-number>
+                <el-col :md="20" style="padding-right:0px;padding-left:0px;">
+                  <el-input-number v-model="lendform.bookstock" @change="lengnumChange" :min="stockmin" :max="stockmax" label="描述文字"></el-input-number>
                 </el-col>
               </el-form-item>
             </el-form>
@@ -113,20 +113,7 @@ export default {
       page2:1,
       limit:10,
       borrowsbook:[], //借阅记录数组
-      booksDetail:[{
-      bookid:'9787040396638',
-      bookname:'小哇昂子',
-      stocknum:5,
-      },
-      {
-        bookid:'9787300104591',
-        bookname:'小王子',
-        stocknum:2,
-      },{
-        bookid:'9787559416568',
-        bookname:'小青蛙啊',
-        stocknum:5,
-      }], //图书信息数组
+      booksDetail:[], //图书信息数组
       loading:false,
       borrowtableTrue:false, //借阅记录状态
       booktableTrue:false, //图书信息状态
@@ -144,10 +131,17 @@ export default {
         nowdate:'',
         backdate:'',
         bookstock:1,
+        bookUuid:'',
+
       },
       //库存最大数和最小数
       stockmax:0,
       stockmin:1,
+      lendrules:{
+        backdate:[
+          { type: 'date', required: true, message: '请选择归还日期', trigger: 'change' }
+        ]
+      }
     }
   },
   components: {},
@@ -171,10 +165,10 @@ export default {
       this.total1=0;
       this.page1=1;
       if(this.readers.readerId ==""){
-        this.$message.error({showClose:true,message:'请录入读者编号',duration:1500});
-      }else{
+        this.$message.error({showClose:true,message:'请录入读者编号进行查看',duration:1500});
         // this.recordsearch();
-        this.borrowtableTrue=true;
+      }else{
+        this.recordsearch();
       }
     },
     //借阅记录查询列表事件
@@ -183,16 +177,16 @@ export default {
       let params={
         page:that.page1,
         limit:10,
-        name:that.readers.readerId
+        userid:that.readers.readerId,
+        type:true
       };
       that.loading=true;
       API.borrowrecordList(params).then((result)=>{
-        console.log(result)
          that.loading=false;
          if(result && result.status === "101"){
-          // that.total1= result.data.count;
-          // that.pollbooks=result.data.data;
-          // that.borrowtableTrue=true;
+          that.total1= result.data.count;
+          that.borrowsbook=result.data.data;
+          that.borrowtableTrue=true;
          }
       },(err)=>{
         that.loading=false;
@@ -206,8 +200,13 @@ export default {
     bookerSearch(){
       this.total2=0;
       this.page2=1;
-      this.booktableTrue=true;
-      // this.booksearch();
+      if(this.books.bookid =="" ){
+        this.$message.error({showClose:true,message:'请录入图书编码或图书名称进行查询',duration:1500});
+        // this.recordsearch();
+      }else{
+         this.booksearch();
+      }
+     
     },
     //图书信息查询按钮事件
     booksearch(){
@@ -221,9 +220,10 @@ export default {
       API.borrowbookList(params).then((result)=>{
         console.log(result)
          if(result && result.status === "101"){
-          // that.total1= result.data.count;
-          // that.pollbooks=result.data.data;
-          // that.borrowtableTrue=true;
+          that.total1= result.data.count;
+          that.booksDetail=result.data.data;
+          that.booktableTrue=true;
+          // this.$message.success({showClose:true,message:'查找图书信息成功',duration:1500});
          }
       },(err)=>{
         that.$message.error({showClose:true,message:err.toString(),duration:2000});
@@ -235,23 +235,42 @@ export default {
 
     //图书信息表格打开图书借出操作
     borrowDialog:function(index,row){
-      this.stockmax=row.stocknum
+      this.stockmax=row.bookRemain;
       this.lendform = {
           backdate:'',
           nowdate:util.formatDate.format(new Date(), 'yyyy-MM-dd'),
-          bookstock:row.stocknum
+          bookstock:row.bookRemain,
+          bookUuid:row.bookUuid
       };
       this.lendFormVisible=true;
     },
     //图书信息表格借出弹框提交按钮操作
     lendSubmit(){
       let that=this;
-
-      let para = Object.assign({}, that.lendform);
-      para.backdate = (!para.backdate || para.backdate === '') ? '' : util.formatDate.format(new Date(para.backdate), 'yyyy-MM-dd');
-      that.$message.success({showClose:true,message:"借出成功",duration:2000});
-      console.log(para)
-      that.lendFormVisible=false;
+      this.$refs.lendform.validate((valid)=>{
+        if(valid){
+          let params={
+            bookUuid:that.lendform.bookUuid,
+            appointedDate:that.lendform.backdate,
+            lendNum:that.lendform.bookstock,
+            idCard:that.readers.readerId
+          }
+          params.appointedDate = (!params.appointedDate || params.appointedDate === '') ? '' : util.formatDate.format(new Date(params.appointedDate), 'yyyy-MM-dd');
+          API.lendbook(params).then((result)=>{
+            console.log(result)
+            if(result && result.status === "101"){
+              that.lendFormVisible=false;
+              this.$message.success({showClose:true,message:'图书借出成功',duration:1500});
+              that.readerSearch();
+              that.bookerSearch();
+            }
+          },(err)=>{
+            that.$message.error({showClose:true,message:err.toString(),duration:2000});
+          }).catch((error)=>{
+            that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+          })
+        }
+      })
     },
     //图书借出数量改变
     lengnumChange(val){

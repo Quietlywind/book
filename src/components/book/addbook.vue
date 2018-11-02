@@ -1,13 +1,13 @@
 <template>
   <div >
-    <el-row>
+    <!-- <el-row>
         <el-col :md="24" class="warp-breadcrum">  
           <el-breadcrumb separator="/">
             <el-breadcrumb-item :to="{ path: '/' }"><b>首页</b></el-breadcrumb-item>
             <el-breadcrumb-item>新书上架</el-breadcrumb-item>
           </el-breadcrumb>
         </el-col>
-    </el-row>
+    </el-row> -->
     <el-row style="width:100%">
       <div class="wrap-center" style="width:50%;margin:0 auto;">
           <div style="padding:10px 0px;border-bottom: 1px solid #ccc;width:100%;font-size:18px;text-align:center;">
@@ -27,12 +27,10 @@
               <el-col :md="16" class="newbookdiv">
                 <el-form-item label="图书类别" prop="bookregion">
                   <el-select style="width:100%;" v-model="newbook.bookregion" placeholder="请选择" clearable>
-                      <el-option label="请选择" value=""></el-option>
-                      <el-option v-for="item in bookCategory" :value='item.value' :key="item.index">
-                      </el-option>
-                      <!-- <el-option v-for="item in bookcategory" :value='item.id' :key="item.id" :label="item.mangeName">
+                    <el-option label="请选择" value=""></el-option>
+                    <el-option v-for="item in bookcategory" :value='item.id' :key="item.id" :label="item.mangeName">
                         {{item.mangeName}}
-                      </el-option> -->
+                    </el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
@@ -48,19 +46,21 @@
               </el-col>
               <el-col :md="16" class="newbookdiv">
                   <div style="width:50%;display: inline-block;">
-                    <el-form-item label="图书书架" prop="bookshelf">
-                      <el-select  v-model="newbook.bookshelf" placeholder="请选择" clearable>
+                    <el-form-item label="层数" prop="bookshelfnum">
+                      <el-select  v-model="newbook.bookshelfnum" placeholder="请选择" clearable>
                           <el-option label="请选择" value=""></el-option>
-                          <el-option v-for="item in bookCategory" :value='item.value' :key="item.index">
+                          <el-option v-for="item in bookshelfnum" :value='item.id' :key="item.index" :label="item.shelfnum">
+                            {{item.shelfnum}}
                           </el-option>
                       </el-select>
                     </el-form-item>
                   </div>
                   <div style="width:50%;float: left;">
-                    <el-form-item label="层数" prop="bookshelfnum">
-                      <el-select  v-model="newbook.bookshelfnum" placeholder="请选择" clearable>
+                    <el-form-item label="图书书架" prop="bookshelf">
+                      <el-select  v-model="newbook.bookshelf" placeholder="请选择" clearable>
                           <el-option label="请选择" value=""></el-option>
-                          <el-option v-for="item in bookCategory" :value='item.value' :key="item.index">
+                          <el-option v-for="item in bookshelfname" :value='item.id' :key="item.index" :label="item.shelfname">
+                              {{item.shelfname}}
                           </el-option>
                       </el-select>
                     </el-form-item>
@@ -80,7 +80,6 @@ import API from '../../api/api_book';
 export default {
   data() {
     return {
-
         newbook:{
           bookid:'',
           bookname:'',
@@ -91,34 +90,9 @@ export default {
           bookshelfnum:''
         },
         //模拟下拉数据-图书类别
-        bookCategory:[
-            {
-            name:'小说',
-            value:'小说'
-            },
-            {
-            name:'军事',
-            value:'军事'
-            },
-            {
-            name:'心理',
-            value:'心理'
-            },
-            {
-            name:'儿童',
-            value:'儿童'
-            },
-            {
-            name:'文艺',
-            value:'文艺'
-            },
-            {
-            name:'哲学',
-            value:'哲学'
-            },
-        ],
-        layerNum:[], //层数数组
-        bookshelf:[], //图书书架数组
+        bookcategory:[],
+        bookshelfname:[], //图书书架
+        bookshelfnum:[],  //层数
         newbookRules:{
           bookid:[
             {required:true,message:"请输入图书编号",trigger:'blur'}
@@ -152,39 +126,48 @@ export default {
   watch:{},
   computed:{},
   methods:{
-    //新书上架保存按钮
-    addbook(){
-      let that=this;
-      that.$refs.newbook.validate((valid)=>{
-        if(valid){
-          let para=Object.assign({},this.newbook);
-          API.addbook(para).then((result)=>{
-              console.log(result)
-              if(result && result.status === "101"){
-                that.$message.success({showClose: true, message: '保存成功', duration: 2000});
+
+    //新书上架保存提交
+    addbook:function(){
+        let that = this;
+        this.$refs.newbook.validate((valid) => {
+          if (valid) {
+            let para = {
+              bookUuid:that.newbook.bookid,
+              bookName:that.newbook.bookid,
+              bookCategory:that.newbook.bookregion,
+              bookPublisher:that.newbook.bookpress,
+              bookPrice:that.newbook.bookprice,
+              shelfName:that.newbook.bookshelf,
+              shelfNum:that.newbook.bookshelfnum,
+            }
+            console.log(para)
+            API.addbookstock(para).then(function (result) {
+              if (result && result.status === "101") {
+                that.$message.success({showClose: true, message: '新书上架成功', duration: 2000});
                 that.$refs['newbook'].resetFields();
-              }else{
-                that.$message.error({showClose: true, message: '保存失败', duration: 2000});
+              } else {
+                that.$message.error({showClose: true, message: '新书上架失败', duration: 2000});
               }
-            },(err)=>{
-                that.loading=false;
+            }, function (err) {
               that.$message.error({showClose: true, message: err.toString(), duration: 2000});
-            }).catch((err)=>{
-              that.loading = false;
+            }).catch(function (error) {
+              console.log(error);
               that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
-            })
-        }
-      })
+            });
+          }
+        });
     },
 
     //查询图书类别
-    //记录查询页请求图书类别
+    //新书上架页请求图书类别
     searchbookcategory(){
       let that=this;
       let params={
         mangeType:"book_type"
       };
       API.setshelf(params).then((result)=>{
+        console.log(result.data)
         if (result && result.status === "101") {
             that.bookcategory=result.data;
         } else {
@@ -198,10 +181,40 @@ export default {
         that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
       })
     },
+    //初始化图书书架数据
+    searchbookshelf(){
+      let that=this;
+      let params={
+        mangeType:"shelfs"
+      };
+      API.setshelf(params).then((result)=>{
+        if (result && result.status === "101") {
+            for(var i=0;i<result.data[0].mangeRemark1;i++){
+              that.bookshelfname.push({
+                id:(i+1),
+                shelfname:"第"+(i+1)+"个书架"
+              })
+            }
+            for(var j=0;j<result.data[0].mangeRemark2;j++){
+              that.bookshelfnum.push({
+                id:(j+1),
+                shelfnum:"第"+(j+1)+"层"
+              })
+            }  
+        } else {
+          that.$message.error({showClose: true, message: '请求书架信息失败', duration: 2000});
+        }
+      },(err)=>{
+        that.$message.error({showClose:true,message:err.toString(),duration:2000});
+      }).catch((error)=>{
+        that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+      })
+    },
   },
   created(){},
   mounted(){
-
+    this.searchbookcategory();
+    this.searchbookshelf();
   }
 }
 </script>

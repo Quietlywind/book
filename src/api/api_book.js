@@ -68,16 +68,49 @@ export default {
   },
   //借阅图书页面查询图书信息列表(通过page分页)
   borrowbookList: params => {
-    return API.POST('/info/record/list', params)
+    return API.POST('/info/books/list', params)
   },
   //借阅图书页面借出操作
   lendbook: params => {
-    return API.POST('/info/record/list', params)
+    return API.POST('/info/record/lend', params)
+  },
+  //图书库存页面查询图书库存列表信息(通过page分页)
+  stockbookList: params => {
+    return API.POST('/info/books/list', params)
+  },
+  //图书库存页面新增图书数据
+  addbookstock: params => {
+    return API.POST('/info/books/add', params)
+  },
+  //图书库存页面修改图书数据
+  editbookstock: params => {
+    return API.POST('/info/books/update', params)
+  },
+  //图书库存页面处理图书数据
+  bookdeal: params => {
+    return API.POST('/info/bookDeal/add', params)
+  },
+  //图书库存页面批量修改图书数据
+  bookbatch: params => {
+    return API.POST('/info/books/updates', params)
+  },
+  //首页图书处理弹框列表数据信息
+  dealtipList : params =>{
+    return API.POST('/info/bookDeal/list',params)
+  },
+  //首页列表选项数据信息
+  indextabList : params =>{
+    return API.POST('/info/report/libInfoSort',params)
+  },
+  //首页数据展示请求
+  indexlibinfo : params =>{
+    return API.POST('/info/report/libInfo',params)
   },
 
 
 
-  
+
+
 
   //查询获取book列表(通过page分页)
   findList: params => {

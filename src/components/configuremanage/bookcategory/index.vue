@@ -56,21 +56,23 @@ export default {
     //关闭tag事件
     handleClose(tag) {
       let that=this;
-      let params={
-        mangeType:"book_type",
-        id:tag
-      }
-      API.delshelfcategory(params).then((result)=>{
-        if(result && result.status === "101"){
-          that.$message.error({showClose:true,message:"删除图书类别成功",duration:2000});
-          that.search();
-        }
-      },(err)=>{
-        that.loading=false;
-        that.$message.error({showClose:true,message:err.toString(),duration:2000});
-      }).catch((error)=>{
-        that.loading=false;
-        that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+      this.$confirm('是否删除该图书类别?', '提示', {type: 'warning'}).then(() => {
+          let params={
+            mangeType:"book_type",
+            id:tag
+          }
+        API.delshelfcategory(params).then((result)=>{
+          if(result && result.status === "101"){
+            that.$message.error({showClose:true,message:"删除图书类别成功",duration:2000});
+            that.search();
+          }
+        },(err)=>{
+          that.loading=false;
+          that.$message.error({showClose:true,message:err.toString(),duration:2000});
+        }).catch((error)=>{
+          that.loading=false;
+          that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+        })
       })
     },
     //显示新增文本框

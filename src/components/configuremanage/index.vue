@@ -1,13 +1,13 @@
 <template>
   <div class="page">
-      <el-row class="warp">
+      <!-- <el-row class="warp">
         <el-col :span="24" class="warp-breadcrum">  
           <el-breadcrumb separator="/">
             <el-breadcrumb-item :to="{ path: '/' }"><b>首页</b></el-breadcrumb-item>
             <el-breadcrumb-item>配置管理</el-breadcrumb-item>
           </el-breadcrumb>
         </el-col>
-      </el-row>
+      </el-row> -->
       <el-row class="setmanange">
         <ul>
           <li @click="toggleTab(index,tab.path)" v-for="(tab,index) in tabs" :key="index" :class="{active:active === index}">
@@ -98,7 +98,7 @@ export default {
 }
 .categoryBox{
   padding:30px;
-  margin: 30px 10% 0 40px;
+  margin: 30px 10% 30px 40px;
   box-shadow: 2px 1px 10px 1px rgba(0,0, 0, .4);
 }
 </style>

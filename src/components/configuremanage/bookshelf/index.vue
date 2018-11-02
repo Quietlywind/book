@@ -67,7 +67,7 @@ export default {
             that.editForm.shelfName=result.data[0].mangeRemark1;
             that.editForm.shelfNum=result.data[0].mangeRemark2;
         } else {
-          that.$message.error({showClose: true, message: '新增失败', duration: 2000});
+          that.$message.error({showClose: true, message: '请求书架信息失败', duration: 2000});
         }
       },(err)=>{
         that.loading=false;

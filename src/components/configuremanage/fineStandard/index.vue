@@ -6,7 +6,7 @@
               <thead>
                 <tr>
                   <th>罚金类型</th>
-                  <th>罚金标准</th>
+                  <th style="text-align:center;">罚金标准</th>
                   <th>操作</th>
                 </tr>
               </thead>
@@ -16,13 +16,14 @@
                   <td>
                      <el-col :span="24" style="padding: 5px;">
                        <span>逾期天数&lt;=</span>
-                       <el-input size="mini" style="width:30px;" v-model="commonly.overdueday"></el-input>天，
-                       <span>逾期罚金=逾期天数*</span>
-                       <el-input size="mini" style="width:30px;" v-model="commonly.overduerate1"></el-input>%
-                       <span>，其余 逾期罚金=逾期天数*</span>
-                       <el-input size="mini" style="width:30px;" v-model="commonly.overduerate2"></el-input>%
+                       <el-input size="mini" style="width:40px;padding:0px;color:red;" v-model="commonly.overdueday"></el-input>
+                       <span>天，逾期罚金=逾期天数*</span>
+                       <el-input size="mini" style="width:40px;" v-model="commonly.overduerate1"></el-input>
+                       <span>%，其余 逾期罚金=逾期天数*</span>
+                       <el-input size="mini" style="width:40px;" v-model="commonly.overduerate2"></el-input>
+                       <span>%</span>
                      </el-col>
-                     <el-col :span="24" style="padding: 5px;">
+                     <el-col :span="24" style="padding:5px;">
                        <span>最高罚金&lt;书的价格</span>
                      </el-col>
                   </td>
@@ -35,9 +36,9 @@
                   <td>
                     <el-col :span="24" style="padding: 5px;">
                        <span>一般损坏(书面不整洁),损坏罚金=</span>
-                       <el-input size="mini" style="width:30px;" v-model="serious.damagemin"></el-input>
+                       <el-input size="mini" style="width:40px;" v-model="serious.damagemin"></el-input>
                        <span>&lt;损坏罚金&lt;</span>
-                       <el-input size="mini" style="width:30px;" v-model="serious.damagemax"></el-input>
+                       <el-input size="mini" style="width:40px;" v-model="serious.damagemax"></el-input>
                      </el-col>
                      <el-col :span="24" style="padding: 5px;">
                        <span>严重损坏(页数缺少/页面乱涂),损坏罚金=书籍的价格，</span>
@@ -105,38 +106,92 @@ export default {
         that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
       })
     },
-    
+
     //逾期罚金标准修改事件
     overdue(){
-      let that=this;
-      that.loading=true;
-           let params={
-              mangeType:"attaint_overdue",
-              mangeRemark1:that.commonly.overdueday,
-              mangeRemark2:that.commonly.overduerate1,
-              mangeRemark3:that.commonly.overduerate2,
-            };
-           API.updateshelf(params).then((result)=>{
-             that.loading=false;
-            if(result && result.status === "101"){
-              that.$message.success({showClose: true, message: '修改成功', duration: 2000});
-              // that.search();
-            }else{
-              that.$message.error({showClose: true, message: '修改失败', duration: 2000});
-            }
-           },(err)=>{
-              that.loading=false;
-             that.$message.error({showClose: true, message: err.toString(), duration: 2000});
-           }).catch((err)=>{
-             that.loading = false;
-            that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
-           })
-    },
+        let that = this;
+        this.$confirm('是否修改逾期罚金标准?', '提示', {type: 'warning'}).then(() => {
+          that.loading=true;
+          let params={
+            mangeType:"attaint_overdue",
+            mangeRemark1:that.commonly.overdueday,
+            mangeRemark2:that.commonly.overduerate1,
+            mangeRemark3:that.commonly.overduerate2,
+          };
+          API.updateshelf(params).then((result)=>{
+            that.loading=false;
+          if(result && result.status === "101"){
+            that.$message.success({showClose: true, message: '修改成功', duration: 2000});
+          }else{
+            that.$message.error({showClose: true, message: '修改失败', duration: 2000});
+          }
+          },(err)=>{
+            that.loading=false;
+            that.$message.error({showClose: true, message: err.toString(), duration: 2000});
+          }).catch((err)=>{
+            that.loading = false;
+          that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+          })
+        }).catch(() => {
+          
+        });
+      },
+
+    //逾期罚金标准修改事件
+    // overdue(){
+    //   let that=this;
+    //   that.loading=true;
+    //       let params={
+    //         mangeType:"attaint_overdue",
+    //         mangeRemark1:that.commonly.overdueday,
+    //         mangeRemark2:that.commonly.overduerate1,
+    //         mangeRemark3:that.commonly.overduerate2,
+    //       };
+    //       API.updateshelf(params).then((result)=>{
+    //         that.loading=false;
+    //       if(result && result.status === "101"){
+    //         that.$message.success({showClose: true, message: '修改成功', duration: 2000});
+    //       }else{
+    //         that.$message.error({showClose: true, message: '修改失败', duration: 2000});
+    //       }
+    //       },(err)=>{
+    //         that.loading=false;
+    //         that.$message.error({showClose: true, message: err.toString(), duration: 2000});
+    //       }).catch((err)=>{
+    //         that.loading = false;
+    //       that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+    //       })
+    // },
     //损坏罚金标准修改事件
+    // damage(){
+    //   let that=this;
+    //   that.loading=true;
+    //        let para=Object.assign({},this.editForm);
+    //        let params={
+    //           mangeType:"attaint_overdue",
+    //           mangeRemark4:that.serious.damagemin,
+    //           mangeRemark5:that.serious.damagemax,
+    //         };
+    //        API.updateshelf(params).then((result)=>{
+    //          that.loading=false;
+    //         if(result && result.status === "101"){
+    //           that.$message.success({showClose: true, message: '修改成功', duration: 2000});
+    //         }else{
+    //           that.$message.error({showClose: true, message: '修改失败', duration: 2000});
+    //         }
+    //        },(err)=>{
+    //           that.loading=false;
+    //          that.$message.error({showClose: true, message: err.toString(), duration: 2000});
+    //        }).catch((err)=>{
+    //          that.loading = false;
+    //         that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+    //        })
+    // },
+  //损坏罚金标准修改事件
     damage(){
-      let that=this;
-      that.loading=true;
-           let para=Object.assign({},this.editForm);
+        let that = this;
+        this.$confirm('是否修改损坏罚金标准?', '提示', {type: 'warning'}).then(() => {
+          that.loading=true;
            let params={
               mangeType:"attaint_overdue",
               mangeRemark4:that.serious.damagemin,
@@ -156,8 +211,10 @@ export default {
              that.loading = false;
             that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
            })
-    }
-
+        }).catch(() => {
+          
+        });
+      },
   },
   created(){},
   mounted(){
@@ -167,12 +224,36 @@ export default {
 </script>
 <style lang="scss" >
 // scoped
-.finestandard tr td,.finestandard tr th{
-  border: 1px solid #333;
-}
-.finestandard .el-input__inner{
-    padding:0px;
+// .finestandard tr td,.finestandard tr th{
+//   border: 1px solid #333;
+// }
+// .finestandard .el-input__inner{
+//     padding:0px;
+//     color:red;
+//     border-color:#999;
+// }
+  table.finestandard{
+    border-width: 1px;
+    border-color: #666666;
+    border-collapse: collapse;
+  }
+  table.finestandard thead th{
+    border-width: 1px;
+    padding: 8px;
+    border-style: solid;
+    border-color: #666666;
+    background-color: #dedede;
+  }
+  table.finestandard tbody td{
+    border-width: 1px;
+    padding: 8px;
+    border-style: solid;
+    border-color: #666666;
+    background-color: #ffffff;
+  }
+  .finestandard .el-input__inner{
+    padding:0 0 0 5px;
     color:red;
-    border-color:#999;
-}
+    font-size: 16px;
+  }
 </style>

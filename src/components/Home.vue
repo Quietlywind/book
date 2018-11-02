@@ -19,8 +19,9 @@
             <!-- <el-dropdown-item>
               <div @click="jumpTo('/user/profile')"><span style="color: #555;font-size: 14px;">个人信息</span></div>
             </el-dropdown-item> -->
+            <!-- @click="jumpTo('/user/changepwd')" -->
             <el-dropdown-item>
-              <div @click="jumpTo('/user/changepwd')"><span style="color: #555;font-size: 14px;">修改密码</span></div>
+              <div ><span style="color: #555;font-size: 14px;">修改密码</span></div>
             </el-dropdown-item>
             <el-dropdown-item divided @click.native="logout">退出登录</el-dropdown-item>
           </el-dropdown-menu>
@@ -30,7 +31,7 @@
         <!-- <el-badge value="1">
           
         </el-badge> -->
-         <i class="el-icon-bell"></i>
+         <i class="el-icon-bell"></i><span>逾期通知</span>
        <!-- 逾期通知 -->
       </div>
     </el-col>
@@ -74,7 +75,7 @@
             </transition>
           </el-col>
           <!-- 逾期通知界面 -->
-          <el-dialog title="" fullscreen=true :visible.sync ="overdueVisible" :close-on-click-modal="false" style="width:100%;">
+          <el-dialog title="" fullscreen :visible.sync ="overdueVisible" :close-on-click-modal="false" style="width:100%;">
               <overduenotice></overduenotice>
           </el-dialog>
         </div>
@@ -287,6 +288,7 @@
       flex: 1;
       overflow-y: auto;
       padding: 10px;
+      padding-top:20px;
       padding-bottom: 1px;
       .content-wrapper {
         background-color: #fff;

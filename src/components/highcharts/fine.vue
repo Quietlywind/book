@@ -1,26 +1,34 @@
 <template>
   <div class="wrapper">
       <el-row :gutter="20">
-        <el-col :md="24">
+        <el-col :md="24" class="toolbar_top" style="margin-bottom:20px;">
             <el-form :model="fines" ref="fines" :inline="true" size="small">
                 <el-form-item>
-                    <el-input v-model="fines.bookname" placeholder="请输入书名/读者编号/姓名/电话进行查询" autocomplete="off"></el-input>
+                    <el-input v-model="fines.bookname" placeholder="请输入书名" @keyup.enter.native="onSubmit"></el-input>
                 </el-form-item>
-                <el-form-item label="罚金类型" >
-                    <el-select v-model="fines.finetype" placeholder="请选择罚金类型">
+                <el-form-item label="图书类型">
+                    <el-select v-model="fines.bookCategory" placeholder="请选择罚金类型">
                         <el-option label="请选择" value=""></el-option>
-                        <el-option v-for="item in finestype" :value='item.value' :key="item.index" :label="item.name">
+                        <el-option v-for="item in bookCategory" :value='item.id' :key="item.id" :label="item.mangeName">
+                            {{item.mangeName}}
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="处理类型:" prop="dealType">
+                    <el-select v-model="fines.dealType" placeholder="请选择">
+                        <el-option label="请选择" value=""></el-option>
+                        <el-option v-for="item in handlebooks" :value='item.val' :key="item.val" :label="item.name">
                             {{item.name}}
                         </el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="缴纳日期">
+                <el-form-item label="处理时间">
                     <el-col :span="8">
                         <el-date-picker type="date" placeholder="选择日期" v-model="fines.paydate1" style="width: 100%;"></el-date-picker>
                     </el-col>
                     <el-col class="line" :span="1">-</el-col>
                     <el-col :span="8">
-                    <el-time-picker type="fixed-time" placeholder="选择时间" v-model="fines.paydate1" style="width: 100%;"></el-time-picker>
+                        <el-date-picker type="date" placeholder="选择时间" v-model="fines.paydate2" style="width: 100%;"></el-date-picker>
                     </el-col>
                 </el-form-item>
                 <el-form-item>
@@ -28,18 +36,36 @@
                 </el-form-item>
             </el-form>
         </el-col>
-        <el-table :data="finebooks" border size="small" highlight-current-row style="width: 100%;" v-loading="loading" element-loading-text="拼命加载中">
-            <el-table-column prop="id" label="图书名称" show-overflow-tooltip></el-table-column>
-            <el-table-column prop="name" label="读者编号" show-overflow-tooltip></el-table-column>
-            <el-table-column prop="region" label="读者姓名"></el-table-column>
-            <el-table-column prop="press" label="读者电话"></el-table-column>
-            <el-table-column prop="publishAt" label="罚金类型"></el-table-column>
-            <el-table-column prop="bookshelf" label="缴纳日期" sortable></el-table-column>
-            <el-table-column prop="price" label="缴纳金额" sortable></el-table-column>
-        </el-table>
+        <div v-loading="loading" element-loading-text="拼命加载中">
+            <el-table :data="finebooks" border size="small" highlight-current-row style="width: 100%;" >
+                <el-table-column prop="val1" label="图书编码" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="val2" label="图书名称" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="val3" label="图书类别" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="val4" label="出版社"></el-table-column>
+                <el-table-column prop="val5" label="书架">
+                    <template slot-scope="scope">
+                        <span >第{{scope.row.val5}}个书架</span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="val6" label="单价"></el-table-column>
+                <el-table-column prop="val7" label="处理数量">
+                    <template slot-scope="scope">
+                        <span >{{scope.row.val7}}本</span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="val8" label="处理时间" sortable></el-table-column>
+                <el-table-column prop="val9" label="处理类型" >
+                    <template slot-scope="scope">
+                        <span v-if="scope.row.val9==1">下架</span>
+                        <span v-else-if="scope.row.val9==2">遗失</span>
+                        <span v-else-if="scope.row.val9==3">变卖</span>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </div>
         <!--表格分页工具条-->
         <el-col :span="24" v-show="this.finebooks.length !=0">
-            <el-pagination background layout="prev, pager, next,jumper"  :page-size="10" :total="total" 
+            <el-pagination background layout="total,prev, pager, next,jumper"  :page-size="10" :total="total" 
             @current-change="handleCurrentChange" style="float:right;">
             </el-pagination>
         </el-col>
@@ -61,29 +87,29 @@ export default {
         loading:false,
         fines:{
             bookname:'',
-            userid:'',
-            username:'',
-            userphone:'',
-            finetype:'',
+            bookCategory:'',
             paydate1:'',
             paydate2:'',
+            dealType:'',
         },
+        finebooks:[], //处理列表数组
         //模拟下拉数据-罚金类型
-        finestype:[
-            {
-            name:'逾期罚款',
-            value:'1'
-            },
-            {
-            name:'损坏罚款',
-            value:'2'
-            },
-            {
-            name:'遗失',
-            value:'3'
-            }
+        bookCategory:[],
+        //处理类型数组
+        handlebooks:[
+          {
+            val:1,
+            name:'下架'
+          },
+          {
+            val:2,
+            name:'遗失'
+          },
+          {
+            val:3,
+            name:'变卖'
+          },
         ],
-        finebooks:[],
     }
   },
   watch:{},
@@ -106,21 +132,21 @@ export default {
         let params={
             page:that.page,
             limit:10,
-            bookname:this.fines.bookname,
-            userid:this.fines.bookname,
-            username:this.fines.bookname,
-            userphone:this.fines.bookname,
-            finetype:this.fines.finetype,
-            paydate1:this.fines.paydate1,
-            paydate2:this.fines.paydate2,
+            bookName:that.fines.bookname,
+            bookCategory:that.fines.bookCategory,
+            dealStart:that.fines.paydate1,
+            dealEnd:that.fines.paydate2,
+            dealType:that.fines.dealType,
         };
-        // that.loading=true;
-        that.loading=false;
-        API.finduser(params).then((result)=>{
+        params.dealStart = (!params.dealStart || params.dealStart === '') ? '' : util.formatDate.format(new Date(params.dealStart), 'yyyy-MM-dd');
+        params.dealEnd = (!params.dealEnd || params.dealEnd === '') ? '' : util.formatDate.format(new Date(params.dealEnd), 'yyyy-MM-dd');
+        that.loading=true;
+        API.dealtipList(params).then((result)=>{
+            console.log(result)
             that.loading=false;
-            if(result && result.data){
-                that.total= result.count;
-                that.users=result.data;
+            if(result && result.status === "101"){
+                that.total= result.data.count;
+                that.finebooks=result.data.data;
             }
         },(err)=>{
             that.loading=false;
@@ -130,15 +156,44 @@ export default {
             that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
         })
       },
-      
+
+      //记录查询页请求图书类别
+    searchbookcategory(){
+      let that=this;
+      let params={
+        mangeType:"book_type"
+      };
+      API.setshelf(params).then((result)=>{
+        if (result && result.status === "101") {
+            that.bookCategory=result.data;
+        } else {
+          that.$message.error({showClose: true, message: '暂无数据', duration: 2000});
+        }
+      },(err)=>{
+        that.loading=false;
+        that.$message.error({showClose:true,message:err.toString(),duration:2000});
+      }).catch((error)=>{
+        that.loading=false;
+        that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+      })
+    },
       
   },
   created(){},
   mounted(){
       this.onSubmit();
+      this.searchbookcategory();
   }
 }
 </script>
 <style lang="scss" scoped>
-.wrapper{}
+
+.wrapper .toolbar_top{
+    box-shadow: 1px 1px 5px 0 rgba(0,0, 0, .3);
+    padding:10px;
+    background-color:#fff;
+ }
+ .toolbar_top .el-form-item--mini.el-form-item,.toolbar_top .el-form-item--small.el-form-item{
+     margin-bottom: 0px;
+ }
 </style>

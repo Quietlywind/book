@@ -1,17 +1,17 @@
 <template>
   <el-row class="warp">
-    <el-col :span="24" class="warp-breadcrum">
+    <!-- <el-col :span="24" class="warp-breadcrum">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item :to="{ path: '/' }"><b>首页</b></el-breadcrumb-item>
         <el-breadcrumb-item>记录查询</el-breadcrumb-item>
       </el-breadcrumb>
-    </el-col>
+    </el-col> -->
     <el-col :span="24" class="warp-main" v-loading="loading" element-loading-text="拼命加载中">
       <!--工具条-->
       <el-col :span="24" class="toolbar top_toolbar1">
         <el-form :inline="true" :model="borrow" size='small' lable-width="0px">
           <el-form-item class="demo-form-inline">
-            <el-input  v-model="borrow.bookname" placeholder="请输入读者编号\书名进行查询" ></el-input>
+            <el-input  v-model="borrow.bookname" placeholder="请输入读者编号\书名进行查询" clearable></el-input>
           </el-form-item>
           <el-form-item label="图书类别" class="demo-form-inline">
                 <el-select  v-model="borrow.region" placeholder="请选择">

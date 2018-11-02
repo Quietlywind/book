@@ -1,13 +1,13 @@
 <template>
   <div class="page">
-    <el-row class="warp">
+    <!-- <el-row class="warp">
       <el-col :span="24" class="warp-breadcrum">  
         <el-breadcrumb separator="/">
           <el-breadcrumb-item :to="{ path: '/' }"><b>首页</b></el-breadcrumb-item>
           <el-breadcrumb-item>归还图书</el-breadcrumb-item>
         </el-breadcrumb>
       </el-col>
-    </el-row>
+    </el-row> -->
     <el-row :gutter="20">
       <el-col  class="warp-main">
         <el-col :span="14">
@@ -15,7 +15,7 @@
               <span class="title">归还登记</span>
               <el-form :inline="true" :model="readers" size='small' style="text-align: center;margin-bottom:5%;" lable-width="0px">
                 <el-form-item label="读者编号">
-                  <el-input  v-model="readers.readerId" placeholder="" ></el-input>
+                  <el-input  v-model="readers.readerId" placeholder="" clearable></el-input>
                 </el-form-item>
                 <el-form-item>
                   <el-button type="primary" @click="handleSearch">查找</el-button>
@@ -207,7 +207,8 @@ export default {
         fineborrowdate:'',
         finenewdate:'',
         finetype:'',
-        finenum:''
+        finenum:'',
+        fineid:'',
       },
       //罚金缴纳归还数量验证
       finebooksRules:{
@@ -269,8 +270,6 @@ export default {
         that.loading=false;
         that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
       })
-
-
     },
     //归还登记查询已还书记录
     returnsearch(){
@@ -307,6 +306,7 @@ export default {
       this.finebooks.finenewdate=util.formatDate.format(new Date(), 'yyyy-MM-dd');
       this.finebooks.finenum=row.val12;
       this.finebooks.finebookid=row.val2;
+      this.finebooks.fineid=row.val17;
       this.finetableTrue=true;
       this.getDays(util.formatDate.format(new Date(row.val6), 'yyyy-MM-dd'),util.formatDate.format(new Date(), 'yyyy-MM-dd'))
       this.finemodel(); //调用罚金标准计算公式
@@ -356,29 +356,30 @@ export default {
          loseMoney:that.damagebooks.damagemoney2,
          loseNum:that.damagebooks.damagenum,
          backNum:that.finebooks.finenum,
+         id:that.finebooks.fineid
       }
-      that.$refs.finebooks.validate((valid)=>{
-          if(valid){
+      // that.$refs.finebooks.validate((valid)=>{
+      //     if(valid){
 
-          }
-      })
-      
-      // API.recordback(params).then((result)=>{
-      //   console.log(result)
-      //   if(result && result.status === "101") {
-      //     that.$message.success({showClose:true,message:"还书成功",duration:2000});
-      //     this.borrowsearch();
-      //     this.returnsearch();
-      //   }else{
-      //     that.$message.success({showClose:true,message:"还书失败",duration:2000});
-      //     this.borrowsearch();
-      //     this.returnsearch();
-      //   }
-      // },(err)=>{
-      //   that.$message.error({showClose:true,message:err.toString(),duration:2000});
-      // }).catch((error)=>{
-      //   that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+      //     }
       // })
+      
+      API.recordback(params).then((result)=>{
+        console.log(result)
+        if(result && result.status === "101") {
+          that.$message.success({showClose:true,message:"还书成功",duration:2000});
+          this.borrowsearch();
+          this.returnsearch();
+        }else{
+          that.$message.success({showClose:true,message:"还书失败",duration:2000});
+          this.borrowsearch();
+          this.returnsearch();
+        }
+      },(err)=>{
+        that.$message.error({showClose:true,message:err.toString(),duration:2000});
+      }).catch((error)=>{
+        that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+      })
 
     },
 
@@ -445,7 +446,7 @@ export default {
 .finepayment-form .el-form-item__label{
     padding:0px;
 }
-.el-form-item--mini.el-form-item, .el-form-item--small.el-form-item{
+.finepayment-form .el-form-item--mini.el-form-item,.finepayment-form .el-form-item--small.el-form-item{
   margin-bottom:10px;
 }
 // .overduefine-form .el-form-item--mini.el-form-item, .el-form-item--small.el-form-item{

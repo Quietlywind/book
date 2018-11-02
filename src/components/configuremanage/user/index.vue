@@ -20,7 +20,7 @@
                     <el-button size="small" @click="batchimport" type="primary">批量导入</el-button>
                 </el-col>
             </el-col>
-            <el-col :span="24" style="margin-top:2%;">
+            <el-col :span="24" style="margin-top:2%;" class="usertable">
                 <!--列表-->
                 <el-table :data="users" size="small" border style="width: 100%;">
                   <el-table-column prop="userid" label="读者编号"></el-table-column>
@@ -28,7 +28,7 @@
                   <el-table-column label="读者性别">
                     <template slot-scope="scope">
                       <span v-if="scope.row.usersex==1">男</span>
-                      <span v-else >女</span>
+                      <span v-else-if="scope.row.usersex==0" >女</span>
                     </template>
                   </el-table-column>
                   <el-table-column prop="userphone" label="读者电话" ></el-table-column>
@@ -37,7 +37,7 @@
                     <template slot-scope="scope">
                       <el-button type="text" @click="editshowDiglog(scope.$index,scope.row)">编辑</el-button>
                       <!-- <el-button type="text" @click="deluser(scope.$index,scope.row)">删除</el-button> -->
-                      <el-switch @change="delchange(scope.$index,scope.row)" 
+                      <el-switch style="padding-bottom:5px;" @change="delchange(scope.$index,scope.row)" 
                        active-text="启用" inactive-text="禁用" active-color="#409EFF" inactive-color="#dadde5" 
                        v-model="scope.row.userstatus">
                       </el-switch>
@@ -46,13 +46,13 @@
                 </el-table>
                 <!--表格分页工具条-->
                 <el-col :span="24" v-show="this.users.length !=0">
-                    <el-pagination background layout="prev, pager, next,jumper"  :page-size="10" :total="total" 
+                    <el-pagination background layout="total, prev, pager, next,jumper"  :page-size="10" :total="total" 
                     @current-change="handleCurrentChange" style="float:right;">
                     </el-pagination>
                 </el-col>
             </el-col>
         </el-col>
-        <!--图书新增弹框-->
+        <!--用户新增弹框-->
         <!-- :rules="adduserForm" -->
           <el-dialog center title="新增" :visible.sync ="adduserFormVisible" :close-on-click-modal="false" width="30%">
             <el-form :model="adduserForm" size="small" label-width="80px"  ref="adduserForm">
@@ -88,7 +88,7 @@
               <el-button type="primary" size="small" @click.native="addSubmit" :loading="addLoading">提交</el-button>
             </div>
           </el-dialog>
-          <!--图书编辑弹框 :rules="edituserForm"-->
+          <!--用户编辑弹框 :rules="edituserForm"-->
           <el-dialog center title="编辑" :visible.sync ="edituserFormVisible" :close-on-click-modal="false" width="30%">
             <el-form :model="edituserForm" size="small" label-width="80px"  ref="edituserForm">
               <el-form-item label="读者编号" prop="userid">
@@ -124,7 +124,7 @@
             </div>
           </el-dialog>
            <!--批量导入用户信息弹框 :rules="edituserForm"-->
-          <el-dialog center title="批量导入用户" :visible.sync ="batchimportVisible" :close-on-click-modal="false" width="30%">
+          <el-dialog center title="批量导入用户" :close-on-press-escape="true" :visible.sync ="batchimportVisible" :close-on-click-modal="false" width="30%" :before-close="closeDialog">
             <div style="width: 80%;margin:auto;text-align: center;">
                 <span style="float:left;line-height:40px;padding-right: 30px;">文件上传</span>
                 <el-upload style="padding-right: 80px;margin-bottom: 10px;" ref="upload" accept=".xls,.xlsx" class="upload-demo" action="/info/userinfo/uploadUsers" 
@@ -132,9 +132,18 @@
                   <el-button  type="primary" icon="el-icon-upload">点击上传</el-button>
                 </el-upload>
                 <a href="../../../../static/userModule.xls" download="用户批量导入表">点击下载导入模板</a>
+                <div v-show="chongfu1" style="text-align: left;">
+                  
+                </div>
+                <div v-show="chongfu2" style="text-align: left;">
+                  
+                </div>
+                <div v-show="zhengque" style="text-align: left;">
+                  
+                </div>
             </div>
             <div slot="footer" class="dialog-footer">
-                <el-button size="small" @click.native="batchimportVisible = false">取消</el-button>
+                <el-button size="small" @click.native="batchqxdialog">取消</el-button>
                 <el-button type="primary" size="small" @click.native="uploadSubmit">提交</el-button>
               </div>
           </el-dialog>
@@ -179,6 +188,12 @@ export default {
         userdepartment:''
       },
       fileList:[], //文件上传临时数组
+      filerror:'', //文件上传错误数组
+      filerror1:'', //文件上传错误数组
+      filereal:'',
+      chongfu1:false,
+      chongfu2:false,
+      zhengque:false,
     }
   },
   watch:{},
@@ -202,6 +217,7 @@ export default {
         page:that.page,
         limit:10,
         userid:that.readerInput,
+        userdepartment:that.readerdepartment,
       };
       // that.loading=true;
       that.loading=false;
@@ -232,7 +248,16 @@ export default {
     //文件上传成功时的钩子
     uploadsuccess :function(response,file,fileList){
       console.log(response)
-      this.fileList=response.data.realList;
+      let that=this;
+      if(response.data.realList>0){
+        that.zhengque=true;
+        that.fileList=response.data.realList;
+      }
+      if(response.data.errorForDbList>0){
+
+      }
+      this.filerror= response.data.errorForDbList;
+      // this.filerror=response.data.errorForDbList;
     },
     //文件上传之前的钩子判断
     uploadbefore(file){
@@ -241,18 +266,20 @@ export default {
     //文件上传提交按钮
     uploadSubmit(){
       let that=this;
-      console.log(this.fileList.length)
       if(this.fileList.length > 0){
         let params={
           arrs:JSON.stringify(this.fileList)
         }
         that.loading=true;
         API.batchimportantuser(params).then((result)=>{
-            console.log(result)
             that.loading=false;
             if(result && result.status === "101"){
               that.$message.success({showClose: true, message: '文件上传成功', duration: 2000});
               that.batchimportVisible = false;
+              this.chongfu1=false;
+              this.chongfu2=false;
+              this.zhengque=false;
+              this.$refs.upload.clearFiles()
               that.search();
             }else if(result && result.status === "102"){
               that.$message.error({showClose: true, message: '文件上传失败,请重新上传', duration: 2000});
@@ -266,11 +293,26 @@ export default {
               that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
            })
       }else{
-        that.$message.error({showClose: true, message: '解析excel文件中有重复记录', duration: 2000});
+        that.$message.error({showClose: true, message: '无正确数据请修改后再上传', duration: 2000});
       }
       
     },
-
+    //关闭上传文件弹框的回调
+    closeDialog(){
+      this.batchimportVisible=false;
+      this.chongfu1=false;
+      this.chongfu2=false;
+      this.zhengque=false;
+      this.$refs.upload.clearFiles()
+    },
+    //批量导入文件取消对话框事件
+    batchqxdialog(){
+      this.batchimportVisible=false;
+      this.chongfu1=false;
+      this.chongfu2=false;
+      this.zhengque=false;
+      this.$refs.upload.clearFiles()
+    },
     //显示用户编辑界面
     editshowDiglog:function(index,row){
       this.edituserFormVisible=true;
@@ -284,7 +326,6 @@ export default {
            let para=Object.assign({},this.edituserForm);
            API.edituser(para).then((result)=>{
              that.loading=false;
-             console.log(result)
             if(result && result.status === "101"){
               that.$message.success({showClose: true, message: '修改成功', duration: 2000});
               that.$refs['edituserForm'].resetFields();
@@ -384,7 +425,6 @@ export default {
           let para={
             id:row.id
           }
-          console.log(para)
           API.deluser(para).then(function (result) {
             if (result && result.status === "101") {
               that.$message.success({showClose: true, message: '启用账户成功', duration: 1500});
@@ -398,12 +438,10 @@ export default {
           let para={
             id:row.id
           }
-          console.log(para)
           API.deluser(para).then(function (result) {
             if (result && result.status === "101") {
               that.$message.success({showClose: true, message: '禁用账户成功', duration: 1500});
             }else if (result && result.status === "107"){
-              console.log(12)
               that.$message.error({showClose: true, message: '该读者用户有未还书籍，不允许禁用', duration: 1500});
               that.search();
             }
@@ -421,6 +459,12 @@ export default {
   }
 }
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
 .wrapper{}
+.usertable .el-switch{
+    padding-bottom: 4px;
+  }
+  ul,li{
+    list-style: none;
+  }
 </style>
