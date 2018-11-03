@@ -1,15 +1,15 @@
 <template>
-  <el-row class="warp" >
+  <el-row class="warp">
     <!-- <el-col :span="24" class="warp-breadcrum">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item :to="{ path: '/' }"><b>首页</b></el-breadcrumb-item>
       </el-breadcrumb>
     </el-col> -->
     <el-col :span="24" class="warp-main">
-      <section class="chart-container">
-        <el-row>
-          <el-col :md="14" style="padding-top:0px;">
-               <el-row>
+      <!-- <section class="chart-container"> -->
+        <!-- <el-row> -->
+          <!-- <el-col :md="14" style="padding-top:0px;"> -->
+               <!-- <el-row>
                   <el-card :body-style="{ padding: '00px' }">
                     <el-col :md="8">
                       <div class="orange">
@@ -45,8 +45,8 @@
                       </div>
                     </el-col>
                   </el-card>
-               </el-row>
-               <el-row >
+               </el-row> -->
+               <!-- <el-row >
                     <el-col :md="12"  style="padding:0px;padding-top:30px;">
                       <el-card :body-style="{ padding: '00px' }" style="padding:0px !important;">
                         <div class="float_text">
@@ -54,7 +54,7 @@
                           <span>图书类别占比</span>
                         </div>
                         <div id="chartPie"></div>
-                        <!-- <x-charts :id="id1" :option="option1"></x-charts> -->
+                        <x-charts :id="id1" :option="option1"></x-charts>
                       </el-card>
                     </el-col>
                     <el-col :md="12" style="padding:0px;padding-top:30px;">
@@ -67,23 +67,23 @@
                             <a href="JavaScript:;">罚金详情<i class="el-icon-d-arrow-right"></i></a>
                           </div>
                           <div id="chartBar"></div>
-                        <!-- <x-charts :id="id2" :option="option2"></x-charts> -->
+                        <x-charts :id="id2" :option="option2"></x-charts>
                       </el-card>
                     </el-col>
-               </el-row>
-          </el-col>
-          <el-col :md="10" style="padding-top:0px;">
+               </el-row> -->
+          <!-- </el-col> -->
+          <!-- <el-col :md="10" style="padding-top:0px;">
             <el-card :body-style="{ padding: '00px' }" style="min-height:600px;padding: 20px 70px;">
                 <el-tabs v-model="activeName2" type="card" stretch @tab-click="handleClick">
                   <el-tab-pane label="图书借阅榜" name="first" >
                       <div v-for="(item,index) in books" :key="item.index" class="paihangbang">
-                        <!-- <span v-if="index===0"><img src="../assets/logo.png" style="padding-left:8px;"></span>
+                        <span v-if="index===0"><img src="../assets/logo.png" style="padding-left:8px;"></span>
                         <span v-else-if="index===1">
                           <img src="../assets/logo.png">
                         </span>
                         <span v-else-if="index ===2">
                           <img src="../assets/logo.png" >
-                        </span> -->
+                        </span>
                         <span style="margin-right:10%">{{index+1}}</span>
                         <span >{{item.name}}</span>
                         <span style="display:inline-block;float:right;">{{item.num}}次</span>
@@ -98,9 +98,75 @@
                 </el-tab-pane>
               </el-tabs>
             </el-card>
-          </el-col>
-         </el-row>
-      </section>
+          </el-col> -->
+         <!-- </el-row> -->
+      <!-- </section> -->
+      <el-row :gutter="10">
+        <el-col :xl="14" :lg="14" :md="14">
+            <div class="borderBox">
+              <el-row>
+                <el-col :xl="8" :lg="8" :md="8" style="padding: 0 20px;">
+                  <div class="orange">
+                      <p class="book_p">当前图书总量</p>
+                      <div class="booktotal" style="text-align:center;font-weight:bold;">
+                        <span style="font-size:35px;">{{remainNum}}</span>本
+                      </div>
+                      <div class="right_text" style="font-size: 14px;text-align: right;">
+                        <span>图书总数量{{libNum}}本</span>
+                      </div>
+                  </div>
+                </el-col>
+                <el-col :xl="8" :lg="8" :md="8" style="padding: 0 20px;">
+                  <div class="green" @click="overdueNotice">
+                    <p class="book_p">已借阅图书</p>
+                    <div class="booktotal" style="text-align:center;font-weight:bold;">
+                      <span style="font-size:35px;">{{loanNum}}</span>本
+                    </div>
+                    <div class="right_text" style="font-size: 14px;text-align: right;">
+                      <span>逾期未还图书{{overNum}}本</span>
+                    </div>
+                  </div>
+                </el-col>
+                <el-col :xl="8" :lg="8" :md="8" style="padding: 0 20px;">
+                  <div class="blue" @click="dealDetail">
+                    <p class="book_p">处理图书</p>
+                    <div class="booktotal" style="text-align:center;font-weight:bold;">
+                      <span style="font-size:35px;">{{dealNum}}</span>本
+                    </div>
+                    <div class="right_text" style="font-size: 14px;text-align: right;">
+                      <span>遗失图书{{loseNum}}本</span>
+                    </div>
+                  </div>
+                </el-col>
+              </el-row>
+            </div>
+            <div>
+              <el-row :gutter="10">
+                <el-col :xl="12" :lg="12" :md="12">
+                  <div class="borderBox_bottom">
+                    <div class="float_text">
+                      <div class="rectangle"></div>
+                      <span>图书类别占比</span>
+                    </div>
+                    <div id="chartPie" style="height:200px;"></div>
+                  </div>
+                </el-col>
+                <el-col :xl="12" :lg="12" :md="12">
+                  <div class="borderBox_bottom">
+                    <div id="chartBar" style="height:200px;"></div>
+                  </div>
+                </el-col>
+              </el-row>
+            </div>
+        </el-col>
+        <el-col :xl="10" :lg="10" :md="10">
+            <div class="borderBox" style="height:400px;">
+
+            </div>
+
+        </el-col>
+      </el-row>
+    </el-col>
       <!--罚金详情界面-->
       <el-dialog title="" fullscreen :visible.sync ="fineVisible" :close-on-click-modal="false" style="width:100%;">
           <fine-detail></fine-detail>
@@ -113,7 +179,6 @@
       <el-dialog title="" fullscreen :visible.sync ="overdueVisible" :close-on-click-modal="false" style="width:100%;">
           <overduenotice></overduenotice>
       </el-dialog>
-    </el-col> 
   </el-row>
 </template>
 <style lang="scss">
@@ -148,6 +213,7 @@
   .chart-container .el-col {
     padding: 30px 20px;
   }
+
   .orange{
     color:#fff;
     background-color: #F7A35C;
@@ -165,7 +231,12 @@
     box-shadow: 4px 3px 5px 0 rgba(0,0, 0, .3);
     cursor: pointer;
   }
-
+  .book_p{
+    margin:0px;
+    padding: 5px 0px 5px 5px;
+    font-size: 15px;
+    font-weight: 700;
+  }
   .booktotal{
     padding: 30px 0px;
     margin: 0px 20px;
@@ -219,6 +290,18 @@
     text-decoration: underline;
     color: #7CB5EC;
   }
+
+  .borderBox{
+    border: 1px solid #85CCC8;
+    background-color: #FEFEFE;
+    padding: 30px 0;
+  }
+  .borderBox_bottom{
+    border: 1px solid #85CCC8;
+    background-color: #FEFEFE;
+  }
+
+
 </style>
 
 <script>
@@ -290,6 +373,7 @@
         let that = this;
         let params = {};
         API.indexlibinfo(params).then(function (result) {
+          console.log(result)
           if (result && result.status === "101") {
               that.remainNum=result.data.remainNum;
               that.libNum=result.data.libNum;

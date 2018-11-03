@@ -86,7 +86,8 @@ export default {
             
       //     }
       // })
-      let para=Object.assign({},this.editForm);
+      this.$confirm('是否更新图书书架设置?', '提示', {type: 'warning'}).then(() => {
+          let para=Object.assign({},this.editForm);
             let params={
                 mangeType:that.shielfs,
                 mangeRemark1:para.shelfName,
@@ -95,18 +96,21 @@ export default {
             API.updateshelf(params).then((result)=>{
               that.loading=false;
               if(result && result.status === "101"){
-                that.$message.success({showClose: true, message: '修改成功', duration: 2000});
+                that.$message.success({showClose: true, message: '更新书架信息成功', duration: 2000});
                 that.search();
               }else{
-                that.$message.error({showClose: true, message: '修改失败', duration: 2000});
+                that.$message.error({showClose: true, message: '更新书架信息失败', duration: 2000});
               }
             },(err)=>{
                 that.loading=false;
               that.$message.error({showClose: true, message: err.toString(), duration: 2000});
             }).catch((err)=>{
               that.loading = false;
-              that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+              that.$message.error({showClose: true, message: '更新书架请求出现异常', duration: 2000});
             })  
+        }).catch(() => {
+          
+        });
     },
   },
   created(){},

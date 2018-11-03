@@ -13,24 +13,21 @@
       </div>
       <div class="topbar-account topbar-btn">
         <el-dropdown trigger="click">
-          <span class="el-dropdown-link userinfo-inner"><i class="iconfont icon-user"></i>您好！{{nickname}}<i
-            class="iconfont icon-down"></i></span>
+          <span class="el-dropdown-link userinfo-inner"><i class="iconfont icon-user"></i>您好！{{nickname}}
+          <i class="iconfont icon-down"></i></span>
           <el-dropdown-menu slot="dropdown">
             <!-- <el-dropdown-item>
               <div @click="jumpTo('/user/profile')"><span style="color: #555;font-size: 14px;">个人信息</span></div>
             </el-dropdown-item> -->
             <!-- @click="jumpTo('/user/changepwd')" -->
             <el-dropdown-item>
-              <div ><span style="color: #555;font-size: 14px;">修改密码</span></div>
+              <div @click="editpassDialog"><span style="color: #555;font-size: 14px;">修改密码</span></div>
             </el-dropdown-item>
             <el-dropdown-item divided @click.native="logout">退出登录</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
       <div class="topbar-account topbar-bell" @click="overdueNotice" style="cursor: pointer;">
-        <!-- <el-badge value="1">
-          
-        </el-badge> -->
          <i class="el-icon-bell"></i><span>逾期通知</span>
        <!-- 逾期通知 -->
       </div>
@@ -78,6 +75,24 @@
           <el-dialog title="" fullscreen :visible.sync ="overdueVisible" :close-on-click-modal="false" style="width:100%;">
               <overduenotice></overduenotice>
           </el-dialog>
+          <!-- 修改密码弹框 -->
+          <el-dialog id="editpassDiv" custom-class="editpassdiv" center title="修改密码" :visible.sync ="eidtpassVisible" :close-on-click-modal="false" >
+              <el-form style="text-align:center;"  :model="ruleForm" size="small" :inline="true" hide-required-asterisk status-icon :rules="rules" ref="ruleForm" label-width="80px" class="demo-ruleForm">
+                  <el-form-item label="旧密码" prop="oldPass">
+                    <el-input class="lg0" type="password" v-model="ruleForm.oldPass" clearable></el-input>
+                  </el-form-item>
+                  <el-form-item label="新密码" prop="nowPass">
+                    <el-input class="lg0" type="password" v-model="ruleForm.nowPass" clearable></el-input>
+                  </el-form-item>
+                  <el-form-item label="确认密码" prop="checkPass">
+                    <el-input class="lg0" type="password" v-model="ruleForm.checkPass" clearable></el-input>
+                  </el-form-item>
+                  <el-form-item style="padding-top:10px;">
+                    <el-button @click="resetForm('ruleForm')">重置</el-button>
+                    <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
+                  </el-form-item>
+              </el-form>
+          </el-dialog>
         </div>
       </section>
     </el-col>
@@ -106,12 +121,48 @@
       })
     },
     data () {
+      var validatePass = (rule,value,callback) =>{
+          if(value ===""){
+            callback(new Error('请输入新密码'));
+          }else{
+            if(this.ruleForm.checkPass !==''){
+              this.$refs.ruleForm.validateField('checkPass');
+            }
+            callback();
+          }
+      }
+      var validatePass2 = (rule,value,callback) =>{
+        if (value === '') {
+          callback(new Error('请再次输入密码'));
+        } else if (value !== this.ruleForm.nowPass) {
+          callback(new Error('两次输入密码不一致!'));
+        } else {
+          callback();
+        }
+      }
       return {
         defaultActiveIndex: "0",
         nickname: '',
         collapsed: false,
-        collapicon:false,
-        overdueVisible:false,
+        collapicon:false, 
+        overdueVisible:false, //逾期通知界面弹框
+        eidtpassVisible:false, //修改密码弹框状态
+        ruleForm:{
+          oldPass:'',
+          nowPass:'',
+          checkPass:'',
+        },
+        rules:{
+          oldPass:[
+            { required: true, message: '请输入旧密码', trigger: 'blur' },
+          ],
+          nowPass:[
+            {required:true, validator: validatePass, trigger: 'blur' }
+          ],
+          checkPass:[
+            {required:true, validator: validatePass2, trigger: 'blur' }
+          ],
+        },
       }
     },
     methods: {
@@ -150,6 +201,33 @@
       },
       overdueNotice(){
         this.overdueVisible=true;
+      },
+      //修改密码弹框
+      editpassDialog(){
+        let that=this
+        this.eidtpassVisible=true;
+        this.ruleForm={
+          oldPass:'',
+          nowPass:'',
+          checkPass:'',
+        };
+        this.$nextTick(function() {
+          that.$refs.ruleForm.resetFields();
+        })
+      },
+      //修改密码确认提交
+      submitForm(ruleForm) {
+        this.$refs.ruleForm.validate((valid) => {
+          if (valid) {
+           
+          } else {
+            
+            return false;
+          }
+        });
+      },
+      resetForm(ruleForm) {
+        this.$refs.ruleForm.resetFields();
       }
     },
     mounted() {
@@ -284,14 +362,15 @@
     }
 
     .content-container {
-      background: #fff;
+      // background: #fff;
+      background-color: #f4f4f4;
       flex: 1;
       overflow-y: auto;
       padding: 10px;
       padding-top:20px;
       padding-bottom: 1px;
       .content-wrapper {
-        background-color: #fff;
+        // background-color: #fff;
         box-sizing: border-box;
       }
     }
@@ -306,3 +385,13 @@
     // }
   }
 </style>
+<style lang="scss">
+  .content-container  #editpassDiv .editpassdiv{
+      width:450px;
+      text-align: center;
+  }
+   #editpassDiv .editpassdiv .el-form .lg0{
+      width:222px;
+    }
+</style>
+

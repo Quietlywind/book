@@ -33,7 +33,7 @@
                   </el-table-column>
                   <el-table-column prop="userphone" label="读者电话" ></el-table-column>
                   <el-table-column prop="userdepartment" label="所属部门" ></el-table-column>
-                  <el-table-column label="操作" align="center">
+                  <el-table-column label="操作" width="180" align="center">
                     <template slot-scope="scope">
                       <el-button type="text" @click="editshowDiglog(scope.$index,scope.row)">编辑</el-button>
                       <!-- <el-button type="text" @click="deluser(scope.$index,scope.row)">删除</el-button> -->
@@ -53,33 +53,32 @@
             </el-col>
         </el-col>
         <!--用户新增弹框-->
-        <!-- :rules="adduserForm" -->
           <el-dialog center title="新增" :visible.sync ="adduserFormVisible" :close-on-click-modal="false" width="30%">
-            <el-form :model="adduserForm" size="small" label-width="80px"  ref="adduserForm">
+            <el-form :model="adduserForm" size="small" label-width="80px"  ref="adduserForm" :rules="adduserRules">
               <el-form-item label="读者编号" prop="userid">
-                <el-col :span="20">
-                  <el-input v-model="adduserForm.userid" auto-complete="off"></el-input>
+                <el-col :span="20" style="padding-left:0px;">
+                  <el-input v-model="adduserForm.userid" auto-complete="off" clearable></el-input>
                 </el-col>
               </el-form-item>
               <el-form-item label="读者姓名" prop="username">
-                <el-col :span="20">
-                  <el-input v-model="adduserForm.username" auto-complete="off"></el-input>
+                <el-col :span="20" style="padding-left:0px;">
+                  <el-input v-model="adduserForm.username" auto-complete="off" clearable></el-input>
                 </el-col>
               </el-form-item>
               <el-form-item label="读者性别" prop="usersex">
-                <el-col :span="20">
+                <el-col :span="20" style="padding-left:0px;">
                   <el-radio v-model="adduserForm.usersex" label="1">男</el-radio>
                   <el-radio v-model="adduserForm.usersex" label="0">女</el-radio>
                 </el-col>
               </el-form-item>
               <el-form-item label="读者电话" prop="userphone">
-                <el-col :span="20">
-                  <el-input v-model="adduserForm.userphone" auto-complete="off"></el-input>
+                <el-col :span="20" style="padding-left:0px;">
+                  <el-input v-model="adduserForm.userphone" auto-complete="off" clearable></el-input>
                 </el-col>
               </el-form-item>
               <el-form-item label="所属部门" prop="userdepartment">
-                <el-col :span="20">
-                  <el-input v-model="adduserForm.userdepartment" auto-complete="off"></el-input>
+                <el-col :span="20" style="padding-left:0px;">
+                  <el-input v-model="adduserForm.userdepartment" auto-complete="off" clearable></el-input>
                 </el-col>
               </el-form-item>
             </el-form>
@@ -88,33 +87,33 @@
               <el-button type="primary" size="small" @click.native="addSubmit" :loading="addLoading">提交</el-button>
             </div>
           </el-dialog>
-          <!--用户编辑弹框 :rules="edituserForm"-->
+        <!--用户编辑弹框  -->
           <el-dialog center title="编辑" :visible.sync ="edituserFormVisible" :close-on-click-modal="false" width="30%">
-            <el-form :model="edituserForm" size="small" label-width="80px"  ref="edituserForm">
+            <el-form :model="edituserForm" size="small" label-width="80px"  ref="edituserForm" :rules="edituserRules">
               <el-form-item label="读者编号" prop="userid">
-                <el-col :span="20">
-                  <el-input v-model="edituserForm.userid" auto-complete="off"></el-input>
+                <el-col :span="20" style="padding-left:0px;">
+                  <span>{{edituserForm.userid}}</span>
                 </el-col>
               </el-form-item>
               <el-form-item label="读者姓名" prop="username">
-                <el-col :span="20">
-                  <el-input v-model="edituserForm.username" auto-complete="off"></el-input>
+                <el-col :span="20" style="padding-left:0px;">
+                  <el-input v-model="edituserForm.username" auto-complete="off" clearable></el-input>
                 </el-col>
               </el-form-item>
               <el-form-item label="读者性别" prop="usersex">
-                <el-col :span="20">
+                <el-col :span="20" style="padding-left:0px;">
                   <el-radio v-model="edituserForm.usersex" label="1">男</el-radio>
                   <el-radio v-model="edituserForm.usersex" label="0">女</el-radio>
                 </el-col>
               </el-form-item>
               <el-form-item label="读者电话" prop="userphone">
-                <el-col :span="20">
-                  <el-input v-model="edituserForm.userphone" auto-complete="off"></el-input>
+                <el-col :span="20" style="padding-left:0px;">
+                  <el-input v-model="edituserForm.userphone" auto-complete="off" clearable></el-input>
                 </el-col>
               </el-form-item>
               <el-form-item label="所属部门" prop="userdepartment">
-                <el-col :span="20">
-                  <el-input v-model="edituserForm.userdepartment" auto-complete="off"></el-input>
+                <el-col :span="20" style="padding-left:0px;">
+                  <el-input v-model="edituserForm.userdepartment" auto-complete="off" clearable></el-input>
                 </el-col>
               </el-form-item>
             </el-form>
@@ -158,6 +157,26 @@ export default {
   components:{},
   props:{},
   data(){
+    const idCard=(rule,value,callback)=>{
+        let reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+        if(value === ''){
+          callback(new Error('读者编号不能为空'))
+        }else if(!reg.test(value)){
+          callback(new Error('请输入正确的读者编号'));
+        }else{
+          callback()
+        }
+    }
+    const phoneNumber=(rule,value,callback)=>{
+      if(value === ''){
+        callback(new Error('手机号码不能为空'))
+      }else if (value && (!(/^[1][34578]\d{9}$/).test(value) || !(/^[1-9]\d*$/).test(value) || value.length !== 11)) {
+          callback(new Error('手机号码不符合规范'))
+      } else {
+        callback()
+      }
+    }
+
     return {
       users:[],
       total:0,
@@ -177,6 +196,20 @@ export default {
           userphone:'',
           userdepartment:''
       },
+      edituserRules:{
+        // userid:[
+        //   {required: true, validator: idCard,trigger: 'blur' },
+        // ],
+        username:[
+          { required: true, message: '请输入读者姓名', trigger: 'blur' },
+        ],
+        userphone:[
+          {required: true, validator: phoneNumber,trigger: 'blur' },
+        ],
+        userdepartment:[
+          { required: true, message: '请输入所属部门', trigger: 'blur' },
+        ]
+      },
       //新增用户数据
       adduserFormVisible:false,//新增界面是否显示
       addLoading:false,
@@ -186,6 +219,20 @@ export default {
         usersex:'',
         userphone:'',
         userdepartment:''
+      },
+      adduserRules:{
+        userid:[
+          { required: true,validator: idCard,trigger: 'blur' },
+        ],
+        username:[
+          { required: true, message: '请输入读者姓名', trigger: 'blur' },
+        ],
+        userphone:[
+          { required: true,validator: phoneNumber,trigger: 'blur' },
+        ],
+        userdepartment:[
+          { required: true,required: true, message: '请输入所属部门', trigger: 'blur' },
+        ]
       },
       fileList:[], //文件上传临时数组
       filerror:'', //文件上传错误数组
@@ -315,24 +362,29 @@ export default {
     },
     //显示用户编辑界面
     editshowDiglog:function(index,row){
+      let that=this;
       this.edituserFormVisible=true;
       this.edituserForm=Object.assign({},row);
-      // this.$refs.edituserForm.clearValidate();
+      this.$nextTick(function() {
+          that.$refs.edituserForm.clearValidate();
+      })
     },
     //用户编辑界面提交
     editSubmit:function(){
       let that=this;
-      that.loading=true;
+        this.$refs.edituserForm.validate((valid)=>{
+         if(valid){
+           this.loading=true;
            let para=Object.assign({},this.edituserForm);
            API.edituser(para).then((result)=>{
              that.loading=false;
             if(result && result.status === "101"){
-              that.$message.success({showClose: true, message: '修改成功', duration: 2000});
-              that.$refs['edituserForm'].resetFields();
+              that.$message.success({showClose: true, message: '用户信息修改成功', duration: 2000});
+              that.$refs.edituserForm.resetFields();
               that.edituserFormVisible = false;
               that.search();
             }else{
-              that.$message.error({showClose: true, message: '修改失败', duration: 2000});
+              that.$message.error({showClose: true, message: '用户信息修改失败', duration: 2000});
             }
            },(err)=>{
               that.loading=false;
@@ -341,54 +393,60 @@ export default {
              that.loading = false;
             that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
            })
-      //  this.$refs.edituserForm.validate((valid)=>{
-      //    if(valid){
-           
-      //    }
-      //  }) 
+         }
+       })
     },
     //显示用户新增界面
     addshowDiglog:function(){
+      let that=this;
       this.adduserFormVisible = true;
         this.adduserForm = {
           userid:'',
           username:'',
-          usersex:'',
+          usersex:'1',
           userphone:'',
           userdepartment:''
         };
+        this.$nextTick(function() {
+          that.$refs.adduserForm.clearValidate();
+        })
+        
     },
     //用户新增界面提交
     addSubmit:function(){
       let that = this;
-      let para=Object.assign({},this.adduserForm);
-      let params={
-        userid:para.userid,
-        username:para.username,
-        usersex:para.usersex,
-        userphone:para.userphone,
-        userdepartment:para.userphone
-      };
-      API.adduser(params).then((result)=>{
-        that.loading=false;
-        if (result && result.status === "101") {
-          that.$message.success({showClose: true, message: '新增成功', duration: 2000});
-          that.$refs['adduserForm'].resetFields();
-          that.adduserFormVisible = false;
-          that.search();
-        } else if(result && result.status === "108"){
-          that.$message.error({showClose: true, message: '读者编号重复或已存在', duration: 2000});
-        }else if(result && result.status === "102"){
-          that.$message.error({showClose: true, message: '新增失败', duration: 2000});
-        }
-      },(err)=>{
-        that.loading=false;
-        that.$message.error({showClose:true,message:err.toString(),duration:2000});
-      }).catch((error)=>{
-        that.loading=false;
-        that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+      this.$refs.adduserForm.validate((valid) => {
+          if(valid){
+            that.loading=true;
+            let para=Object.assign({},this.adduserForm);
+            let params={
+              userid:para.userid,
+              username:para.username,
+              usersex:para.usersex,
+              userphone:para.userphone,
+              userdepartment:para.userphone
+            };
+            API.adduser(params).then((result)=>{
+              that.loading=false;
+              if (result && result.status === "101") {
+                that.$message.success({showClose: true, message: '新增成功', duration: 2000});
+                that.$refs['adduserForm'].resetFields();
+                that.adduserFormVisible = false;
+                that.search();
+              } else if(result && result.status === "108"){
+                that.$message.error({showClose: true, message: '读者编号重复或已存在', duration: 2000});
+              }else if(result && result.status === "102"){
+                that.$message.error({showClose: true, message: '新增失败', duration: 2000});
+              }
+            },(err)=>{
+              that.loading=false;
+              that.$message.error({showClose:true,message:err.toString(),duration:2000});
+            }).catch((error)=>{
+              that.loading=false;
+              that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+            })
+          }
       })
-      
     },
     //删除用户
     // deluser:function(index,row){

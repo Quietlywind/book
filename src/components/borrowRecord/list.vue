@@ -46,7 +46,7 @@
       </el-col>
       <!--列表-->
       <el-table :data="borrowBooks" tooltip-effect="dark" border highlight-current-row  style="width: 100%;" empty-text="暂无记录">
-        <el-table-column prop="val1" label="读者编号"></el-table-column>
+        <el-table-column prop="val1" label="读者编号" show-overflow-tooltip></el-table-column>
         <el-table-column prop="val2" label="图书编码" show-overflow-tooltip></el-table-column>
         <el-table-column prop="val3" label="图书名称" show-overflow-tooltip></el-table-column>
         <el-table-column prop="val4" label="图书类别"></el-table-column>

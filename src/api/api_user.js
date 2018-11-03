@@ -22,4 +22,9 @@ export default {
   findList: params => {
     return API.GET('/api/v1/users', params)
   },
+
+  //修改个人密码信息
+  editPass: params =>{
+    return API.POST('/info/user/edit', params)
+  }
 }

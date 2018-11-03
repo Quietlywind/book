@@ -235,7 +235,11 @@ export default {
 
     //图书信息表格打开图书借出操作
     borrowDialog:function(index,row){
+      let that=this;
       this.stockmax=row.bookRemain;
+      this.$nextTick(function() {
+          that.$refs.lendform.clearValidate();
+      })
       this.lendform = {
           backdate:'',
           nowdate:util.formatDate.format(new Date(), 'yyyy-MM-dd'),
@@ -263,6 +267,9 @@ export default {
               this.$message.success({showClose:true,message:'图书借出成功',duration:1500});
               that.readerSearch();
               that.bookerSearch();
+            }else if(result && result.status === "102"){
+              // that.lendFormVisible=false;
+              that.$message.error({showClose:true,message:result.message,duration:1500});
             }
           },(err)=>{
             that.$message.error({showClose:true,message:err.toString(),duration:2000});

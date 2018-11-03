@@ -106,7 +106,7 @@ export default {
   indexlibinfo : params =>{
     return API.POST('/info/report/libInfo',params)
   },
-
+  
 
 
 

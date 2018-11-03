@@ -15,7 +15,9 @@
           </li>
         </ul>
         <div class="categoryBox">
-          <bookcategory :is="currentTab"></bookcategory>
+          <transition name="fade" mode="out-in" appear>
+            <component :is="currentTab"></component>
+          </transition>
         </div>
       </el-row>
   </div>

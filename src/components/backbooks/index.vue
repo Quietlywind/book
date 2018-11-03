@@ -13,8 +13,8 @@
         <el-col :span="14">
           <div class="method_wrap">
               <span class="title">归还登记</span>
-              <el-form :inline="true" :model="readers" size='small' style="text-align: center;margin-bottom:5%;" lable-width="0px">
-                <el-form-item label="读者编号">
+              <el-form :inline="true" :model="readers" ref="readers" :rules="readersrules" size='small' style="text-align: center;margin-bottom:5%;" label-width="80px">
+                <el-form-item label="读者编号" prop="readerId">
                   <el-input  v-model="readers.readerId" placeholder="" clearable></el-input>
                 </el-form-item>
                 <el-form-item>
@@ -127,7 +127,11 @@
       </div>
       <div style="margin-top:3%;padding: 0 10px;">
           <el-table :data="borrowrecord"  size="mini" border highlight-current-row empty-text="暂无记录"  style="width: 100%;">
-              <el-table-column prop="val3" label="图书书名"></el-table-column>
+              <el-table-column prop="val3" label="图书书名">
+                <template slot-scope="scope">
+                  <el-button  type="text" @click="checkpunish(scope.$index,scope.row)">{{scope.row.val3}}</el-button>
+                </template>
+              </el-table-column>
               <el-table-column prop="val4" label="图书类别"></el-table-column>
               <el-table-column prop="val11" label="出版社"></el-table-column>
               <el-table-column prop="val5" label="借阅日期" sortable></el-table-column>
@@ -140,21 +144,104 @@
           </el-pagination>
       </div>
     </el-row>
-    <!-- 图书遗失弹框 -->
-    <!-- <el-dialog center title="" :visible.sync ="lossVisible" :close-on-press-escape="true" :close-on-click-modal="false" width="30%">
-      <el-form :model="editForm" :inline="false" status-icon label-width="100px"  ref="editForm">
-        <el-form-item label="图书名称：">
-          <span>{{editForm.bookname}}</span>
-        </el-form-item>
-        <el-form-item label="赔偿金额：">
-          <span>{{editForm.price}}</span>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click.native="resetForm('editForm')" size="small">取消</el-button>
-        <el-button type="primary" @click.native="editSubmit" size="small">确认缴纳</el-button>
-      </div>
-    </el-dialog> -->
+    <!-- 归还记录查看个人详情 -->
+    <el-dialog center title="归还详情" :visible.sync ="checkdetailVisible" :close-on-press-escape="true" :close-on-click-modal="false" >
+      <el-row>
+        <el-col :span="4">
+          <span style="font-size:16px;font-weight:700;display:block;width:20px;line-height:34px;margin:0 auto;">借还信息</span>
+        </el-col>
+        <el-col :span="20">
+          <el-row style="padding-bottom:10px;">
+              <el-col :span="12">
+                <div class="borrow_right">图书名称：</div>
+                <span>{{checkArr.bookname}}</span>
+              </el-col>
+              <el-col :span="12">
+                <div class="borrow_right">读者编号：</div>
+                <span>{{checkArr.userid}}</span>
+              </el-col>
+          </el-row>
+          <el-row style="padding-bottom:10px;">
+              <el-col :span="12">
+                <div class="borrow_right">图书类别：</div>
+                <span>{{checkArr.bookcategory}}</span>
+              </el-col>
+              <el-col :span="12">
+                <div class="borrow_right">姓名：</div>
+                <span>{{checkArr.username}}</span>
+              </el-col>
+          </el-row>
+          <el-row style="padding-bottom:10px;">
+              <el-col :span="12">
+                <div class="borrow_right">出版社：</div>
+                <span>{{checkArr.bookpress}}</span>
+              </el-col>
+              <el-col :span="12">
+                <div class="borrow_right">性别：</div>
+                <span>{{checkArr.usersex}}</span>
+              </el-col>
+          </el-row>
+          <el-row style="padding-bottom:10px;">
+              <el-col :span="12">
+                <div class="borrow_right">单价：</div>
+                <span>{{checkArr.bookprice}}￥</span>
+              </el-col>
+              <el-col :span="12">
+                <div class="borrow_right">联系电话：</div>
+                <span>{{checkArr.userphone}}</span>
+              </el-col>
+          </el-row>
+          <el-row >
+              <el-col :span="12">
+                <div class="borrow_right">借阅日期：</div>
+                <span>{{checkArr.borrowdate}}</span>
+              </el-col>
+              <el-col :span="12">
+                <div class="borrow_right">归还日期：</div>
+                <span>{{checkArr.backdate}}</span>
+              </el-col>
+          </el-row>
+        </el-col>
+      </el-row>
+      <div style="margin: 15px 0px;border: 1px solid #83CDC8;width:100%;"></div>
+      <el-row>
+        <el-col :span="20" style="font-weight:700;text-align:right;">
+          <span>赔偿标准</span>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="4">
+          <span style="font-size:16px;font-weight:700;display:block;width:20px;line-height:34px;margin:0 auto;">罚金赔偿</span>
+        </el-col>
+        <el-col :span="20">
+          <el-row style="padding-bottom:10px;">
+            <el-col :span="12">
+              <div style="display:inline-block;">逾期赔偿</div>
+              <span style="color:red;font-size:16px;">{{checkArr.overduecom}}￥</span>
+            </el-col>
+            <el-col :span="12">
+              <div>逾期赔偿：</div>
+              <div>{{Penaltyindex.within}}天以内，赔偿金额=逾期天数*{{Penaltyindex.withinIndex}}%</div>
+              <div>其余，赔偿金额=逾期天数*{{Penaltyindex.restIndex}}%</div>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <div style="display:inline-block;">损坏赔偿</div>
+              <span style="color:red;font-size:16px;">{{checkArr.damagecom}}￥</span>
+            </el-col>
+            <el-col :span="12">
+              <div>损坏赔偿：</div>
+              <span>根据管理员判断决定，赔偿金额最高书籍的单价</span>
+            </el-col>
+          </el-row>
+        </el-col>
+      </el-row>
+      <!-- <div slot="footer" class="dialog-footer">
+        <el-button @click.native="checkdetailVisible=false" size="small">取消</el-button>
+        <el-button type="primary" @click.native="editSubmit" size="small">提交</el-button>
+      </div> -->
+    </el-dialog>
 </div>
 </template>
 
@@ -166,6 +253,16 @@ export default {
     var checkfinenum=(rule,value,callback)=>{
         if (!value) {
           return callback(new Error('还书数量不能为空'));
+        }
+    }
+    var idCard=(rule,value,callback)=>{
+      let reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+        if(value === ''){
+          callback(new Error('读者编号不能为空'))
+        }else if(!reg.test(value)){
+          callback(new Error('请输入正确的读者编号'));
+        }else{
+          callback()
         }
     }
     return {
@@ -184,7 +281,7 @@ export default {
       finetableTrue:false,  //罚金缴纳登记
       overduefine:false, //逾期罚金
       damagefine:false, //损坏罚金
-      lossVisible:false, //图书遗失状态
+      checkdetailVisible:false, //归还记录查看个人详情状态
       overdueDay:0,  //逾期天数
       overduemoney:0, //逾期罚金
       moneyTotal:0, //罚金总金额
@@ -198,6 +295,11 @@ export default {
       //读者编号  
       readers:{
         readerId:'',
+      },
+      readersrules:{
+        readerId:[
+          { validator: idCard,trigger: 'blur' },
+        ]
       },
       //罚金缴纳图书信息
       finebooks:{
@@ -215,6 +317,28 @@ export default {
         finenum:[
             {validator: checkfinenum, trigger: 'blur'}
           ],
+      },
+      //查看归还记录个人详情信息
+      checkArr:{
+        bookname:'',
+        bookid:'',
+        bookcategory:'',
+        bookpress:'',
+        bookprice:'',
+        userid:'',
+        usersex:'',
+        username:'',
+        userphone:'',
+        borrowdate:'',
+        backdate:'',
+        overduecom:'', //逾期赔偿
+        damagecom:'',  //损坏赔偿
+      },
+      //罚金赔偿标准指数
+      Penaltyindex:{
+        within:0, 
+        withinIndex:0,
+        restIndex:0,
       }
     }
   },
@@ -238,12 +362,18 @@ export default {
     },
     //读者信息查找按钮事件
     handleSearch(){
+      let that=this;
       this.total1=0;
       this.page1=1;
       this.total2=0;
       this.page2=1;
-      this.borrowsearch();
-      this.returnsearch();
+      this.$refs.readers.validate((valid) => {
+          if (valid) {
+            this.borrowsearch();
+            this.returnsearch();
+            that.finetableTrue=false;
+          }
+        });
     },
 
     //归还登记查询未还书记录
@@ -358,18 +488,13 @@ export default {
          backNum:that.finebooks.finenum,
          id:that.finebooks.fineid
       }
-      // that.$refs.finebooks.validate((valid)=>{
-      //     if(valid){
-
-      //     }
-      // })
-      
       API.recordback(params).then((result)=>{
         console.log(result)
         if(result && result.status === "101") {
           that.$message.success({showClose:true,message:"还书成功",duration:2000});
           this.borrowsearch();
           this.returnsearch();
+          that.finetableTrue=false;
         }else{
           that.$message.success({showClose:true,message:"还书失败",duration:2000});
           this.borrowsearch();
@@ -409,6 +534,11 @@ export default {
       };
       API.setshelf(params).then((result)=>{
         if (result && result.status === "101") {
+          that.Penaltyindex={
+            within:result.data[0].mangeRemark1,
+            withinIndex:result.data[0].mangeRemark2,
+            restIndex:result.data[0].mangeRemark3,
+          }
           if(that.overdueDay>0){
             if(that.overdueDay <= result.data[0].mangeRemark1){
                 that.overduemoney=that.overdueDay*result.data[0].mangeRemark2;
@@ -428,21 +558,37 @@ export default {
         that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
       })
     },
+
+    //查看个人归还图书归还记录详情
+    checkpunish(index,row){
+      this.checkdetailVisible=true;
+      console.log(row)
+      this.checkArr={
+        bookname:row.val3,
+        bookid:row.val2,
+        bookcategory:row.val4,
+        bookpress:row.val11,
+        bookprice:row.val14,
+        userid:row.val1,
+        usersex:row.val6,
+        username:row.val10,
+        userphone:row.val15,
+        borrowdate:row.val5,
+        backdate:row.val7,
+        overduecom:row.val18,
+        damagecom:row.val19,
+      };
+    }
   },
   created(){},
   mounted(){
-
+    this.finemodel();
   }
 }
 </script>
 
 <style  lang="scss">
 // scoped
-.page{}
-// .input-form-inline{
-//   width: 70%;
-//   margin: auto;
-// }
 .finepayment-form .el-form-item__label{
     padding:0px;
 }
@@ -520,5 +666,10 @@ export default {
     font-size:14px;
     float:left;
     line-height:28px;
+  }
+  .borrow_right{
+    display:inline-block;
+    width:70px;
+    text-align: right;
   }
 </style>

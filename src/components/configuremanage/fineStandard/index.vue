@@ -5,14 +5,14 @@
             <table class="finestandard" style="width:100%;" >
               <thead>
                 <tr>
-                  <th>罚金类型</th>
+                  <th style="width:10%;">罚金类型</th>
                   <th style="text-align:center;">罚金标准</th>
-                  <th>操作</th>
+                  <th style="width:10%;text-align:center;">操作</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td>逾期罚金</td>
+                  <td style="text-align:center;">逾期罚金</td>
                   <td>
                      <el-col :span="24" style="padding: 5px;">
                        <span>逾期天数&lt;=</span>
@@ -27,12 +27,12 @@
                        <span>最高罚金&lt;书的价格</span>
                      </el-col>
                   </td>
-                  <td>
+                  <td style="text-align:center;">
                     <el-button type="text" @click="overdue">修改</el-button>
                   </td>
                 </tr>
                 <tr>
-                  <td>损坏罚金</td>
+                  <td style="text-align:center;">损坏罚金</td>
                   <td>
                     <el-col :span="24" style="padding: 5px;">
                        <span>一般损坏(书面不整洁),损坏罚金=</span>
@@ -45,7 +45,7 @@
                        <span>根据管理员自行判断</span>
                      </el-col>
                   </td>
-                  <td>
+                  <td style="text-align:center;">
                     <el-button type="text" @click="damage">修改</el-button>
                   </td>
                 </tr>

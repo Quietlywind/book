@@ -25,18 +25,6 @@
            <el-form-item class="demo-form-inline" label="出版社">
             <el-input  v-model="filters.press" placeholder="请输入出版社进行查询" clearable></el-input>
           </el-form-item>
-          <!-- <el-form-item label="图书状态:" class="demo-form-inline">
-            <el-select v-model="filters.status" placeholder="请选择">
-                <el-option label="请选择" value=" "></el-option>
-                <el-option v-for="item in bookeStatus" :value='item.value' :key="item.index">
-                </el-option>
-            </el-select>
-          </el-form-item> -->
-          <!-- <el-form-item label="出版日期" class="demo-form-inline">
-              <el-date-picker type="date" placeholder="选择日期" v-model="filters.publicationDate1" ></el-date-picker>
-              <span>—</span>
-              <el-date-picker type="date" placeholder="选择日期" v-model="filters.publicationDate2" ></el-date-picker>
-          </el-form-item> -->
           <el-form-item>
             <el-button type="primary" @click="handleSearch">查询</el-button>
           </el-form-item>
@@ -55,10 +43,18 @@
         <el-table-column prop="bookUuid" label="图书编码" show-overflow-tooltip></el-table-column>
         <el-table-column prop="bookName" label="图书名称" show-overflow-tooltip></el-table-column>
         <el-table-column prop="bookCategory" label="图书类别"></el-table-column>
-        <el-table-column prop="bookPublisher" label="出版社"></el-table-column>
-        <el-table-column prop="shelfName" label="书架" ></el-table-column>
+        <el-table-column prop="bookPublisher" label="出版社" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="shelfName" label="书架" >
+          <template slot-scope="scope">
+            <span>第{{scope.row.shelfName}}个书架</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="bookPrice" label="单价" sortable></el-table-column>
-        <el-table-column prop="bookRemain" label="库存数量" sortable></el-table-column>
+        <el-table-column prop="bookRemain" label="库存数量" sortable>
+          <template slot-scope="scope">
+            <span>{{scope.row.bookRemain}}本</span>
+          </template>
+        </el-table-column>
         <el-table-column label="操作" width="150" align="center">
           <template slot-scope="scope">
             <el-button size="small" type="text" @click="showEditDialog(scope.$index,scope.row)">编辑</el-button>
@@ -98,7 +94,7 @@
               <el-input v-model.number="editForm.bookPrice" auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item label="图书书架" prop="shelfName">
-              <el-select  v-model="editForm.shelfName" placeholder="请选择" clearable>
+              <el-select style="width:100%;" v-model="editForm.shelfName" placeholder="请选择" clearable>
                   <el-option label="请选择" value=""></el-option>
                   <el-option v-for="item in bookshelfname" :value='item.id' :key="item.index" :label="item.shelfname">
                       {{item.shelfname}}
@@ -106,7 +102,7 @@
               </el-select>
             </el-form-item>
             <el-form-item label="层数" prop="shelfNum">
-              <el-select  v-model="editForm.shelfNum" placeholder="请选择" clearable>
+              <el-select style="width:100%;" v-model="editForm.shelfNum" placeholder="请选择" clearable>
                   <el-option label="请选择" value=""></el-option>
                   <el-option v-for="item in bookshelfnum" :value='item.id' :key="item.index" :label="item.shelfnum">
                     {{item.shelfnum}}
@@ -144,7 +140,7 @@
             <el-input v-model.number="addForm.bookPrice" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="图书书架" prop="shelfName">
-            <el-select  v-model="addForm.shelfName" placeholder="请选择" clearable>
+            <el-select style="width:100%;" v-model="addForm.shelfName" placeholder="请选择" clearable>
                 <el-option label="请选择" value=""></el-option>
                 <el-option v-for="item in bookshelfname" :value='item.id' :key="item.index" :label="item.shelfname">
                     {{item.shelfname}}
@@ -152,7 +148,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="层数" prop="shelfNum">
-            <el-select  v-model="addForm.shelfNum" placeholder="请选择" clearable>
+            <el-select style="width:100%;" v-model="addForm.shelfNum" placeholder="请选择" clearable>
                 <el-option label="请选择" value=""></el-option>
                 <el-option v-for="item in bookshelfnum" :value='item.id' :key="item.index" :label="item.shelfnum">
                   {{item.shelfnum}}
@@ -234,7 +230,7 @@ export default {
     //   }
     // }
     return {
-      
+
         filters:{
             name:'',  //书名
             bookid:'', //图书编码
@@ -477,9 +473,12 @@ export default {
     //显示图书编辑界面
     showEditDialog:function(index,row){
       let that=this;
-      that.editFormVisible=true;
+      this.editFormVisible=true;
+      this.$nextTick(function() {
+          that.$refs.editForm.clearValidate();
+      })
       // this.editForm = Object.assign({}, row);
-      that.editForm={
+      this.editForm={
         id:row.id,
         bookName:row.bookName,
         bookCategory:String(row.bookCategory),
@@ -533,7 +532,11 @@ export default {
 
     //显示图书新增界面
     showAddDialog:function(){
+      let that=this;
       this.addFormVisible = true;
+      this.$nextTick(function() {
+          that.$refs.addForm.resetFields();
+      })
         this.addForm = {
           bookUuid:'',
           bookName:'',
@@ -543,9 +546,6 @@ export default {
           shelfName:'',
           shelfNum:'',
         };
-        // this.$nextTick(() => {
-          
-        // });
     },
     //图书新增界面提交
     addSubmit:function(){
