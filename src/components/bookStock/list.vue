@@ -9,10 +9,10 @@
 
     <el-col :span="24" class="warp-main" v-loading="loading" element-loading-text="拼命加载中">
       <!--工具条-->
-      <el-col :span="24" class="toolbar top_toolbar">
-        <el-form :inline="true" :model="filters" size='small' label-width="70px">
+      <el-col :span="24" class="toolbar top_toolbar" ref="stock_top">
+        <el-form :inline="true" :model="filters" size='small' lable-width="100px">
           <el-form-item class="demo-form-inline">
-            <el-input  v-model="filters.name" placeholder="请输入书名\图书编码进行查询"  clearable></el-input>
+            <el-input  v-model="filters.name" placeholder="请输入书名\图书编码进行查询" @keyup.enter.native="handleSearch" clearable></el-input>
           </el-form-item>
           <el-form-item label="图书类别" class="demo-form-inline">
                 <el-select  v-model="filters.region" placeholder="请选择">
@@ -38,7 +38,7 @@
         @click="batcheditbook">批量修改</el-button>
       </el-col>
       <!--图书列表-->
-      <el-table :data="books" border highlight-current-row @selection-change="selsChange" style="width: 100%;">
+      <el-table :data="books" :height="stockTablehe" border highlight-current-row @selection-change="selsChange" style="width: 100%;">
         <el-table-column type="selection" width="50" align="center"></el-table-column>
         <el-table-column prop="bookUuid" label="图书编码" show-overflow-tooltip></el-table-column>
         <el-table-column prop="bookName" label="图书名称" show-overflow-tooltip></el-table-column>
@@ -71,7 +71,7 @@
         </el-pagination>
       </el-col>
       <!-- 图书编辑弹框 -->
-      <el-dialog center title="编辑图书" :visible.sync ="editFormVisible" :close-on-press-escape="true" :close-on-click-modal="false" width="30%" :before-close="closeDialog">
+      <el-dialog center title="编辑图书" class="bookstock" custom-class="bookStock" :visible.sync ="editFormVisible" :close-on-press-escape="true" :close-on-click-modal="false"  :before-close="closeDialog">
         <el-form :model="editForm" size="small" status-icon label-width="100px"  :rules="editFormRules" ref="editForm">
             <el-form-item label="图书编码" prop="bookUuid">
               <span>{{editForm.bookUuid}}</span>
@@ -117,7 +117,7 @@
       </el-dialog>
 
       <!--图书新增弹框-->
-      <el-dialog center title="新书上架" :visible.sync ="addFormVisible" :close-on-click-modal="false" width="30%">
+      <el-dialog center title="新书上架" class="bookstock" custom-class="bookStock" :visible.sync ="addFormVisible" :close-on-click-modal="false" >
         <el-form :model="addForm" size="small" label-width="100px" :rules="addFormRules" ref="addForm">
           <el-form-item label="图书编码" prop="bookUuid">
             <el-input v-model="addForm.bookUuid" auto-complete="off"></el-input>
@@ -163,7 +163,7 @@
       </el-dialog>
 
       <!--图书处理弹框-->
-      <el-dialog center title="图书处理" :visible.sync ="handleFormVisible" :close-on-click-modal="false" width="30%">
+      <el-dialog center title="图书处理" class="bookstock" custom-class="bookStock" :visible.sync ="handleFormVisible" :close-on-click-modal="false" >
         <el-form :model="handleForm" size="small" label-width="100px" :rules="handleFormRules" ref="handleForm">
           <el-form-item label="" prop="bookName">
             图书<span style="color:red;font-size:16px;">{{handleForm.bookName}}</span>一共<span style="color:red;font-size:16px;">{{handleForm.bookStorage}}</span>本
@@ -190,7 +190,7 @@
       </el-dialog>
 
       <!--批量修改书架/层数 弹框-->
-      <el-dialog center title="批量修改" :visible.sync ="batchbookVisible" :close-on-click-modal="false" width="400px">
+      <el-dialog center title="批量修改" class="bookstock" custom-class="bookStock" :visible.sync ="batchbookVisible" :close-on-click-modal="false" >
         <el-form :model="batchForm" size="small" label-width="100px"  ref="batchForm">
           <el-form-item label="图书书架" prop="shelfName">
             <el-select  v-model="batchForm.shelfName" placeholder="请选择" clearable>
@@ -366,6 +366,7 @@ export default {
         bookcategory:[],
         bookshelfname:[], //图书书架
         bookshelfnum:[],  //层数
+        stockTablehe:0,
     }
   },
   components: {
@@ -472,6 +473,7 @@ export default {
 
     //显示图书编辑界面
     showEditDialog:function(index,row){
+      console.log(row)
       let that=this;
       this.editFormVisible=true;
       this.$nextTick(function() {
@@ -694,10 +696,11 @@ export default {
     this.handleSearch();
     this.searchbookcategory();
     this.searchbookshelf();
-    // this.$nextTick(() => {
-    //     this.$refs.editForm.clearValidate();
-    // });
-    
+    let that = this;
+    this.$nextTick(function () {
+      let bodyHe=document.documentElement.clientHeight; //获取整体高度
+      that.stockTablehe=bodyHe-that.$refs.stock_top.$el.offsetHeight-50-20-32-32-21; //动态设置归还记录表格高度
+    })
   }
 }
 </script>
@@ -717,7 +720,10 @@ export default {
  .top_toolbar .el-form-item--mini.el-form-item,.top_toolbar .el-form-item--small.el-form-item{
      margin-bottom: 0px;
  }
- .demo-form-inline .el-form-item__content .el-input{
+ /* .demo-form-inline .el-form-item__content .el-input{
     max-width: 180px;
+ } */
+ .bookstock .bookStock{
+   width: 400px;
  }
 </style>

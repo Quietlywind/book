@@ -9,7 +9,7 @@
         </el-col>
     </el-row> -->
     <el-row style="width:100%">
-      <div class="wrap-center" style="width:50%;margin:0 auto;">
+      <div class="wrap-center" style="width:50%;margin:0 auto;background-color:#fff;">
           <div style="padding:10px 0px;border-bottom: 1px solid #ccc;width:100%;font-size:18px;text-align:center;">
             <span>新书上架</span>
           </div>
@@ -142,7 +142,6 @@ export default {
               shelfName:that.newbook.bookshelf,
               shelfNum:that.newbook.bookshelfnum,
             }
-            console.log(para)
             API.addbookstock(para).then(function (result) {
               if (result && result.status === "101") {
                 that.$message.success({showClose: true, message: '新书上架成功', duration: 2000});
@@ -168,7 +167,6 @@ export default {
         mangeType:"book_type"
       };
       API.setshelf(params).then((result)=>{
-        console.log(result.data)
         if (result && result.status === "101") {
             that.bookcategory=result.data;
         } else {

@@ -14,7 +14,7 @@
               {{tab.name}}
           </li>
         </ul>
-        <div class="categoryBox">
+        <div class="categoryBox" style="background-color: #FFF;">
           <transition name="fade" mode="out-in" appear>
             <component :is="currentTab"></component>
           </transition>

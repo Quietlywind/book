@@ -103,7 +103,7 @@
       <!-- </section> -->
       <el-row :gutter="10">
         <el-col :xl="14" :lg="14" :md="14">
-            <div class="borderBox">
+            <div class="borderBox" ref="threeTotal">
               <el-row>
                 <el-col :xl="8" :lg="8" :md="8" style="padding: 0 20px;">
                   <div class="orange">
@@ -140,30 +140,55 @@
                 </el-col>
               </el-row>
             </div>
-            <div>
+            <div style="margin: 20px 0px;">
               <el-row :gutter="10">
-                <el-col :xl="12" :lg="12" :md="12">
+                <el-col :xl="12" :lg="12" :md="12" >
                   <div class="borderBox_bottom">
                     <div class="float_text">
                       <div class="rectangle"></div>
                       <span>图书类别占比</span>
                     </div>
-                    <div id="chartPie" style="height:200px;"></div>
+                    <div id="chartPie" :style="index_right"></div>
                   </div>
                 </el-col>
                 <el-col :xl="12" :lg="12" :md="12">
                   <div class="borderBox_bottom">
-                    <div id="chartBar" style="height:200px;"></div>
+                    <div class="float_text">
+                      <div class="rectangle"></div>
+                      <span>罚金统计</span>
+                      <div class="float_right" @click="fineDetail">
+                        <a href="JavaScript:;">罚金详情<i class="el-icon-d-arrow-right"></i></a>
+                      </div>
+                    </div>
+                    <!-- <x-charts :id="id1" :option="option1" ></x-charts> -->
+                    <div id="chartBar" :style="index_right"></div>
                   </div>
                 </el-col>
               </el-row>
             </div>
         </el-col>
         <el-col :xl="10" :lg="10" :md="10">
-            <div class="borderBox" style="height:400px;">
-
+            <div class="borderBox">
+              <ul class="tabul">
+                <li @click="toggleTab(index,tab.val)" v-for="(tab,index) in tabs" :key="index" :class="{active:active === index}" class="tabli">
+                    {{tab.name}}
+                </li>
+              </ul>
+              <div>
+                <ul class="tablist">
+                  <li v-for="(item,index) in books" :key="index">
+                    <template>
+                      <div class="tablist_top" v-if="index===0" style="display: inline-block;background:url('../../static/top1.png');background-size: 100% 100%;background-position-y: 2px;">{{index+1}}</div>
+                      <div class="tablist_top" v-else-if="index===1" style="display: inline-block;background:url('../../static/top2.png');background-size: 100% 100%;background-position-y: 2px;">{{index+1}}</div>
+                      <div class="tablist_top" v-else-if="index===2" style="display: inline-block;background:url('../../static/top3.png');background-size: 100% 100%;background-position-y: 2px;">{{index+1}}</div>
+                      <div class="tablist_top" v-else>{{index+1}}</div>
+                    </template>
+                    <span >{{item.name}}</span>
+                    <span style="display:inline-block;float:right;padding-right: 5px;">{{item.num}}次</span>
+                  </li>
+                </ul>
+              </div>
             </div>
-
         </el-col>
       </el-row>
     </el-col>
@@ -261,7 +286,7 @@
     border-bottom: 1px solid #D0D0D0;
   }
   .float_text{
-    float:left;
+    // float:left;
     line-height:19px;
     margin: 15px 0px 15px 0px;
     font-family: 'Arial Negreta', 'Arial Normal', 'Arial';
@@ -278,7 +303,7 @@
     margin-right: 5px;
   }
   .float_right{
-    margin: 15px 0px 15px 0px;
+    // margin: 15px 0px 15px 0px;
     float:right;
     font-family: 'Arial Cursiva', 'Arial Normal', 'Arial';
     font-weight: 400;
@@ -300,8 +325,63 @@
     border: 1px solid #85CCC8;
     background-color: #FEFEFE;
   }
-
-
+  ul,li{
+    list-style: none;
+  }
+  .borderBox .tabul{
+    height: 35px;
+    margin-bottom:0px;
+    text-align: center;
+    margin-top:0px;
+    list-style: none;
+    width: 280px;
+    padding: 0px;
+    margin: 0 auto;
+  }
+  .borderBox ul li.tabli{
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 700;
+    width: 140px;
+    height: 35px;
+    line-height:35px;
+    cursor: pointer;
+    color: #85CCC8;
+    background-color: #fff;
+    border: 1px solid #85CCC8;
+    box-sizing: border-box;
+  }
+  .borderBox ul .tabli.active{
+    background-color: #108EE9;
+    color: #fff;
+  }
+  .borderBox ul .tabli:first-child{
+    border-radius: 7px 0px 0px 7px;
+    border-right: none;
+  }
+  .borderBox ul .tabli:last-child{
+    border-radius: 0px 7px 7px 0px;
+    border-left: none;
+  }
+  .borderBox .tablist{
+    width: 280px;
+    padding: 20px 0px;
+    margin: 0 auto;
+  }
+  .borderBox .tablist li{
+    height: 38px;
+    line-height: 38px;
+    border-bottom:1px solid #C9C9C9;
+    padding: 5px 0px;
+  }
+  .borderBox .tablist li:hover{
+    box-shadow: 2px 1px 5px rgba(0, 0, 0, 0.34901960784);
+  }
+  .borderBox .tablist li .tablist_top{
+    width: 38px;
+    height: 38px;
+    text-align: center;
+  }
 </style>
 
 <script>
@@ -321,6 +401,7 @@
         chartPie: null,
 
         activeName2: 'first',
+        active:0, //活动图书榜
         filters: {
           name: ''
         },
@@ -342,7 +423,20 @@
         overNum:0,  //逾期数量
         dealNum:0,  //处理数量
         loseNum:0,  //遗失数量
-        
+        // index_right:0,  //首页排行榜高度
+        index_right:{
+          height:'0px'
+        },
+        tabs:[
+        {
+          name:'图书借阅榜',
+          val:1,
+        },
+        {
+          name:'图书狂人榜',
+          val:2,
+        },
+      ]
         
       };
     },
@@ -350,6 +444,15 @@
       this.search()
       this.indexlibinfo();
        let that= this;
+      this.$nextTick(function () {
+        let bodyHe=document.documentElement.clientHeight; //获取整体高度
+        let index_right=bodyHe-that.$refs.threeTotal.offsetHeight-50-20-20-39-20-13; 
+        // console.log(index_right)
+        // console.log(that.$refs.threeTotal.offsetHeight)
+        that.index_right.height=index_right+"px";
+        // that.$refs.index_right.style.height=bodyHe+'px';
+        // that.stockTablehe=bodyHe-that.$refs.stock_top.$el.offsetHeight-50-20-32-32-21; //动态设置归还记录表格高度
+      })
       //  let chart=Highcharts.chart('chartPie',{
          
       //  });
@@ -358,22 +461,16 @@
       //  })
     },
     methods: {
-      handleClick(tab,event){
-        if(event.target.innerText==="图书借阅榜"){
-          this.type = 1;
-          this.search();
-        }else{
-          this.type = 2;
-          this.search();
-        }
+      toggleTab(i,v){
+        this.active=i;
+        this.type = v;
+        this.search();
       },
-
       //首页数据查找
       indexlibinfo(){
         let that = this;
         let params = {};
         API.indexlibinfo(params).then(function (result) {
-          console.log(result)
           if (result && result.status === "101") {
               that.remainNum=result.data.remainNum;
               that.libNum=result.data.libNum;
@@ -387,7 +484,6 @@
         }, function (err) {
           that.$message.error({showClose: true, message: err.toString(), duration: 2000});
         }).catch(function (error) {
-          console.log(error);
           that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
         });
       },
@@ -398,7 +494,6 @@
           type:that.type
         };
         API.indextabList(params).then(function (result) {
-          // console.log(result)
           if (result && result.status === "101") {
             that.books = result.data;
           }
@@ -430,6 +525,9 @@
           },
           title: {
             text: ''
+          },
+          lang:{
+            noData:'暂无数据'
           },
           credits:{
             enabled:false, //隐藏版权信息去掉地址
@@ -547,11 +645,7 @@
       }
 
     },
-    created () {
-      // for(var i=0;i<10;i++){
-      //   this.cishu.push(Math.ceil(Math.random()*500))
-      // }
-    },
+    created () {},
     components: {
       XCharts,
       fineDetail,

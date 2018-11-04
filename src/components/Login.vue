@@ -1,13 +1,12 @@
 <template>
-  <!-- <div class="loginbox"> -->
+  <div class="loginbox">
     <el-form ref="AccountFrom" :model="account" :rules="rules" label-position="left" label-width="0px" class="demo-ruleForm login-container">
       <h3 class="title">管理员登录</h3>
       <el-form-item prop="username">
-        <el-input type="text" v-model="account.username" auto-complete="off" placeholder="手机号/用户名/ID/邮箱"></el-input>
+        <el-input type="text" v-model="account.username" auto-complete="off" placeholder="手机号/用户名/ID/邮箱" clearable></el-input>
       </el-form-item>
       <el-form-item prop="pwd">
-        <el-input type="password" v-model="account.pwd" auto-complete="off" placeholder="请输入密码" @keyup.enter.native="handleLogin">
-          
+        <el-input type="password" v-model="account.pwd" auto-complete="off" placeholder="请输入密码" @keyup.enter.native="handleLogin" clearable>
         </el-input>
       </el-form-item>
       <el-checkbox v-model="checked" checked class="remember">记住密码</el-checkbox>
@@ -15,7 +14,7 @@
         <el-button type="primary" style="width:100%;"  @click.native.prevent="handleLogin" :loading="loading" :disabled="disa">登录</el-button>
       </el-form-item>
     </el-form>
-  <!-- </div> -->
+  </div>
 </template>
 
 <script>
@@ -94,7 +93,7 @@
     border-radius: 5px;
     -moz-border-radius: 5px;
     background-clip: padding-box;
-    margin: 160px auto;
+    // margin: 160px auto;
     width: 350px;
     padding: 35px 35px 15px 35px;
     background: #fff;
@@ -106,6 +105,12 @@
     background: -webkit-linear-gradient(top, #ace, #00C1DE); /*Safari5.1 Chrome 10+*/
     background: -o-linear-gradient(top,#ace, #00C1DE); /*Opera 11.10+*/
 
+    position:absolute; 
+    top:50%; 
+    left:50%; 
+    margin-left:-211px; 
+    margin-top:-178px;
+
     .title {
       margin: 0px auto 40px auto;
       text-align: center;
@@ -113,6 +118,10 @@
     }
     .remember {
       margin: 0px 0px 35px 0px;
+    }
+    .loginbox{
+      
+
     }
   }
 </style>

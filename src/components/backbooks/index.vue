@@ -11,9 +11,9 @@
     <el-row :gutter="20">
       <el-col  class="warp-main">
         <el-col :span="14">
-          <div class="method_wrap">
-              <span class="title">归还登记</span>
-              <el-form :inline="true" :model="readers" ref="readers" :rules="readersrules" size='small' style="text-align: center;margin-bottom:5%;" label-width="80px">
+          <fieldset class="finepayment" style="min-height:400px;background-color:#fff;"> 
+              <legend class="finepayment_title" align="center">归还登记</legend>
+              <el-form class="form_top" :inline="true" :model="readers" ref="readers" :rules="readersrules" size='small' style="text-align: center;margin-bottom:5%;" label-width="80px">
                 <el-form-item label="读者编号" prop="readerId">
                   <el-input  v-model="readers.readerId" placeholder="" clearable></el-input>
                 </el-form-item>
@@ -21,10 +21,10 @@
                   <el-button type="primary" @click="handleSearch">查找</el-button>
                 </el-form-item>
               </el-form>
-              <div v-show="borrowtableTrue" v-loading="loading" element-loading-text="拼命加载中">
+              <div style="width:100%;" v-show="borrowtableTrue" v-loading="loading" element-loading-text="拼命加载中">
                   <el-table :data="pollbooks"  border size="mini" highlight-current-row empty-text="暂无记录"  style="width: 100%;">
                     <el-table-column prop="val2" label="图书编码" align="center" show-overflow-tooltip></el-table-column>
-                    <el-table-column prop="val3" label="图书名称" align="center"></el-table-column>
+                    <el-table-column prop="val3" label="图书名称" align="center" show-overflow-tooltip></el-table-column>
                     <el-table-column prop="val11" label="出版社" align="center"></el-table-column>
                     <el-table-column label="操作" width="150" align="center">
                       <template slot-scope="scope">
@@ -37,43 +37,48 @@
                   @current-change="borrowCurrentChange">
                   </el-pagination>
               </div>
-          </div>
+          </fieldset>   
+          <!-- <div class="method_wrap">
+              <span class="title">归还登记</span>
+              
+          </div> -->
         </el-col>
         <!-- 罚金缴纳 -->
         <el-col :span="10">
-          <fieldset class="finepayment" v-show="finetableTrue"> 
+          <fieldset class="finepayment" v-show="finetableTrue" style="background-color:#fff;"> 
               <legend class="finepayment_title" align="center">罚金缴纳</legend>
               <el-form :inline="true" :model="finebooks" ref="finebooks" :rules="finebooksRules" size='small' style="margin-top:5%;" class="finepayment-form" lable-width="0px">
-                <el-col :span="12">
+                <el-col :span="10">
                   <el-form-item label="图书名称：" >
                       <span>{{finebooks.finebookname}}</span>
                   </el-form-item>
                 </el-col>
-                <el-col :span="12">
+                <el-col :span="14">
                   <el-form-item label="读者编号：">
                     <span>{{finebooks.fineuserid}}</span>
                   </el-form-item>
                 </el-col>  
-                <el-col :span="12">
+                <el-col :span="10">
                   <el-form-item label="借书日期：">
                     <span>{{finebooks.fineborrowdate}}</span>
                   </el-form-item>
                 </el-col>
-                <el-col :span="12">
+                <el-col :span="14">
                   <el-form-item label="当前日期：">
                     <span>{{finebooks.finenewdate}}</span>
                   </el-form-item>
                 </el-col>
                 <el-col :span="24">
                   <el-form-item label="归还数量：" prop="finenum">
-                    <el-input style="width:80%;" v-model.number="finebooks.finenum" clearable></el-input>
+                    <el-input-number v-model.number="finebooks.finenum" @change="backnumChange" :min="backbookMin" :max="backbookMax" ></el-input-number>
+                    <!-- <el-input style="width:80%;" v-model.number="finebooks.finenum" clearable></el-input> -->
                   </el-form-item>
                 </el-col>
               </el-form>
-              <el-col>
+              <el-col :span="24">
                   <fieldset class="duefine">
                     <legend class="duefine_title">逾期罚金</legend>
-                      <el-form :inline="true" size='small' class="overduefine-form" lable-width="0px">
+                      <el-form :inline="true" size='small' class="overduefine_form" lable-width="90px">
                         <el-col :span="12">
                           <el-form-item label="逾期天数：">
                               <span style="color:red;">{{overdueDay}}</span>天
@@ -85,26 +90,34 @@
                           </el-form-item>
                         </el-col>  
                       </el-form>
+                      <!-- <el-col :span="12">
+                        逾期天数：<span>{{overdueDay}}</span>天
+                      </el-col>
+                      <el-col :span="12">
+                        金额缴纳：<span>{{overduemoney}}</span>￥
+                      </el-col> -->
                   </fieldset>
               </el-col>
               <el-col :span="12">
                   <fieldset class="duefine">
                     <legend class="duefine_title">损坏罚金</legend>
-                      <span style="font-size:14px;">金额缴纳：</span>
-                      <el-input style="width:50%;" size='mini' v-model="damagebooks.damagemoney1"></el-input>
-                      <!-- <span style="color:red;font-size:14px;">{{damagebooks.damagemoney}}</span>元 -->
+                      <div style="padding: 19px 0px;">
+                        <span style="font-size:14px;padding-left:10px;">金额缴纳：</span>
+                        <el-input style="width:48%;" size='mini' @change="demageChange" v-model="damagebooks.damagemoney1"></el-input> 
+                      </div>
                   </fieldset> 
               </el-col>
               <el-col :span="12">
                   <fieldset class="duefine">
                     <legend class="duefine_title">遗失罚金</legend>
-                      <el-col :span="12">
+                      <el-col :span="24" style="padding-bottom:10px;">
                         <span class="damagefinetext">金额：</span>
-                        <el-input style="width:50%;" size='mini' v-model="damagebooks.damagemoney2"></el-input>
+                        <el-input style="width:60%;" size='mini' v-model="damagebooks.damagemoney2" @change="yishimoneyChange"></el-input>
                       </el-col>
-                      <el-col :span="12">
+                      <el-col :span="24">
                         <span class="damagefinetext">数量：</span>
-                        <el-input style="width:50%;" size='mini' v-model="damagebooks.damagenum"></el-input>
+                        <el-input-number style="width:60%;" size='mini' @change="yishinnumChange" v-model.number="damagebooks.damagenum" :min="0" :max="backbookMax" ></el-input-number>
+                        <!-- <el-input style="width:50%;" size='mini' v-model="damagebooks.damagenum"></el-input> -->
                       </el-col>
                   </fieldset>
               </el-col>
@@ -250,11 +263,11 @@ import util from '../../common/util';
 import API from '../../api/api_book.js';
 export default {
   data() {
-    var checkfinenum=(rule,value,callback)=>{
-        if (!value) {
-          return callback(new Error('还书数量不能为空'));
-        }
-    }
+    // var checkfinenum=(rule,value,callback)=>{
+    //     if (!value) {
+    //       return callback(new Error('还书数量不能为空'));
+    //     }
+    // }
     var idCard=(rule,value,callback)=>{
       let reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
         if(value === ''){
@@ -285,7 +298,10 @@ export default {
       overdueDay:0,  //逾期天数
       overduemoney:0, //逾期罚金
       moneyTotal:0, //罚金总金额
-
+      backbookMin:0, //归还图书已借出最小数量
+      backbookMax:1, //归还图书已借出最大数量
+      sunhuaiMin:0,  //损坏罚金标准最低
+      sunhuaiMax:0,  //损坏罚金标准最高
       //损坏罚金数组
       damagebooks:{
         damagemoney1:0,
@@ -315,7 +331,7 @@ export default {
       //罚金缴纳归还数量验证
       finebooksRules:{
         finenum:[
-            {validator: checkfinenum, trigger: 'blur'}
+            // {validator: checkfinenum, trigger: 'blur'}
           ],
       },
       //查看归还记录个人详情信息
@@ -430,14 +446,18 @@ export default {
     //图书信息表格图书查看操作
     backDialog:function(index,row){
       row.val5 = (!row.val5 || row.val5 == '') ? '' : util.formatDate.format(new Date(row.val5), 'yyyy-MM-dd');
-      this.finebooks.finebookname=row.val3;
-      this.finebooks.fineuserid=row.val1;
-      this.finebooks.fineborrowdate=row.val5;
-      this.finebooks.finenewdate=util.formatDate.format(new Date(), 'yyyy-MM-dd');
-      this.finebooks.finenum=row.val12;
-      this.finebooks.finebookid=row.val2;
-      this.finebooks.fineid=row.val17;
+      this.finebooks.finebookname=row.val3;  //罚金缴纳图书名称
+      this.finebooks.fineuserid=row.val1;  //罚金缴纳读者编号
+      this.finebooks.fineborrowdate=row.val5;  //罚金缴纳借书日期
+      this.finebooks.finenewdate=util.formatDate.format(new Date(), 'yyyy-MM-dd'); //罚金缴纳当前日期
+      this.finebooks.finenum=row.val12; //罚金缴纳归还数量
+      this.backbookMax=Number(row.val12); //罚金缴纳归还数量最大值
+      this.finebooks.finebookid=row.val2;  //罚金缴纳图书编号
+      this.finebooks.fineid=row.val17;  //罚金缴纳图书id
       this.finetableTrue=true;
+      this.damagebooks.damagemoney1=0;
+      this.damagebooks.damagemoney2=0;
+      this.damagebooks.damagenum=0;
       this.getDays(util.formatDate.format(new Date(row.val6), 'yyyy-MM-dd'),util.formatDate.format(new Date(), 'yyyy-MM-dd'))
       this.finemodel(); //调用罚金标准计算公式
     },
@@ -488,24 +508,27 @@ export default {
          backNum:that.finebooks.finenum,
          id:that.finebooks.fineid
       }
-      API.recordback(params).then((result)=>{
-        console.log(result)
-        if(result && result.status === "101") {
-          that.$message.success({showClose:true,message:"还书成功",duration:2000});
-          this.borrowsearch();
-          this.returnsearch();
-          that.finetableTrue=false;
-        }else{
-          that.$message.success({showClose:true,message:"还书失败",duration:2000});
-          this.borrowsearch();
-          this.returnsearch();
-        }
-      },(err)=>{
-        that.$message.error({showClose:true,message:err.toString(),duration:2000});
-      }).catch((error)=>{
-        that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
-      })
-
+      this.$confirm('是否归还图书?', '提示', {type: 'warning'}).then(() => {
+          API.recordback(params).then((result)=>{
+          if(result && result.status === "101") {
+            that.$message.success({showClose:true,message:"还书成功",duration:2000});
+            that.borrowsearch();
+            that.returnsearch();
+            that.finetableTrue=false;
+          }else{
+            that.$message.success({showClose:true,message:"还书失败",duration:2000});
+            that.borrowsearch();
+            that.returnsearch();
+          }
+        },(err)=>{
+          that.$message.error({showClose:true,message:err.toString(),duration:2000});
+        }).catch((error)=>{
+          that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+        })    
+      }).catch(() => {
+        
+      });
+      
     },
 
     //计算两个日期相差多少天
@@ -539,6 +562,8 @@ export default {
             withinIndex:result.data[0].mangeRemark2,
             restIndex:result.data[0].mangeRemark3,
           }
+          that.sunhuaiMin=result.data[0].mangeRemark4; //损坏罚金最低标准
+          that.sunhuaiMax=result.data[0].mangeRemark5; //损坏罚金最高标砖
           if(that.overdueDay>0){
             if(that.overdueDay <= result.data[0].mangeRemark1){
                 that.overduemoney=that.overdueDay*result.data[0].mangeRemark2;
@@ -578,7 +603,41 @@ export default {
         overduecom:row.val18,
         damagecom:row.val19,
       };
-    }
+    },
+
+    //归还数量判断
+    backnumChange(val){
+      let that=this;
+      if(this.damagebooks.damagenum !=0){
+        that.damagebooks.damagenum=that.damagebooks.damagenum-1;
+      }
+      // this.damagebooks.damagenum=Number(this.backbookMax)-Number(this.damagebooks.damagenum);
+    },
+
+    //遗失罚金数量判断
+    yishinnumChange(val){
+      let that=this;
+      if(this.finebooks.finenum !=0){
+        that.finebooks.finenum=that.finebooks.finenum-1;
+      }
+    },
+    
+    //遗失罚金金额判断
+    yishimoneyChange(){
+      this.moneyTotal=Number(this.damagebooks.damagemoney1)+Number(this.damagebooks.damagemoney2)+Number(this.overduemoney);
+    },
+    //损坏罚金判断
+    demageChange(val){
+      let that=this;
+      if(Number(val) >= that.sunhuaiMin && Number(val) <= that.sunhuaiMax){
+        that.damagebooks.damagemoney1=val;
+        that.moneyTotal=Number(val)+that.overduemoney+Number(that.damagebooks.damagemoney2);
+      }else{
+        that.$message.error({showClose:true,message:"请输入大于等于"+that.sunhuaiMin+"到小于等于"+that.sunhuaiMax+"之间的数字",duration:2000});
+        that.damagebooks.damagemoney1=0;
+        that.moneyTotal=0+Number(this.overduemoney)+Number(that.damagebooks.damagemoney2);
+      }
+    },
   },
   created(){},
   mounted(){
@@ -595,9 +654,12 @@ export default {
 .finepayment-form .el-form-item--mini.el-form-item,.finepayment-form .el-form-item--small.el-form-item{
   margin-bottom:10px;
 }
-// .overduefine-form .el-form-item--mini.el-form-item, .el-form-item--small.el-form-item{
-//   margin-bottom:0px;
-// }
+.overduefine_form .el-form-item--mini.el-form-item,.overduefine_form .el-form-item--small.el-form-item{
+  margin-bottom:0px;
+}
+.form_top .el-form-item--mini.el-form-item,.form_top .el-form-item--small.el-form-item{
+    margin-bottom:0px;
+  }
 .method_wrap{
     position: relative;
     border: 1px solid #19BD96;

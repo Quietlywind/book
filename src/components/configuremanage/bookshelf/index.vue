@@ -62,7 +62,6 @@ export default {
       };
       API.setshelf(params).then((result)=>{
         that.loading=false;
-        console.log(result)
         if (result && result.status === "101") {
             that.editForm.shelfName=result.data[0].mangeRemark1;
             that.editForm.shelfNum=result.data[0].mangeRemark2;

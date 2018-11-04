@@ -14,6 +14,9 @@ module.exports={
             color: '#000000'
         },
       },
+      lang:{
+        noData:'暂无数据'
+      },
       tooltip: {
         pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
         // pointFormatter: function() {

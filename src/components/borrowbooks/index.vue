@@ -13,7 +13,7 @@
         <el-col :span="14">
           <div class="method_wrap">
               <span class="title">读者信息</span>
-              <el-form :inline="true" :model="readers" size='small' style="text-align: center;" lable-width="0px">
+              <el-form :inline="true" :model="readers" size='small' class="book-form-inline" style="text-align: center;" label-width="100px">
                 <el-form-item label="读者编号">
                   <el-input  v-model="readers.readerId" placeholder="" clearable></el-input>
                 </el-form-item>
@@ -22,18 +22,18 @@
                 </el-form-item>
               </el-form>
           </div>
-          <div class="method_wrap" ref="method" style="margin-top:30px;min-height:395px;" v-loading="loading" element-loading-text="拼命加载中">
+          <div class="method_wrap" ref="method" style="margin-top:30px;min-height:395px;">
               <span class="title">借阅记录</span>
-              <div v-show="borrowtableTrue">
+              <div  v-loading="loading" element-loading-text="拼命加载中">
                   <!--借阅记录列表-->
-                  <el-table :data="borrowsbook" size="small" border highlight-current-row empty-text="暂无记录"  style="width: 100%;">
+                  <el-table v-show="borrowtableTrue" :data="borrowsbook" size="small" border highlight-current-row empty-text="暂无记录"  style="width: 100%;">
                     <el-table-column prop="val2" label="图书编码" show-overflow-tooltip></el-table-column>
                     <el-table-column prop="val3" label="图书名称"></el-table-column>
                     <el-table-column prop="val4" label="图书类别"></el-table-column>
                     <el-table-column prop="val5" label="借阅日期" sortable></el-table-column>
                     <el-table-column prop="val7" label="归还日期" sortable></el-table-column>
                   </el-table>
-                  <el-pagination style="text-align: right;" @current-change="borrowCurrentChange" background layout="prev, pager, next,jumper"  :page-size="10" :total="total1">
+                  <el-pagination v-show="this.borrowsbook.length !=0" style="text-align: right;" @current-change="borrowCurrentChange" background layout="prev, pager, next,jumper"  :page-size="10" :total="total1">
                   </el-pagination>
               </div>
           </div>
@@ -41,7 +41,7 @@
         <el-col :span="10">
           <div class="method_wrap_right" style="min-height:518px;">
               <span class="title">图书信息</span>
-              <el-form :inline="true" :model="books" size='small' style="margin: 15px 0;" class="book-form-inline" label-width="69px">
+              <el-form :inline="true" :model="books" size='small' style="margin: 15px 0;" class="book-form-inline" lable-width="70px">
                 <el-form-item label="图书编码">
                   <el-input  style="width:130px;"  v-model="books.bookid" placeholder="" clearable></el-input>
                 </el-form-item>
@@ -52,9 +52,9 @@
                   <el-button type="primary" @click="bookerSearch">查询</el-button>
                 </el-form-item>
               </el-form>
-              <div v-show="booktableTrue">
+              <div  v-loading="loading1" element-loading-text="拼命加载中">
                   <!--图书信息列表-->
-                  <el-table :data="booksDetail" size="small" border highlight-current-row empty-text="暂无记录"  style="width: 100%;">
+                  <el-table :data="booksDetail" v-show="booktableTrue" size="small" border highlight-current-row empty-text="暂无记录"  style="width: 100%;">
                     <el-table-column prop="bookUuid" label="图书编码" show-overflow-tooltip></el-table-column>
                     <el-table-column prop="bookName" label="图书名称"></el-table-column>
                     <el-table-column prop="bookRemain" label="库存数量" sortable></el-table-column>
@@ -64,7 +64,7 @@
                       </template>
                     </el-table-column>
                   </el-table>
-                  <el-pagination style="text-align:right;" @current-change="bookCurrentChange"
+                  <el-pagination v-show="this.booksDetail.length !=0" style="text-align:right;" @current-change="bookCurrentChange"
                    background layout="prev, pager, next,jumper"  :page-size="10" :total="total2">
                   </el-pagination>
               </div>
@@ -115,6 +115,7 @@ export default {
       borrowsbook:[], //借阅记录数组
       booksDetail:[], //图书信息数组
       loading:false,
+      loading1:false,
       borrowtableTrue:false, //借阅记录状态
       booktableTrue:false, //图书信息状态
       lendFormVisible:false, //借出弹框状态
@@ -201,7 +202,7 @@ export default {
       this.total2=0;
       this.page2=1;
       if(this.books.bookid =="" ){
-        this.$message.error({showClose:true,message:'请录入图书编码或图书名称进行查询',duration:1500});
+        this.$message.error({showClose:true,message:'请录入图书编码进行查询',duration:1500});
         // this.recordsearch();
       }else{
          this.booksearch();
@@ -217,8 +218,9 @@ export default {
         bookUuid:that.books.bookid,
         bookName:that.books.bookname
       };
+      that.loading1=true;
       API.borrowbookList(params).then((result)=>{
-        console.log(result)
+        that.loading1=false;
          if(result && result.status === "101"){
           that.total1= result.data.count;
           that.booksDetail=result.data.data;
@@ -226,8 +228,10 @@ export default {
           // this.$message.success({showClose:true,message:'查找图书信息成功',duration:1500});
          }
       },(err)=>{
+        that.loading1=false;
         that.$message.error({showClose:true,message:err.toString(),duration:2000});
       }).catch((error)=>{
+        that.loading1=false;
         that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
       })
     },
@@ -269,7 +273,7 @@ export default {
               that.bookerSearch();
             }else if(result && result.status === "102"){
               // that.lendFormVisible=false;
-              that.$message.error({showClose:true,message:result.message,duration:1500});
+              that.$message.error({showClose:true,message:"读者编号不能为空",duration:1500});
             }
           },(err)=>{
             that.$message.error({showClose:true,message:err.toString(),duration:2000});

@@ -64,7 +64,7 @@
       </aside>
 
       <!--右侧内容区-->
-      <section class="content-container">
+      <section class="content-container" ref="sectionWhole">
         <div class="grid-content bg-purple-light">
           <el-col :span="24" class="content-wrapper">
             <transition name="fade" mode="out-in">

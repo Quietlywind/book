@@ -1,13 +1,15 @@
 <template>
   <div class="wrapper">
       <el-row :gutter="20">
-        <el-col :md="24" class="toolbar_top" style="margin-bottom:20px;">
-            <el-form :model="fines" ref="fines" :inline="true" size="small">
-                <el-form-item>
-                    <el-input v-model="fines.bookname" placeholder="请输入书名" @keyup.enter.native="onSubmit"></el-input>
-                </el-form-item>
+        <el-col :span="24" class="toolbar_top11" style="margin-bottom:20px;">
+            <el-form :model="fines" ref="fines" :inline="true" size="small" >
+                <el-col :xl="3" :lg="4" :md="4">
+                    <el-form-item>
+                        <el-input v-model="fines.bookname" placeholder="请输入书名" @keyup.enter.native="onSubmit"></el-input>
+                    </el-form-item>
+                </el-col>
                 <el-form-item label="图书类型">
-                    <el-select v-model="fines.bookCategory" placeholder="请选择罚金类型">
+                    <el-select style="width:150px" v-model="fines.bookCategory" placeholder="请选择图书类型">
                         <el-option label="请选择" value=""></el-option>
                         <el-option v-for="item in bookCategory" :value='item.id' :key="item.id" :label="item.mangeName">
                             {{item.mangeName}}
@@ -15,19 +17,19 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="处理类型:" prop="dealType">
-                    <el-select v-model="fines.dealType" placeholder="请选择">
+                    <el-select style="width:150px" v-model="fines.dealType" placeholder="请选择">
                         <el-option label="请选择" value=""></el-option>
                         <el-option v-for="item in handlebooks" :value='item.val' :key="item.val" :label="item.name">
                             {{item.name}}
                         </el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="处理时间">
-                    <el-col :span="8">
-                        <el-date-picker type="date" placeholder="选择日期" v-model="fines.paydate1" style="width: 100%;"></el-date-picker>
+                <el-form-item label="处理时间" >
+                    <el-col :span="7">
+                        <el-date-picker  type="date" placeholder="选择日期" v-model="fines.paydate1" style="width: 100%;"></el-date-picker>
                     </el-col>
                     <el-col class="line" :span="1">-</el-col>
-                    <el-col :span="8">
+                    <el-col :span="7">
                         <el-date-picker type="date" placeholder="选择时间" v-model="fines.paydate2" style="width: 100%;"></el-date-picker>
                     </el-col>
                 </el-form-item>
@@ -188,12 +190,12 @@ export default {
 </script>
 <style lang="scss" scoped>
 
-.wrapper .toolbar_top{
+.wrapper .toolbar_top11{
     box-shadow: 1px 1px 5px 0 rgba(0,0, 0, .3);
     padding:10px;
     background-color:#fff;
  }
- .toolbar_top .el-form-item--mini.el-form-item,.toolbar_top .el-form-item--small.el-form-item{
+ .toolbar_top11 .el-form-item--mini.el-form-item,.toolbar_top11 .el-form-item--small.el-form-item{
      margin-bottom: 0px;
  }
 </style>

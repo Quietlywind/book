@@ -3,19 +3,19 @@
       <el-row :gutter="20">
         <el-col :span="24" class="warp-main" v-loading="loading" element-loading-text="拼命加载中">
             <el-col :span="24">
-                <el-col :span="4">
+                <el-col :xl="4" :lg="5" :md="6" :sm="8">
                     <el-input size="small" placeholder="请输入读者编号/姓名" v-model="readerInput" clearable>
                     </el-input>
                 </el-col>
-                <span style="font-size:14px;line-height: 32px;float:left;padding-left: 20px;">所属部门</span>
-                <el-col :span="4">
+                <span style="font-size:14px;line-height: 32px;float:left;padding-left: 10px;">所属部门</span>
+                <el-col :xl="4" :lg="5" :md="6" :sm="8">
                     <el-input size="small" placeholder="请输入部门" v-model="readerdepartment" clearable>
                     </el-input>
                 </el-col>
-                <el-col :span="2">
+                <el-col :xl="2" :lg="2" :md="3" :sm="6">
                     <el-button size="small" type="primary" @click="handleSearch">查询</el-button>
                 </el-col>
-                <el-col :span="12" style="text-align:right;">
+                <el-col :xl="13" :lg="10" :md="6" :sm="8" style="text-align:right;">
                     <el-button size="small" @click="addshowDiglog" type="primary">新增</el-button>
                     <el-button size="small" @click="batchimport" type="primary">批量导入</el-button>
                 </el-col>
@@ -53,8 +53,8 @@
             </el-col>
         </el-col>
         <!--用户新增弹框-->
-          <el-dialog center title="新增" :visible.sync ="adduserFormVisible" :close-on-click-modal="false" width="30%">
-            <el-form :model="adduserForm" size="small" label-width="80px"  ref="adduserForm" :rules="adduserRules">
+          <el-dialog center class="userDialog" custom-class="userdialog" title="新增" :visible.sync ="adduserFormVisible" :close-on-click-modal="false" >
+            <el-form :model="adduserForm" size="small" label-width="80px" :inline="false"  ref="adduserForm" :rules="adduserRules">
               <el-form-item label="读者编号" prop="userid">
                 <el-col :span="20" style="padding-left:0px;">
                   <el-input v-model="adduserForm.userid" auto-complete="off" clearable></el-input>
@@ -88,7 +88,7 @@
             </div>
           </el-dialog>
         <!--用户编辑弹框  -->
-          <el-dialog center title="编辑" :visible.sync ="edituserFormVisible" :close-on-click-modal="false" width="30%">
+          <el-dialog center class="userDialog" custom-class="userdialog" title="编辑" :visible.sync ="edituserFormVisible" :close-on-click-modal="false" >
             <el-form :model="edituserForm" size="small" label-width="80px"  ref="edituserForm" :rules="edituserRules">
               <el-form-item label="读者编号" prop="userid">
                 <el-col :span="20" style="padding-left:0px;">
@@ -123,22 +123,22 @@
             </div>
           </el-dialog>
            <!--批量导入用户信息弹框 :rules="edituserForm"-->
-          <el-dialog center title="批量导入用户" :close-on-press-escape="true" :visible.sync ="batchimportVisible" :close-on-click-modal="false" width="30%" :before-close="closeDialog">
+          <el-dialog center class="userDialog" custom-class="userdialog" title="批量导入用户" :close-on-press-escape="true" :visible.sync ="batchimportVisible" :close-on-click-modal="false" :before-close="closeDialog">
             <div style="width: 80%;margin:auto;text-align: center;">
-                <span style="float:left;line-height:40px;padding-right: 30px;">文件上传</span>
+                <span style="float:left;line-height:40px;padding-right: 25px;">文件上传</span>
                 <el-upload style="padding-right: 80px;margin-bottom: 10px;" ref="upload" accept=".xls,.xlsx" class="upload-demo" action="/info/userinfo/uploadUsers" 
                 :on-change="uploadChange" :on-success="uploadsuccess" :limit="1" :before-upload="uploadbefore">
                   <el-button  type="primary" icon="el-icon-upload">点击上传</el-button>
                 </el-upload>
                 <a href="../../../../static/userModule.xls" download="用户批量导入表">点击下载导入模板</a>
-                <div v-show="chongfu1" style="text-align: left;">
-                  
+                <div v-show="chongfu1" style="text-align: left;padding:2px 0;">
+                  <span>库中有重复数据</span>
                 </div>
-                <div v-show="chongfu2" style="text-align: left;">
-                  
+                <div v-show="chongfu2" style="text-align: left;padding:2px 0;">
+                  <span>导入表中有重复数据</span>
                 </div>
-                <div v-show="zhengque" style="text-align: left;">
-                  
+                <div v-show="zhengque" style="text-align: left;padding:2px 0;">
+                  <span>正确数据{{filereal}}条</span>
                 </div>
             </div>
             <div slot="footer" class="dialog-footer">
@@ -237,7 +237,7 @@ export default {
       fileList:[], //文件上传临时数组
       filerror:'', //文件上传错误数组
       filerror1:'', //文件上传错误数组
-      filereal:'',
+      filereal:0,
       chongfu1:false,
       chongfu2:false,
       zhengque:false,
@@ -294,16 +294,16 @@ export default {
     },
     //文件上传成功时的钩子
     uploadsuccess :function(response,file,fileList){
-      console.log(response)
       let that=this;
-      if(response.data.realList>0){
-        that.zhengque=true;
-        that.fileList=response.data.realList;
-      }
+      that.zhengque=true;
+      that.filereal=response.data.realList.length;
       if(response.data.errorForDbList>0){
-
+        that.chongfu1=true;
       }
-      this.filerror= response.data.errorForDbList;
+      if(response.data.errorForExcelList>0){
+        that.chongfu2=true;
+      }
+      // this.filerror= response.data.errorForDbList;
       // this.filerror=response.data.errorForDbList;
     },
     //文件上传之前的钩子判断
@@ -524,5 +524,10 @@ export default {
   }
   ul,li{
     list-style: none;
+  }
+</style>
+<style>
+  .userDialog .userdialog{
+    width: 400px;
   }
 </style>

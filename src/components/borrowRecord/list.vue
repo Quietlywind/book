@@ -6,11 +6,11 @@
         <el-breadcrumb-item>记录查询</el-breadcrumb-item>
       </el-breadcrumb>
     </el-col> -->
-    <el-col :span="24" class="warp-main" v-loading="loading" element-loading-text="拼命加载中">
+    <el-col :span="24" class="warp-main" v-loading="loading" element-loading-text="拼命加载中" ref="recordWhole">
       <!--工具条-->
-      <el-col :span="24" class="toolbar top_toolbar1">
-        <el-form :inline="true" :model="borrow" size='small' lable-width="0px">
-          <el-form-item class="demo-form-inline">
+      <el-col :span="24" class="toolbar top_toolbar1" ref="recordTop">
+        <el-form  :inline="true" :model="borrow" size='small' lable-width="0px">
+          <el-form-item class="demo-form-inline">          
             <el-input  v-model="borrow.bookname" placeholder="请输入读者编号\书名进行查询" clearable></el-input>
           </el-form-item>
           <el-form-item label="图书类别" class="demo-form-inline">
@@ -45,23 +45,24 @@
         </el-form>
       </el-col>
       <!--列表-->
-      <el-table :data="borrowBooks" tooltip-effect="dark" border highlight-current-row  style="width: 100%;" empty-text="暂无记录">
-        <el-table-column prop="val1" label="读者编号" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="val2" label="图书编码" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="val3" label="图书名称" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="val4" label="图书类别"></el-table-column>
-        <el-table-column prop="val5" label="借阅日期" sortable></el-table-column>
-        <el-table-column prop="val7" label="归还日期" ></el-table-column>
-        <el-table-column prop="val8" label="罚金类型" sortable></el-table-column>
-        <el-table-column prop="val9" label="罚金（单位/元）"></el-table-column>
-      </el-table>  
-      <!--表格分页工具条-->
-      <el-col :span="24" class="toolbar">
-        <el-pagination background style="float:right;" layout="total, prev, pager, next,jumper"  :page-size="10" :total="total" @current-change="handleCurrentChange">
-        </el-pagination>
+      <el-col :span="24">
+        <el-table :height="tableHe" :data="borrowBooks" tooltip-effect="dark" border highlight-current-row  style="width: 100%;" empty-text="暂无记录">
+          <el-table-column prop="val1" label="读者编号" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="val2" label="图书编码" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="val3" label="图书名称" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="val4" label="图书类别"></el-table-column>
+          <el-table-column prop="val5" label="借阅日期" sortable></el-table-column>
+          <el-table-column prop="val7" label="归还日期" ></el-table-column>
+          <el-table-column prop="val8" label="罚金类型" sortable></el-table-column>
+          <el-table-column prop="val9" label="罚金（单位/元）"></el-table-column>
+        </el-table>  
+        <!--表格分页工具条-->
+        <el-col :span="24" class="toolbar">
+          <el-pagination background style="float:right;" layout="total, prev, pager, next,jumper"  :page-size="10" :total="total" @current-change="handleCurrentChange">
+          </el-pagination>
+        </el-col>
       </el-col>
     </el-col>
-    
   </el-row> 
 </template>
 
@@ -89,7 +90,7 @@ export default {
         page:1,
         limit:10,
         loading:false,
-
+        tableHe:0,
         //记录查询页下拉数据-图书类别
         bookcategory:[],
         //模拟下拉数据-罚金类型
@@ -110,7 +111,9 @@ export default {
     }
   },
   watch:{},
-  computed:{},
+  computed:{
+    
+  },
   methods:{
     //记录查询页分页事件
     handleCurrentChange(val){
@@ -144,7 +147,6 @@ export default {
       params.lendStart = (!params.lendStart || params.lendStart == '') ? '' : util.formatDate.format(new Date(params.lendStart), 'yyyy-MM-dd');
       params.lendEnd = (!params.lendEnd || params.lendEnd == '') ? '' : util.formatDate.format(new Date(params.lendEnd), 'yyyy-MM-dd');
       API.recordList(params).then((result)=>{
-        console.log(result)
         that.loading=false;
         if(result && result.status === "101"){
           that.total= result.data.count;
@@ -165,7 +167,6 @@ export default {
         mangeType:"book_type"
       };
       API.setshelf(params).then((result)=>{
-        console.log(result)
         if (result && result.status === "101") {
             that.bookcategory=result.data;
         } else {
@@ -180,10 +181,17 @@ export default {
       })
     },
   },
-  created(){},
+  created(){
+    
+  },
   mounted(){
-    this.handleSearch()
-    this.searchbookcategory()
+    this.handleSearch();
+    this.searchbookcategory();
+    let that = this;
+    this.$nextTick(function () {
+      let bodyHe=document.documentElement.clientHeight; //获取整体高度
+      that.tableHe=bodyHe-that.$refs.recordTop.$el.offsetHeight-50-20-32-11; //动态设置归还记录表格高度
+    })
   }
 }
 </script>
