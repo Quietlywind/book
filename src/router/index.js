@@ -62,7 +62,8 @@ let router = new Router({
       name: '图书库存',
       menuShow: true,
       leaf: true, // 只有一个节点
-      iconCls: 'iconfont icon-books',
+      // iconCls: 'iconfont icon-books',
+      iconCls: 'iconfont icon-shujiguanli',
       children: [
         {path: '/bookStock/list', component: BookStock, name: '图书库存', menuShow: true,iconCls: 'iconfont icon-books'},
         // {path: '/book/category', component: BookCategoryList, name: '图书分类', menuShow: true,iconCls: 'iconfont icon-books'}
@@ -74,7 +75,8 @@ let router = new Router({
       name: '借阅图书',
       menuShow: true,
       leaf: true, // 只有一个节点
-      iconCls: 'iconfont icon-setting1',
+      // iconCls: 'iconfont icon-setting1',
+      iconCls: 'iconfont icon-jieyuetongji-copy',
       children: [
         {path: '/borrowbooks/index', component: borrowbooks, name: '借阅图书', menuShow: true},
         //{path: '/user/changepwd', component: UserChangePwd, name: '修改密码', menuShow: true}
@@ -86,7 +88,8 @@ let router = new Router({
       name: '归还图书',
       menuShow: true,
       leaf: true,
-      iconCls: 'iconfont icon-setting1',
+      // iconCls: 'iconfont icon-setting1',
+      iconCls: 'iconfont icon-huanyuan-',
       children: [
         {path: '/backbooks/index', component: backbooks, name: '归还图书', menuShow: true},
       ]
@@ -97,7 +100,8 @@ let router = new Router({
       name: '记录查询',
       menuShow: true,
       leaf: true,
-      iconCls: 'iconfont icon-setting1',
+      // iconCls: 'iconfont icon-setting1',
+      iconCls: 'iconfont icon-jilu',
       children: [
         // {path: '/bookcategory/list', component: BookCategoryList, name: '借还记录', menuShow: true},
         {path: '/borrowRecord/list', component: borrowRecord, name: '记录查询', menuShow: true},
@@ -109,7 +113,8 @@ let router = new Router({
       name: '配置管理',
       menuShow: true,
       leaf: true,
-      iconCls: 'iconfont icon-setting1',
+      // iconCls: 'iconfont icon-setting1',
+      iconCls: 'iconfont icon-shezhi',
       children: [
         {path: '/configuremanage/index', component: configuremanage, name: '配置管理', menuShow: true},
       ]

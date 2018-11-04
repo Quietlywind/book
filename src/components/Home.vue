@@ -50,21 +50,27 @@
                 <i :class="item.iconCls"></i>
                 <span slot="title">{{item.name}}</span>
               </template>
-              <el-menu-item v-for="term in item.children" :key="term.path" :index="term.path" v-if="term.menuShow"
-                            :class="$route.path==term.path?'is-active':''">
-                <i :class="term.iconCls"></i><span slot="title">{{term.name}}</span>
+              <el-menu-item v-for="term in item.children" :key="term.path" :index="term.path" 
+              v-if="term.menuShow" :class="$route.path==term.path?'is-active':''">
+                <i :class="term.iconCls"></i>
+                <span slot="title">{{term.name}}</span>
               </el-menu-item>
             </el-submenu>
-            <el-menu-item v-else-if="item.leaf&&item.children&&item.children.length" :index="item.children[0].path"
+            <el-menu-item style="padding:0px;" v-else-if="item.leaf&&item.children&&item.children.length" :index="item.children[0].path"
                           :class="$route.path==item.children[0].path?'is-active':''">
-              <i :class="item.iconCls"></i><span slot="title">{{item.children[0].name}}</span>
+              <div class="indexFont">
+                <i :class="item.iconCls"></i>
+              </div>
+              <div style="width: 117px;text-align: center;font-size: 16px;display: inline-block;">
+                <span slot="title">{{item.children[0].name}}</span>
+              </div>
             </el-menu-item>
           </template>
         </el-menu>
       </aside>
 
       <!--右侧内容区-->
-      <section class="content-container" ref="sectionWhole">
+      <section class="content-container">
         <div class="grid-content bg-purple-light">
           <el-col :span="24" class="content-wrapper">
             <transition name="fade" mode="out-in">
@@ -308,7 +314,7 @@
 
     aside {
       min-width: 50px;
-      background: #333744;
+      // background: #333744;
       &::-webkit-scrollbar {
         display: none;
       }
@@ -324,32 +330,46 @@
         height: -webkit-calc(100% - 80px);
         height: calc(100% - 80px);
         border-radius: 0px;
-        background-color: #333744;
+        // background-color: #333744;
         border-right: 0px;
       }
 
       .el-submenu .el-menu-item {
         min-width: 60px;
+        padding: 0px;
       }
       .el-menu {
         width: 180px;
       }
       .el-menu--collapse {
-        width: 60px;
+        // width: 60px;
+        width: 56px;
       }
 
       .el-menu .el-menu-item, .el-submenu .el-submenu__title {
         height: 56px;
-        line-height: 56px;
+        // line-height: 56px;
+        margin: 10px 0px;
+        border: 1px solid #BCBCBC;
       }
-
+      .el-menu .el-menu-item:first-child, .el-submenu .el-submenu__title:first-child{
+        margin-top: 0px;
+      }
+      .el-menu .el-menu-item .indexFont{
+        background-color: #E4E4E4;
+      }
       .el-menu-item:hover, .el-submenu .el-menu-item:hover, .el-submenu__title:hover {
-         background-color: #7ed2df;
+        //  background-color: #7ed2df;
+        background-color: #9DD9D4;
         // background-color: #00c1de;
+      }
+      .el-menu-item:hover .indexFont, .el-submenu .el-menu-item:hover .indexFont, .el-submenu__title:hover .indexFont{
+        // background-color: #8FC5C1;
+        background-color: #7ed2df;
       }
       .el-menu-item:hover .iconfont, .el-submenu .el-menu-item:hover .iconfont, .el-submenu__title:hover .iconfont{
         // background-color: #7ed2df;
-         color:#fff;
+         color:#666;
       }
     }
 
@@ -383,6 +403,18 @@
     // .el-menu-item.is-active{
     //   background-color: #9DD9D5;
     // }
+    .indexFont{
+      width: 54px;
+      text-align: center;
+      display: inline-block;
+      height: 54px;
+      line-height: 52px;
+      
+    }
+    .indexFont .iconfont{
+      font-size: 23px;
+      color: #666;
+    }
   }
 </style>
 <style lang="scss">

@@ -17,7 +17,8 @@ a {
 
 //home.vue
 .el-menu-item, .el-submenu__title {
-  color: #fff;
+  // color: #fff;
+  color: #000;
 }
 
 .el-menu .el-menu-item, .el-submenu .el-submenu__title {
@@ -30,7 +31,7 @@ a {
 }
 
 .el-submenu .el-menu-item {
-  background-color: #333744
+  // background-color: #333744
 }
 
 .el-submenu .el-menu-item:hover {
@@ -39,15 +40,24 @@ a {
 
 .el-submenu .el-menu-item.is-active, .el-menu-item.is-active,
 .el-submenu .el-menu-item.is-active:hover, .el-menu-item.is-active:hover {
-  background-color: #00C1DE;
+  // background-color: #00C1DE;
+  background-color: #9DD9D4;
   color: #fff;
+}
+.el-submenu .el-menu-item.is-active .indexFont, .el-menu-item.is-active .indexFont{
+  background-color: #8FC5C1 !important;
+}
+.el-submenu .el-menu-item.is-active .indexFont .iconfont, .el-menu-item.is-active .indexFont .iconfont{
+  color: #FFF;
 }
 
 .el-menu .iconfont {
   vertical-align: baseline;
   margin-right: 6px;
 }
-
+.el-menu .el-tooltip {
+  padding: 0px !important;
+}
 .warp-breadcrum{
   margin: 5px 10px 15px 0px;
 }

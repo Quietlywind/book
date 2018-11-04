@@ -14,6 +14,7 @@ import "babel-polyfill";
 
 import 'element-ui/lib/theme-chalk/index.css'  //element-ui样式
 import '@/assets/iconfont.css'  //字体图标样式
+import '@/assets/font/iconfont.css'  //新字体图标
 import '@/assets/styles/main.scss'  //
 import 'nprogress/nprogress.css' //这个样式必须引入进度条样式
 
