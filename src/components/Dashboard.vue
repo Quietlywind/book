@@ -194,15 +194,15 @@
     </el-col>
       <!--罚金详情界面-->
       <el-dialog title="" fullscreen :visible.sync ="fineVisible" :close-on-click-modal="false" style="width:100%;">
-          <fine-detail></fine-detail>
+          <fine-detail ref="finePage"></fine-detail>
       </el-dialog>
       <!--处理详情界面-->
       <el-dialog title="" fullscreen :visible.sync ="dealVisible" :close-on-click-modal="false" style="width:100%;">
-          <deal-detail></deal-detail>
+          <deal-detail ref="dealPage"></deal-detail>
       </el-dialog>
       <!-- 逾期通知界面 -->
       <el-dialog title="" fullscreen :visible.sync ="overdueVisible" :close-on-click-modal="false" style="width:100%;">
-          <overduenotice></overduenotice>
+          <overduenotice @child-say="overduesay"></overduenotice>
       </el-dialog>
   </el-row>
 </template>
@@ -505,20 +505,27 @@
       },
       //打开罚金详情
       fineDetail(){
+        let that=this;
         this.fineVisible=true;
+        this.$nextTick(function () {
+            this.$refs.finePage.recordRest()//通过$refs找到子组件，并找到方法执行
+        })
       },
       //打开处理图书界面
       dealDetail(){
         let that=this;
         this.dealVisible=true;
-        // this.$nextTick(function () {
-        //     that.$refs.fines.resetFields();
-        // })
+        this.$nextTick(function () {
+            this.$refs.dealPage.fineDeal()//通过$refs找到子组件，并找到方法执行
+        })
       },
       //打开逾期通知界面
       overdueNotice(){
         this.overdueVisible=true;
-
+      },
+      //子组件传递关闭逾期通知事件
+      overduesay(){
+        this.overdueVisible=false;
       },
       // 罚金统计
       fineTotal:function(val){

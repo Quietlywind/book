@@ -324,6 +324,7 @@ export default {
               this.chongfu1=false;
               this.chongfu2=false;
               this.zhengque=false;
+              that.fileList=[];
               this.$refs.upload.clearFiles()
               that.search();
             }else if(result && result.status === "102"){

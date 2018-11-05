@@ -1,7 +1,8 @@
 <template>
   <div class="wrapper">
       <el-row :gutter="20">
-        <el-col :md="24" style="margin-bottom:20px;text-align: right;padding-right:80px;">
+        <el-col :md="24" style="margin-bottom:20px;text-align: right;padding-right:40px;">
+            <el-button size="small" type="primary" style="float:left;" @click="returnback">返回</el-button>
             <el-button size="small" type="primary" @click="onexport">导出</el-button>
         </el-col>
         <el-table :data="finebooks" border size="small" highlight-current-row style="width: 100%;" v-loading="loading" element-loading-text="拼命加载中">
@@ -43,7 +44,8 @@ export default {
       page:1,
       total:0,
       finebooks:[],
-      loading:false,      
+      loading:false,
+      inputVal:11, 
     }
   },
   watch:{},
@@ -107,6 +109,9 @@ export default {
                     that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
             })
         }
+    },
+    returnback(){
+        this.$emit('child-say')
     }
   },
   created(){},

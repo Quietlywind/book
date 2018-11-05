@@ -79,7 +79,7 @@
           </el-col>
           <!-- 逾期通知界面 -->
           <el-dialog title="" fullscreen :visible.sync ="overdueVisible" :close-on-click-modal="false" style="width:100%;">
-              <overduenotice></overduenotice>
+              <overduenotice  @child-say="overduesay" ></overduenotice>
           </el-dialog>
           <!-- 修改密码弹框 -->
           <el-dialog id="editpassDiv" custom-class="editpassdiv" center title="修改密码" :visible.sync ="eidtpassVisible" :close-on-click-modal="false" >
@@ -123,7 +123,6 @@
         if (url === "/login") {
           localStorage.removeItem('access-user');
         }
-        console.log()
         this.$router.push(url);
       })
     },
@@ -259,7 +258,10 @@
       },
       resetForm(ruleForm) {
         this.$refs.ruleForm.resetFields();
-      }
+      },
+      overduesay(){
+        this.overdueVisible=false;
+      },
     },
     mounted() {
       let user = localStorage.getItem('access-user');

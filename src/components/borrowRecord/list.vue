@@ -9,11 +9,11 @@
     <el-col :span="24" class="warp-main" v-loading="loading" element-loading-text="拼命加载中" ref="recordWhole">
       <!--工具条-->
       <el-col :span="24" class="toolbar top_toolbar1" ref="recordTop">
-        <el-form  :inline="true" :model="borrow" size='small' lable-width="0px">
-          <el-form-item class="demo-form-inline">          
+        <el-form  :inline="true" ref="borrow" :model="borrow" size='small' lable-width="0px">
+          <el-form-item class="demo-form-inline" prop="bookname">          
             <el-input  v-model="borrow.bookname" placeholder="请输入读者编号\书名进行查询" clearable></el-input>
           </el-form-item>
-          <el-form-item label="图书类别" class="demo-form-inline">
+          <el-form-item label="图书类别" class="demo-form-inline" prop="region">
                 <el-select  v-model="borrow.region" placeholder="请选择">
                     <el-option label="请选择" value=""></el-option>
                     <el-option v-for="item in bookcategory" :value='item.id' :key="item.id" :label="item.mangeName">
@@ -31,7 +31,7 @@
               <span>—</span>
               <el-date-picker type="date" placeholder="选择日期" v-model="borrow.returnDate2" ></el-date-picker>
           </el-form-item>
-          <el-form-item label="罚金类型" class="demo-form-inline">
+          <el-form-item label="罚金类型" class="demo-form-inline" prop="fineType">
             <el-select v-model="borrow.fineType" placeholder="请选择">
                 <el-option label="请选择" value=""></el-option>
                 <el-option v-for="item in finestype" :value='item.value' :key="item.index" :label="item.name">
@@ -180,6 +180,16 @@ export default {
         that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
       })
     },
+    recordRest(){
+      let that=this;
+      this.$nextTick(function() {
+          that.borrow.borrowDate1="";
+          that.borrow.borrowDate2="";
+          that.borrow.returnDate1="";
+          that.borrow.returnDate2="";
+          that.$refs.borrow.resetFields();
+      })
+    }
   },
   created(){
     

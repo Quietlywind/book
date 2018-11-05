@@ -3,10 +3,10 @@
       <el-row :gutter="20">
         <el-col :span="24" class="toolbar_top11" style="margin-bottom:20px;">
             <el-form :model="fines" ref="fines" :inline="true" size="small" label-position='left' label-width="80px">
-                <el-form-item>
+                <el-form-item prop="bookname">
                     <el-input style="width:150px;" v-model="fines.bookname" placeholder="请输入书名" @keyup.enter.native="onSubmit"></el-input>
                 </el-form-item>
-                <el-form-item label="图书类型">
+                <el-form-item label="图书类型" prop="bookCategory">
                     <el-select style="width:150px;" v-model="fines.bookCategory" placeholder="请选择图书类型">
                         <el-option label="请选择" value=""></el-option>
                         <el-option v-for="item in bookCategory" :value='item.id' :key="item.id" :label="item.mangeName">
@@ -14,7 +14,6 @@
                         </el-option>
                     </el-select>
                 </el-form-item>
-                
                 <el-form-item label="处理类型" prop="dealType">
                     <el-select style="width:150px" v-model="fines.dealType" placeholder="请选择">
                         <el-option label="请选择" value=""></el-option>
@@ -23,7 +22,7 @@
                         </el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="处理时间">
+                <el-form-item label="处理时间" prop="paydate1">
                     <el-date-picker  type="date" placeholder="选择日期" v-model="fines.paydate1" style="width:140px;"></el-date-picker>
                     <span>-</span>
                     <el-date-picker type="date" placeholder="选择时间" v-model="fines.paydate2" style="width:140px;"></el-date-picker>
@@ -173,6 +172,14 @@ export default {
         that.loading=false;
         that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
       })
+    },
+    
+    fineDeal(){
+        let that=this;
+        this.$nextTick(function() {
+            that.fines.paydate2="";
+            that.$refs.fines.resetFields();
+        })
     },
   },
   created(){
