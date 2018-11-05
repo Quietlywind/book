@@ -24,17 +24,9 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="处理时间">
-                    <!-- <el-col :span="7">
-                        
-                    </el-col>
-                     <el-col class="line" :span="1">-</el-col>
-                     <el-col :span="7">
-                        
-                    </el-col> -->
                     <el-date-picker  type="date" placeholder="选择日期" v-model="fines.paydate1" style="width:140px;"></el-date-picker>
                     <span>-</span>
                     <el-date-picker type="date" placeholder="选择时间" v-model="fines.paydate2" style="width:140px;"></el-date-picker>
-                    
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="onSubmit">查询</el-button>
@@ -117,7 +109,8 @@ export default {
         ],
     }
   },
-  watch:{},
+  watch:{
+  },
   computed:{},
   methods:{
       //分页改变事件
@@ -147,7 +140,6 @@ export default {
         params.dealEnd = (!params.dealEnd || params.dealEnd === '') ? '' : util.formatDate.format(new Date(params.dealEnd), 'yyyy-MM-dd');
         that.loading=true;
         API.dealtipList(params).then((result)=>{
-            console.log(result)
             that.loading=false;
             if(result && result.status === "101"){
                 that.total= result.data.count;
@@ -182,12 +174,13 @@ export default {
         that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
       })
     },
-      
   },
-  created(){},
+  created(){
+  },
   mounted(){
-      this.onSubmit();
-      this.searchbookcategory();
+    let that=this;
+    this.onSubmit();
+    this.searchbookcategory();
   }
 }
 </script>

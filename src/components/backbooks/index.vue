@@ -8,6 +8,9 @@
         </el-breadcrumb>
       </el-col>
     </el-row> -->
+    <OBJECT classid="clsid:10946843-7507-44FE-ACE8-2B3483D179B7"
+      id="CVR_IDCard" name="CVR_IDCard" width="0" height="0" >
+    </OBJECT>
     <el-row :gutter="20">
       <el-col  class="warp-main">
         <el-col :span="14">
@@ -18,6 +21,7 @@
                   <el-input  v-model="readers.readerId" placeholder="" clearable></el-input>
                 </el-form-item>
                 <el-form-item>
+                  <el-button type="primary" @click="readCard">读卡</el-button>
                   <el-button type="primary" @click="handleSearch">查找</el-button>
                 </el-form-item>
               </el-form>
@@ -389,7 +393,7 @@ export default {
             this.returnsearch();
             that.finetableTrue=false;
           }
-        });
+      });
     },
 
     //归还登记查询未还书记录
@@ -587,7 +591,6 @@ export default {
     //查看个人归还图书归还记录详情
     checkpunish(index,row){
       this.checkdetailVisible=true;
-      console.log(row)
       this.checkArr={
         bookname:row.val3,
         bookid:row.val2,
@@ -638,6 +641,24 @@ export default {
         that.moneyTotal=0+Number(this.overduemoney)+Number(that.damagebooks.damagemoney2);
       }
     },
+
+    //读取身份信息
+    readCard(){
+      let CVR_IDCard = document.getElementById("CVR_IDCard");
+      let strReadResult =CVR_IDCard.ReadCard();
+      let that=this;
+      if(strReadResult=="0"){
+        that.ClearForm()
+        that.readers.readerId = CVR_IDCard.CardNo;  
+      }else{
+        that.ClearForm();
+        // alert(strReadResult)
+      }
+    },
+    ClearForm(){
+       this.readers.readerId = "";  
+       return true;
+      },
   },
   created(){},
   mounted(){

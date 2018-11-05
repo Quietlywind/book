@@ -4,7 +4,7 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import ElementUI from 'element-ui'
-import axios from 'axios'
+import axios from 'axios' 
 import NProgress from 'nprogress'
 import Highcharts from 'highcharts';
 import VueHighcharts from 'vue-highcharts';
@@ -33,6 +33,21 @@ router.beforeEach((to, from, next) => {
 router.afterEach( ()=> {
   NProgress.done()
 })
+
+router.beforeEach((to, from, next) => { 
+  if (to.path.startsWith('/login')) {
+    window.localStorage.removeItem('access-user')
+    next()
+  } else {
+    let user = JSON.parse(window.localStorage.getItem('access-user'))
+    if (!user) {
+      next({path: '/login'})
+    } else {
+      next()
+    }
+  }
+})
+
 
 /* eslint-disable no-new */
 new Vue({

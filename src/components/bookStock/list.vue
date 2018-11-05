@@ -44,9 +44,9 @@
         <el-table-column prop="bookName" label="图书名称" show-overflow-tooltip></el-table-column>
         <el-table-column prop="bookCategory" label="图书类别"></el-table-column>
         <el-table-column prop="bookPublisher" label="出版社" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="shelfName" label="书架" >
+        <el-table-column prop="shelfName" label="书架/层数" >
           <template slot-scope="scope">
-            <span>第{{scope.row.shelfName}}个书架</span>
+            <span>第{{scope.row.shelfName}}书架/{{scope.row.shelfNum}}层</span>
           </template>
         </el-table-column>
         <el-table-column prop="bookPrice" label="单价" sortable></el-table-column>
@@ -58,7 +58,9 @@
         <el-table-column label="操作" width="150" align="center">
           <template slot-scope="scope">
             <el-button size="small" type="text" @click="showEditDialog(scope.$index,scope.row)">编辑</el-button>
-            <el-button type="text"  size="small" @click="delBook(scope.$index,scope.row)">处理</el-button>
+            <!-- <template slot-scope="scope" v-if="Number(scope.row.bookRemain) != 0"> -->
+                <el-button type="text"  size="small" @click="delBook(scope.$index,scope.row)">处理</el-button>
+            <!-- </template> -->
           </template>
         </el-table-column>
       </el-table>
@@ -92,6 +94,9 @@
             </el-form-item>
             <el-form-item label="单价:" prop="bookPrice">
               <el-input v-model.number="editForm.bookPrice" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="库存数量:" prop="bookStorage">
+              <el-input-number v-model.number="editForm.bookStorage" :min=0 ></el-input-number><span style="padding-left:10px">现有库存数量{{editForm.bookStorage1}}本</span>
             </el-form-item>
             <el-form-item label="图书书架" prop="shelfName">
               <el-select style="width:100%;" v-model="editForm.shelfName" placeholder="请选择" clearable>
@@ -134,10 +139,13 @@
                 </el-select>
           </el-form-item>
           <el-form-item label="出版社:" prop="bookPublisher">
-            <el-input v-model="addForm.bookPublisher" auto-complete="off"></el-input>
+            <el-input v-model="addForm.bookPublisher" ></el-input>
           </el-form-item>
           <el-form-item label="单价:" prop="bookPrice">
-            <el-input v-model.number="addForm.bookPrice" auto-complete="off"></el-input>
+            <el-input v-model.number="addForm.bookPrice" ></el-input>
+          </el-form-item>
+          <el-form-item label="库存数量:" prop="bookStorage">
+            <el-input-number v-model.number="addForm.bookStorage" :min=1 ></el-input-number><span style="padding-left:10px">本</span>
           </el-form-item>
           <el-form-item label="图书书架" prop="shelfName">
             <el-select style="width:100%;" v-model="addForm.shelfName" placeholder="请选择" clearable>
@@ -279,6 +287,8 @@ export default {
             bookPrice:'',
             shelfName:'',
             shelfNum:'',
+            bookStorage:0,
+            bookStorage1:0,
         },
 
         //新增相关数据
@@ -316,6 +326,7 @@ export default {
             bookPrice:'',
             shelfName:'',
             shelfNum:'',
+            bookStorage:0,
         },
         //处理相关数据
         handleFormVisible:false, //图书处理界面是否显示
@@ -327,6 +338,7 @@ export default {
           dealNum:'',  //处理数量
           dealRemark:'', //处理备注
           dealType:'', //处理类型
+          // bookStorage:'',
         },
         maxdealNum:0,
         mindealNum:1,
@@ -424,7 +436,6 @@ export default {
     //显示处理图书界面
     delBook:function(index,row){
         this.handleFormVisible=true;
-        console.log(row)
         this.handleForm={
           id:row.id, //图书id
           bookUuid:row.bookUuid, //图书编码
@@ -473,7 +484,6 @@ export default {
 
     //显示图书编辑界面
     showEditDialog:function(index,row){
-      console.log(row)
       let that=this;
       this.editFormVisible=true;
       this.$nextTick(function() {
@@ -482,12 +492,15 @@ export default {
       // this.editForm = Object.assign({}, row);
       this.editForm={
         id:row.id,
+        bookUuid:row.bookUuid,
         bookName:row.bookName,
         bookCategory:String(row.bookCategory),
         bookPublisher:row.bookPublisher,
         bookPrice:row.bookPrice,
         shelfName:row.shelfName,
         shelfNum:row.shelfNum,
+        bookStorage1:Number(row.bookStorage),
+        bookStorage:0,
       };
       
       // this.$refs.editForm.clearValidate();
@@ -547,6 +560,7 @@ export default {
           bookPrice:'',
           shelfName:'',
           shelfNum:'',
+          bookStorage:1,
         };
     },
     //图书新增界面提交
@@ -571,7 +585,6 @@ export default {
               that.$message.error({showClose: true, message: err.toString(), duration: 2000});
             }).catch(function (error) {
               that.loading = false;
-              console.log(error);
               that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
             });
           }
@@ -596,7 +609,6 @@ export default {
             that.$message.error({showClose: true, message: err.toString(), duration: 2000});
           }).catch(function (error) {
             that.loading = false;
-            console.log(error);
             that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
           });
         }).catch(() => {
@@ -634,7 +646,6 @@ export default {
           that.$message.error({showClose: true, message: err.toString(), duration: 2000});
         }).catch(function (error) {
           that.loading = false;
-          console.log(error);
           that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
         });
     },

@@ -123,6 +123,7 @@
         if (url === "/login") {
           localStorage.removeItem('access-user');
         }
+        console.log()
         this.$router.push(url);
       })
     },
@@ -183,6 +184,7 @@
         this.defaultActiveIndex = url;
         this.$router.push(url); //用go刷新
       },
+      //退出
       logout(){ 
         let that = this;
         this.$confirm('确认退出吗?', '提示', {
@@ -192,15 +194,18 @@
           //确认
           that.loading = true;
           API.logout().then(function (result) {
-            that.loading = false;
-            localStorage.removeItem('access-user');
-            that.$router.go('/login'); //用go刷新
+            if(result && result.status ==="101"){
+              that.loading = false;
+              localStorage.removeItem('access-user');
+              that.$router.go('/login'); //用go刷新
+            }else if(result && result.status === "102"){
+              that.$message.error({showClose: true, message:"退出失败！请重试", duration: 2000});
+            }
           }, function (err) {
             that.loading = false;
             that.$message.error({showClose: true, message: err.toString(), duration: 2000});
           }).catch(function (error) {
             that.loading = false;
-            console.log(error);
             that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
           });
         }).catch(() => {});
@@ -223,9 +228,29 @@
       },
       //修改密码确认提交
       submitForm(ruleForm) {
+        let that=this;
         this.$refs.ruleForm.validate((valid) => {
           if (valid) {
-           
+            let params={
+              userPassword:that.ruleForm.oldPass,
+            }
+            params.userPassword +=","+that.ruleForm.nowPass;
+            API.editPass(params).then(function (result) {
+            if(result && result.status ==="101"){
+              that.eidtpassVisible=false;
+              that.$message.success({showClose: true, message:"密码修改成功", duration: 2000});
+            }else if(result && result.status === "102"){
+              that.$message.error({showClose: true, message:"旧密码错误！请重新输入修改", duration: 2000});
+            }
+          }, function (err) {
+            that.loading = false;
+            that.eidtpassVisible=false;
+            that.$message.error({showClose: true, message: err.toString(), duration: 2000});
+          }).catch(function (error) {
+            that.loading = false;
+            that.eidtpassVisible=false;
+            that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+          });
           } else {
             
             return false;
@@ -240,7 +265,7 @@
       let user = localStorage.getItem('access-user');
       if (user) {
         user = JSON.parse(user);
-        this.nickname = user.nickname || '';
+        this.nickname = user || '';
       }
     }
   }
@@ -315,6 +340,7 @@
     aside {
       min-width: 50px;
       // background: #333744;
+      background-color: #fff;
       &::-webkit-scrollbar {
         display: none;
       }
@@ -322,6 +348,7 @@
       &.showSidebar {
         overflow-x: hidden;
         overflow-y: auto;
+        background-color: #fff;
       }
 
       .el-menu {

@@ -181,7 +181,7 @@
                       <div class="tablist_top" v-if="index===0" style="display: inline-block;background:url('../../static/top1.png');background-size: 100% 100%;background-position-y: 2px;">{{index+1}}</div>
                       <div class="tablist_top" v-else-if="index===1" style="display: inline-block;background:url('../../static/top2.png');background-size: 100% 100%;background-position-y: 2px;">{{index+1}}</div>
                       <div class="tablist_top" v-else-if="index===2" style="display: inline-block;background:url('../../static/top3.png');background-size: 100% 100%;background-position-y: 2px;">{{index+1}}</div>
-                      <div class="tablist_top" v-else>{{index+1}}</div>
+                      <div class="tablist_top" style="display: inline-block;" v-else>{{index+1}}</div>
                     </template>
                     <span >{{item.name}}</span>
                     <span style="display:inline-block;float:right;padding-right: 5px;">{{item.num}}次</span>
@@ -319,7 +319,7 @@
   .borderBox{
     border: 1px solid #85CCC8;
     background-color: #FEFEFE;
-    padding: 30px 0;
+    padding: 30px 0px 20px 0px;
   }
   .borderBox_bottom{
     border: 1px solid #85CCC8;
@@ -364,7 +364,7 @@
     border-left: none;
   }
   .borderBox .tablist{
-    width: 280px;
+    width: 380px;
     padding: 20px 0px;
     margin: 0 auto;
   }
@@ -500,7 +500,6 @@
         }, function (err) {
           that.$message.error({showClose: true, message: err.toString(), duration: 2000});
         }).catch(function (error) {
-          console.log(error);
           that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
         });
       },
@@ -510,15 +509,19 @@
       },
       //打开处理图书界面
       dealDetail(){
+        let that=this;
         this.dealVisible=true;
+        // this.$nextTick(function () {
+        //     that.$refs.fines.resetFields();
+        // })
       },
       //打开逾期通知界面
       overdueNotice(){
         this.overdueVisible=true;
+
       },
       // 罚金统计
       fineTotal:function(val){
-         console.log(val)
          let chartBar=Highcharts.chart('chartBar',{
            chart: {
             type: 'column'  //指定图表的类型，默认是折线图(line)
@@ -576,9 +579,9 @@
                   text: '',
                   style: {
                       fontFamily: "",
-                      fontSize: '12px',
+                      fontSize: '14px',
                       fontWeight: 'bold',
-                      color: '#000000'
+                      color: '#000'
                   },
                 },
                 tooltip: {
@@ -603,7 +606,7 @@
                       format: '<b>{point.name}</b>: {point.percentage:.1f} %',
                       style: {
                         "color": 'black',
-                        "fontSize":"10px",
+                        "fontSize":"12px",  
                         // (Highcharts.theme && Highcharts.theme.contrastTextColor) || 
                       },
                       connectorPadding: 2,

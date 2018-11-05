@@ -1,28 +1,24 @@
 <template>
   <div>
-    <!-- <el-row class="warp">
-      <el-col :span="24" class="warp-breadcrum">  
-        <el-breadcrumb separator="/">
-          <el-breadcrumb-item :to="{ path: '/' }"><b>首页</b></el-breadcrumb-item>
-          <el-breadcrumb-item>借阅图书</el-breadcrumb-item>
-        </el-breadcrumb>
-      </el-col>
-    </el-row> -->
+    <OBJECT classid="clsid:10946843-7507-44FE-ACE8-2B3483D179B7"
+      id="CVR_IDCard" name="CVR_IDCard" width="0" height="0" >
+    </OBJECT>
     <el-row :gutter="20">
       <el-col  class="warp-main">
-        <el-col :span="14">
+        <el-col :span="13">
           <div class="method_wrap">
               <span class="title">读者信息</span>
-              <el-form :inline="true" :model="readers" size='small' class="book-form-inline" style="text-align: center;" label-width="100px">
+              <el-form :inline="true" :model="readers" ref="readers" :rules="readrules" size='small' class="book-form-inline" style="text-align: center;" label-width="100px">
                 <el-form-item label="读者编号">
-                  <el-input  v-model="readers.readerId" placeholder="" clearable></el-input>
+                  <el-input  v-model="readers.readerId"  placeholder="" clearable></el-input>
                 </el-form-item>
                 <el-form-item>
+                  <el-button type="primary" @click="readCard">读卡</el-button>
                   <el-button type="primary" @click="readerSearch">查看</el-button>
                 </el-form-item>
               </el-form>
           </div>
-          <div class="method_wrap" ref="method" style="margin-top:30px;min-height:395px;">
+          <div class="method_wrap" ref="method"  style="min-height:412px;margin-top:30px;">
               <span class="title">借阅记录</span>
               <div  v-loading="loading" element-loading-text="拼命加载中">
                   <!--借阅记录列表-->
@@ -38,7 +34,7 @@
               </div>
           </div>
         </el-col>
-        <el-col :span="10">
+        <el-col :span="11">
           <div class="method_wrap_right" style="min-height:518px;">
               <span class="title">图书信息</span>
               <el-form :inline="true" :model="books" size='small' style="margin: 15px 0;" class="book-form-inline" lable-width="70px">
@@ -56,7 +52,12 @@
                   <!--图书信息列表-->
                   <el-table :data="booksDetail" v-show="booktableTrue" size="small" border highlight-current-row empty-text="暂无记录"  style="width: 100%;">
                     <el-table-column prop="bookUuid" label="图书编码" show-overflow-tooltip></el-table-column>
-                    <el-table-column prop="bookName" label="图书名称"></el-table-column>
+                    <el-table-column prop="bookName" label="图书名称" show-overflow-tooltip></el-table-column>
+                    <el-table-column prop="shelfName" label="书架/层数" >
+                      <template slot-scope="scope" >
+                        <span>第{{scope.row.shelfName}}书架/{{scope.row.shelfName}}层</span>
+                      </template>
+                    </el-table-column>
                     <el-table-column prop="bookRemain" label="库存数量" sortable></el-table-column>
                     <el-table-column label="操作" width="60" align="center">
                       <template slot-scope="scope" v-if="scope.row.bookRemain">
@@ -105,7 +106,16 @@ import API from '../../api/api_book';
 export default {
 
   data() {
-
+    var idCard1=(rule,value,callback)=>{
+      let reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+        if(value === ''){
+          callback(new Error('读者编号不能为空'))
+        }else if(!reg.test(value)){
+          callback(new Error('请输入正确的读者编号'));
+        }else{
+          callback()
+        }
+    }
     return {
       total1:0,
       page1:1,
@@ -122,6 +132,12 @@ export default {
       //读者表单
       readers:{
         readerId:'',
+      },
+      readrules:{
+        readerId:[
+          { required: true, message: '请选择活动区域', trigger: 'blur' }
+          // { validator: idCard1,trigger: 'blur' },
+        ]
       },
       //图书表单
       books:{
@@ -142,7 +158,7 @@ export default {
         backdate:[
           { type: 'date', required: true, message: '请选择归还日期', trigger: 'change' }
         ]
-      }
+      },
     }
   },
   components: {},
@@ -183,12 +199,14 @@ export default {
       };
       that.loading=true;
       API.borrowrecordList(params).then((result)=>{
-         that.loading=false;
-         if(result && result.status === "101"){
+        that.loading=false;
+        if(result && result.status === "101"){
           that.total1= result.data.count;
           that.borrowsbook=result.data.data;
           that.borrowtableTrue=true;
-         }
+        }else if(result && result.status === "108"){
+          that.$message.error({showClose:true,message:"该用户未配置账户，请到用户管理中配置账号",duration:2000});
+        }
       },(err)=>{
         that.loading=false;
         that.$message.error({showClose:true,message:err.toString(),duration:2000});
@@ -201,11 +219,12 @@ export default {
     bookerSearch(){
       this.total2=0;
       this.page2=1;
-      if(this.books.bookid =="" ){
-        this.$message.error({showClose:true,message:'请录入图书编码进行查询',duration:1500});
+      if(this.books.bookid !="" || this.books.bookname !=""){
+        this.booksearch();
         // this.recordsearch();
       }else{
-         this.booksearch();
+        this.$message.error({showClose:true,message:'请录入图书编码或图书名称进行查询',duration:1500});
+         
       }
      
     },
@@ -247,7 +266,8 @@ export default {
       this.lendform = {
           backdate:'',
           nowdate:util.formatDate.format(new Date(), 'yyyy-MM-dd'),
-          bookstock:row.bookRemain,
+          bookstock:1,
+          // row.bookRemain
           bookUuid:row.bookUuid
       };
       this.lendFormVisible=true;
@@ -265,7 +285,6 @@ export default {
           }
           params.appointedDate = (!params.appointedDate || params.appointedDate === '') ? '' : util.formatDate.format(new Date(params.appointedDate), 'yyyy-MM-dd');
           API.lendbook(params).then((result)=>{
-            console.log(result)
             if(result && result.status === "101"){
               that.lendFormVisible=false;
               this.$message.success({showClose:true,message:'图书借出成功',duration:1500});
@@ -286,14 +305,30 @@ export default {
     //图书借出数量改变
     lengnumChange(val){
       
-    }
+    },
+    //读取身份信息
+    readCard(){
+      let CVR_IDCard = document.getElementById("CVR_IDCard");
+      let strReadResult =CVR_IDCard.ReadCard();
+      if(strReadResult=="0"){
+        this.ClearForm()
+        this.readers.readerId = CVR_IDCard.CardNo;  
+      }else{
+        this.ClearForm();
+        // alert(strReadResult)
+      }
+    },
+    ClearForm(){
+       this.readers.readerId = "";  
+       return true;
+      },
+
   },
   created(){
     
   },
   mounted(){
     // var heightCss = window.getComputedStyle(this.$refs.method).height; // ？px
-    // console.log(heightCss)
     
   }
 }

@@ -90,7 +90,6 @@ export default {
       };
       API.setshelf(params).then((result)=>{
         that.loading=false;
-        console.log(result)
         if (result && result.status === "101") {
             that.commonly.overdueday=result.data[0].mangeRemark1;
             that.commonly.overduerate1=result.data[0].mangeRemark2;

@@ -45,6 +45,11 @@
                 </el-form-item>
               </el-col>
               <el-col :md="16" class="newbookdiv">
+                <el-form-item label="库存数量:" prop="bookStorage">
+                  <el-input-number v-model.number="newbook.bookStorage" :min=1 ></el-input-number>
+                </el-form-item>
+              </el-col>
+              <el-col :md="16" class="newbookdiv">
                   <div style="width:50%;display: inline-block;">
                     <el-form-item label="层数" prop="bookshelfnum">
                       <el-select  v-model="newbook.bookshelfnum" placeholder="请选择" clearable>
@@ -88,7 +93,8 @@ export default {
           bookpress:'',
           bookprice:'',
           bookshelf:'',
-          bookshelfnum:''
+          bookshelfnum:'',
+          bookStorage:1,
         },
         //模拟下拉数据-图书类别
         bookcategory:[],
@@ -141,6 +147,7 @@ export default {
               bookPrice:that.newbook.bookprice,
               shelfName:that.newbook.bookshelf,
               shelfNum:that.newbook.bookshelfnum,
+              bookStorage:that.newbook.bookStorage,
             }
             API.addbookstock(para).then(function (result) {
               if (result && result.status === "101") {
@@ -152,7 +159,6 @@ export default {
             }, function (err) {
               that.$message.error({showClose: true, message: err.toString(), duration: 2000});
             }).catch(function (error) {
-              console.log(error);
               that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
             });
           }
@@ -214,6 +220,10 @@ export default {
   mounted(){
     this.searchbookcategory();
     this.searchbookshelf();
+    let that=this;
+    this.$nextTick(function() {
+          that.$refs.newbook.clearValidate();
+      })
   }
 }
 </script>

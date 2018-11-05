@@ -1,8 +1,8 @@
 <template>
   <div class="wrapper">
       <el-row>
-        <el-col :xs="20" :sm="20" :md="20">
-          <el-tag style="margin:0 5px;" :key="tag.index" v-for="tag in dynamicTags" closable :disable-transitions="false" @close="handleClose(tag.id)">
+        <el-col :xs="24" :sm="24" :md="24">
+          <el-tag style="margin:5px 5px;" :key="tag.index" v-for="tag in dynamicTags" closable :disable-transitions="false" @close="handleClose(tag.id)">
             {{tag.mangeName}}
           </el-tag>
           <el-input style="width:80px;" v-if="inputVisible" v-model="inputValue" ref="saveTagInput" size="small" 
@@ -38,7 +38,6 @@ export default {
         mangeType:"book_type"
       };
       API.setshelf(params).then((result)=>{
-        console.log(result)
         if (result && result.status === "101") {
             that.dynamicTags=result.data;
         } else {
@@ -87,19 +86,25 @@ export default {
     handleInputConfirm(){
       let inputValue=this.inputValue;
       let that=this;
-      axios.post('/info/mange/insert',{
+      if(inputValue !=""){
+        axios.post('/mange/insert',{
             mangeType:"book_type",
             mangeName:inputValue
-      }).then((res)=>{
-          if(res.data && res.data.status === "101"){
-            that.$message.success({showClose:true,message:"图书类别新增成功",duration:2000});
-            that.inputVisible=false;
-            that.inputValue="";
-            that.search()
-          }
-      }).catch((err)=>{  
-          console.log(err)
-      })
+        }).then((res)=>{
+            if(res.data && res.data.status === "101"){
+              that.$message.success({showClose:true,message:"图书类别新增成功",duration:2000});
+              that.inputVisible=false;
+              that.inputValue="";
+              that.search()
+            }
+        }).catch((err)=>{  
+          
+        })
+      }else{
+        that.inputVisible=false;
+        that.inputValue="";
+      }
+      
     },
     insertregion(){
       // API.insertregion(params).then((result)=>{

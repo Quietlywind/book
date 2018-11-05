@@ -19,8 +19,8 @@ axios.defaults.withCredentials = true;
 
 // 添加一个响应拦截器
 axios.interceptors.response.use(function (response) {
-  if (response.data && response.data.errcode) {
-    if (parseInt(response.data.errcode) === 40001) {
+  if (response.data.status) {
+    if (parseInt(response.data.status) === 42001) {
       //未登录
       bus.$emit('goto', '/login')
     }
@@ -28,6 +28,7 @@ axios.interceptors.response.use(function (response) {
   return response;
 }, function (error) {
   // Do something with response error
+  bus.$emit('goto', '/login')
   return Promise.reject(error);
 });
 

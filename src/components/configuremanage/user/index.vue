@@ -126,7 +126,7 @@
           <el-dialog center class="userDialog" custom-class="userdialog" title="批量导入用户" :close-on-press-escape="true" :visible.sync ="batchimportVisible" :close-on-click-modal="false" :before-close="closeDialog">
             <div style="width: 80%;margin:auto;text-align: center;">
                 <span style="float:left;line-height:40px;padding-right: 25px;">文件上传</span>
-                <el-upload style="padding-right: 80px;margin-bottom: 10px;" ref="upload" accept=".xls,.xlsx" class="upload-demo" action="/info/userinfo/uploadUsers" 
+                <el-upload style="padding-right: 80px;margin-bottom: 10px;" ref="upload" accept=".xls,.xlsx" class="upload-demo" action="/userinfo/uploadUsers" 
                 :on-change="uploadChange" :on-success="uploadsuccess" :limit="1" :before-upload="uploadbefore">
                   <el-button  type="primary" icon="el-icon-upload">点击上传</el-button>
                 </el-upload>
@@ -270,8 +270,6 @@ export default {
       that.loading=false;
       API.finduser(params).then((result)=>{
         that.loading=false;
-        // console.log(!!0)
-        // console.log(!!1)
         if(result && result.data){
           that.total= result.count;
           that.users=result.data;
@@ -297,6 +295,7 @@ export default {
       let that=this;
       that.zhengque=true;
       that.filereal=response.data.realList.length;
+      that.fileList=response.data.realList;
       if(response.data.errorForDbList>0){
         that.chongfu1=true;
       }
@@ -308,7 +307,6 @@ export default {
     },
     //文件上传之前的钩子判断
     uploadbefore(file){
-      // console.log(file)
     },
     //文件上传提交按钮
     uploadSubmit(){
