@@ -104,7 +104,7 @@ export default {
             value:'2'
             },
             {
-            name:'遗失',
+            name:'遗失赔偿',
             value:'3'
             }
         ],

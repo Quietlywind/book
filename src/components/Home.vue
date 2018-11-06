@@ -11,9 +11,9 @@
       <div class="topbar-title">
         <span style="font-size: 18px;color: #fff;">图书管理系统</span>
       </div>
-      <div class="topbar-account topbar-btn">
+      <div class="topbar-account topbar-btn" style="line-height: 46px;">
         <el-dropdown trigger="click">
-          <span class="el-dropdown-link userinfo-inner"><i class="iconfont icon-user"></i>您好！{{nickname}}
+          <span class="el-dropdown-link userinfo-inner"><i class="iconfont icon-user" style="font-size:24px;"></i>您好！{{nickname}}
           <i class="iconfont icon-down"></i></span>
           <el-dropdown-menu slot="dropdown">
             <!-- <el-dropdown-item>
@@ -27,8 +27,9 @@
           </el-dropdown-menu>
         </el-dropdown>
       </div>
-      <div class="topbar-account topbar-bell" @click="overdueNotice" style="cursor: pointer;">
-         <i class="el-icon-bell"></i><span>逾期通知</span>
+      <div class="topbar-account topbar-bell" @click="overdueNotice" style="cursor: pointer;line-height: 50px;">
+         <i class="el-icon-bell" style="font-size:24px;vertical-align: middle;"></i>
+         <span style="font-size:15px;vertical-align: middle;">逾期通知</span>
        <!-- 逾期通知 -->
       </div>
     </el-col>
@@ -39,8 +40,8 @@
       <aside :class="{showSidebar:!collapsed}">
         <!--展开折叠开关-->
         <div class="menu-toggle" @click.prevent="collapse">
-          <i class="iconfont icon-menufold" v-show="!collapsed"></i>
-          <i class="iconfont icon-menuunfold" v-show="collapsed"></i>
+          <i class="iconfont icon-menufold" v-show="!collapsed" style="cursor: pointer;font-size:20px;"></i>
+          <i class="iconfont icon-menuunfold" v-show="collapsed" style="cursor: pointer;font-size:20px;"></i>
         </div>
         <!--导航菜单-->
         <el-menu :default-active="$route.path" router :collapse="collapsed" @select="handleSelect">
@@ -196,7 +197,8 @@
             if(result && result.status ==="101"){
               that.loading = false;
               localStorage.removeItem('access-user');
-              that.$router.go('/login'); //用go刷新
+              // that.$router.go('/login'); //用go刷新
+              that.$router.push('/login')
             }else if(result && result.status === "102"){
               that.$message.error({showClose: true, message:"退出失败！请重试", duration: 2000});
             }
@@ -324,7 +326,6 @@
         padding-left: 10px;
       }
       .topbar-bell{
-        
         color:#fff;
       }
     }
@@ -441,7 +442,7 @@
       
     }
     .indexFont .iconfont{
-      font-size: 23px;
+      font-size: 27px;
       color: #666;
     }
   }

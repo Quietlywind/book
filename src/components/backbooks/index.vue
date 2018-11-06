@@ -14,7 +14,7 @@
     <el-row :gutter="20">
       <el-col  class="warp-main">
         <el-col :span="14">
-          <fieldset class="finepayment" style="min-height:400px;background-color:#fff;"> 
+          <fieldset class="finepayment" style="min-height:406px;background-color:#fff;"> 
               <legend class="finepayment_title" align="center">归还登记</legend>
               <el-form class="form_top" :inline="true" :model="readers" ref="readers" :rules="readersrules" size='small' style="text-align: center;margin-bottom:5%;" label-width="80px">
                 <el-form-item label="读者编号" prop="readerId">
@@ -75,7 +75,6 @@
                 <el-col :span="24">
                   <el-form-item label="归还数量：" prop="finenum">
                     <el-input-number v-model.number="finebooks.finenum" @change="backnumChange" :min="backbookMin" :max="backbookMax" ></el-input-number>
-                    <!-- <el-input style="width:80%;" v-model.number="finebooks.finenum" clearable></el-input> -->
                   </el-form-item>
                 </el-col>
               </el-form>
@@ -104,7 +103,7 @@
               </el-col>
               <el-col :span="12">
                   <fieldset class="duefine">
-                    <legend class="duefine_title">损坏罚金</legend>
+                    <legend class="duefine_title">损坏赔偿</legend>
                       <div style="padding: 19px 0px;">
                         <span style="font-size:14px;padding-left:10px;">金额缴纳：</span>
                         <el-input style="width:48%;" size='mini' @change="demageChange" v-model="damagebooks.damagemoney1"></el-input> 
@@ -121,7 +120,6 @@
                       <el-col :span="24">
                         <span class="damagefinetext">数量：</span>
                         <el-input-number style="width:60%;" size='mini' @change="yishinnumChange" v-model.number="damagebooks.damagenum" :min="0" :max="backbookMax" ></el-input-number>
-                        <!-- <el-input style="width:50%;" size='mini' v-model="damagebooks.damagenum"></el-input> -->
                       </el-col>
                   </fieldset>
               </el-col>
@@ -267,11 +265,6 @@ import util from '../../common/util';
 import API from '../../api/api_book.js';
 export default {
   data() {
-    // var checkfinenum=(rule,value,callback)=>{
-    //     if (!value) {
-    //       return callback(new Error('还书数量不能为空'));
-    //     }
-    // }
     var idCard=(rule,value,callback)=>{
       let reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
         if(value === ''){
@@ -612,7 +605,7 @@ export default {
     backnumChange(val){
       let that=this;
       if(this.damagebooks.damagenum !=0){
-        that.damagebooks.damagenum=that.damagebooks.damagenum-1;
+        that.damagebooks.damagenum=Number(that.backbookMax)-val;
       }
       // this.damagebooks.damagenum=Number(this.backbookMax)-Number(this.damagebooks.damagenum);
     },
@@ -621,7 +614,7 @@ export default {
     yishinnumChange(val){
       let that=this;
       if(this.finebooks.finenum !=0){
-        that.finebooks.finenum=that.finebooks.finenum-1;
+        that.finebooks.finenum=Number(that.backbookMax)-val;
       }
     },
     

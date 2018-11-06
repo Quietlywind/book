@@ -34,8 +34,9 @@
         </el-form>
       </el-col>
       <el-col :span="24" class="center_update">
-        <el-button type="primary"  size="small" icon="el-icon-edit" :disabled="this.sels.length===0" 
-        @click="batcheditbook">批量修改</el-button>
+        <el-button type="primary"  size="small" icon="el-icon-edit" :disabled="this.sels.length===0" @click="batcheditbook">
+          批量修改
+        </el-button>
       </el-col>
       <!--图书列表-->
       <el-table :data="books" :height="stockTablehe" border highlight-current-row @selection-change="selsChange" style="width: 100%;">
@@ -64,7 +65,6 @@
           </template>
         </el-table-column>
       </el-table>
-
       <!--表格分页工具条-->
       <el-col :span="24" class="toolbar">
         <!-- <el-button type="danger" :disabled="this.sels.length===0" @click="batchDeleteBook">批量删除</el-button> -->
@@ -74,151 +74,203 @@
       </el-col>
       <!-- 图书编辑弹框 -->
       <el-dialog center title="编辑图书" class="bookstock" custom-class="bookStock" :visible.sync ="editFormVisible" :close-on-press-escape="true" :close-on-click-modal="false"  :before-close="closeDialog">
-        <el-form :model="editForm" size="small" status-icon label-width="100px"  :rules="editFormRules" ref="editForm">
+        <div style="width:100%;height:1px;background-color:#CCC;margin-bottom:20px;"></div>
+        <el-form :model="editForm" size="small" status-icon label-width="80px"  :rules="editFormRules" ref="editForm">
+            <el-col :span="20" class="bookadd">
+              <el-form-item label="图书编码" prop="bookUuid">
+                <span>{{editForm.bookUuid}}</span>
+              </el-form-item>
+            </el-col>
+            <el-col :span="20" class="bookadd">
+              <el-form-item label="图书名称" prop="bookName">
+                <el-input v-model="editForm.bookName" auto-complete="off"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="20" class="bookadd">
+              <el-form-item label="图书类别" prop="bookCategory">
+                <el-select  style="width: 100%;" v-model="editForm.bookCategory" placeholder="请选择">
+                  <el-option label="请选择" value=""></el-option>
+                  <el-option v-for="item in bookcategory" :value='item.id' :key="item.id" :label="item.mangeName">
+                      {{item.mangeName}}
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="20" class="bookadd">
+              <el-form-item label="出版社" prop="bookPublisher">
+                <el-input v-model="editForm.bookPublisher" auto-complete="off"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="20" class="bookadd">
+              <el-form-item label="单价" prop="bookPrice">
+                <el-input v-model.number="editForm.bookPrice" auto-complete="off"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="20" class="bookadd">
+              <el-form-item label="库存数量" prop="bookStorage">
+                <el-input-number v-model.number="editForm.bookStorage" :min=0 ></el-input-number><span style="padding-left:10px">现有库存数量{{editForm.bookStorage1}}本</span>
+              </el-form-item>
+            </el-col>
+            <el-col :span="20" class="bookadd">
+              <div style="width:52%;display: inline-block;">
+                <el-form-item label="图书书架" prop="shelfName">
+                  <el-select style="width:100%;" v-model="editForm.shelfName" placeholder="请选择" clearable>
+                      <el-option label="请选择" value=""></el-option>
+                      <el-option v-for="item in bookshelfname" :value='item.id' :key="item.index" :label="item.shelfname">
+                          {{item.shelfname}}
+                      </el-option>
+                  </el-select>
+                </el-form-item>
+              </div>
+              <div style="width:46%;display: inline-block;">
+                <el-form-item label="层数" prop="shelfNum" label-width="60px">
+                  <el-select style="width:100%;" v-model="editForm.shelfNum" placeholder="请选择" clearable>
+                      <el-option label="请选择" value=""></el-option>
+                      <el-option v-for="item in bookshelfnum" :value='item.id' :key="item.index" :label="item.shelfnum">
+                        {{item.shelfnum}}
+                      </el-option>
+                  </el-select>
+                </el-form-item>
+              </div>
+            </el-col>
+        </el-form>
+        <div slot="footer" class="dialog-footer" style="text-align:right;">
+          <!-- <el-button @click.native="resetForm('editForm')" size="small">取消</el-button> -->
+          <el-button type="primary" @click.native="editSubmit" size="small">保存</el-button>
+        </div>
+      </el-dialog>
+
+      <!--图书新增弹框-->
+      <el-dialog center title="新书上架" class="bookstock" custom-class="bookStock" :visible.sync ="addFormVisible" :close-on-click-modal="false" >
+        <div style="width:100%;height:1px;background-color:#CCC;margin-bottom:20px;"></div>
+        <el-form :model="addForm" size="small" label-width="80px" :rules="addFormRules" ref="addForm">
+          <el-col :span="20" class="bookadd">
             <el-form-item label="图书编码" prop="bookUuid">
-              <span>{{editForm.bookUuid}}</span>
+              <el-input v-model="addForm.bookUuid" auto-complete="off"></el-input>
             </el-form-item>
+          </el-col>
+          <el-col :span="20" class="bookadd">
             <el-form-item label="图书名称" prop="bookName">
-              <el-input v-model="editForm.bookName" auto-complete="off"></el-input>
+              <el-input v-model="addForm.bookName" auto-complete="off"></el-input>
             </el-form-item>
-            <el-form-item label="图书类别:" prop="bookCategory">
-                  <el-select  style="width: 100%;" v-model="editForm.bookCategory" placeholder="请选择">
-                    <el-option label="请选择" value=""></el-option>
-                    <el-option v-for="item in bookcategory" :value='item.id' :key="item.id" :label="item.mangeName">
-                        {{item.mangeName}}
-                    </el-option>
+          </el-col>
+          <el-col :span="20" class="bookadd">
+            <el-form-item label="图书类别" prop="bookCategory">
+                  <el-select  style="width: 100%;" v-model="addForm.bookCategory" placeholder="请选择">
+                      <el-option label="请选择" value=""></el-option>
+                      <el-option v-for="item in bookcategory" :value='item.id' :key="item.id" :label="item.mangeName">
+                          {{item.mangeName}}
+                      </el-option>
                   </el-select>
             </el-form-item>
-            <el-form-item label="出版社:" prop="bookPublisher">
-              <el-input v-model="editForm.bookPublisher" auto-complete="off"></el-input>
+          </el-col>
+          <el-col :span="20" class="bookadd">
+            <el-form-item label="出版社" prop="bookPublisher">
+              <el-input v-model="addForm.bookPublisher" ></el-input>
             </el-form-item>
-            <el-form-item label="单价:" prop="bookPrice">
-              <el-input v-model.number="editForm.bookPrice" auto-complete="off"></el-input>
+          </el-col>
+          <el-col :span="20" class="bookadd">
+            <el-form-item label="单价" prop="bookPrice">
+              <el-input v-model.number="addForm.bookPrice" ></el-input>
             </el-form-item>
-            <el-form-item label="库存数量:" prop="bookStorage">
-              <el-input-number v-model.number="editForm.bookStorage" :min=0 ></el-input-number><span style="padding-left:10px">现有库存数量{{editForm.bookStorage1}}本</span>
+          </el-col>
+          <el-col :span="20" class="bookadd">
+            <el-form-item label="库存数量" prop="bookStorage">
+              <el-input-number v-model.number="addForm.bookStorage" :min=1 ></el-input-number><span style="padding-left:10px">本</span>
             </el-form-item>
+          </el-col>
+          <el-col :span="20" class="bookadd">
+            <div style="width:52%;display: inline-block;">
+              <el-form-item label="图书书架" prop="shelfName">
+                <el-select  v-model="addForm.shelfName" placeholder="请选择" clearable>
+                    <el-option label="请选择" value=""></el-option>
+                    <el-option v-for="item in bookshelfname" :value='item.id' :key="item.index" :label="item.shelfname">
+                        {{item.shelfname}}
+                    </el-option>
+                </el-select>
+              </el-form-item>
+            </div>
+            <div style="width:46%;display: inline-block;">
+              <el-form-item label="层数" prop="shelfNum" label-width="60px">
+                <el-select  v-model="addForm.shelfNum" placeholder="请选择" clearable>
+                    <el-option label="请选择" value=""></el-option>
+                    <el-option v-for="item in bookshelfnum" :value='item.id' :key="item.index" :label="item.shelfnum">
+                      {{item.shelfnum}}
+                    </el-option>
+                </el-select>
+              </el-form-item>
+            </div>
+          </el-col>
+        </el-form>
+        <div slot="footer" class="dialog-footer" style="text-align:right;">
+          <!-- <el-button size="small" @click.native="addFormVisible = false">取消</el-button> -->
+          <el-button size="small" type="primary" @click.native="addSubmit" :loading="addLoading">保存</el-button>
+        </div>
+      </el-dialog>
+
+      <!--图书处理弹框-->
+      <el-dialog center title="图书处理" class="bookstock" custom-class="bookStock" :visible.sync ="handleFormVisible" :close-on-click-modal="false" >
+        <div style="width:100%;height:1px;background-color:#CCC;margin-bottom:20px;"></div>
+        <el-form :model="handleForm" size="small" label-width="100px" :rules="handleFormRules" ref="handleForm">
+          <el-col :span="20" class="bookadd">
+            <el-form-item label="" prop="bookName">
+              图书<span style="color:red;font-size:16px;">{{handleForm.bookName}}</span>一共<span style="color:red;font-size:16px;">{{handleForm.bookStorage}}</span>本
+            </el-form-item>
+          </el-col>
+          <el-col :span="20" class="bookadd">
+            <el-form-item label="处理类型:" prop="dealType">
+                  <el-select style="width:100%;" v-model="handleForm.dealType" placeholder="请选择">
+                      <el-option label="请选择" value=""></el-option>
+                      <el-option v-for="item in handlebooks" :value='item.val' :key="item.val" :label="item.name">
+                          {{item.name}}
+                      </el-option>
+                  </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="20" class="bookadd">
+            <el-form-item label="处理本数:" prop="dealNum">
+              <el-input-number  v-model="handleForm.dealNum" :min="mindealNum" :max="maxdealNum"></el-input-number><span style="padding-left:10px">本</span>
+            </el-form-item>
+          </el-col>
+          <el-col :span="20" class="bookadd">
+            <el-form-item label="备注:" prop="dealRemark">
+              <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 6}" v-model="handleForm.dealRemark" ></el-input>
+            </el-form-item>
+          </el-col>
+        </el-form>
+        <div slot="footer" class="dialog-footer" style="text-align:right;">
+          <!-- <el-button size="small" @click.native="handleFormVisible = false">取消</el-button> -->
+          <el-button size="small" type="primary" @click.native="dealSubmit" :loading="addLoading">确定</el-button>
+        </div>
+      </el-dialog>
+
+      <!--批量修改书架/层数 弹框-->
+      <el-dialog center title="批量修改" class="bookstock" custom-class="bookStock" :visible.sync ="batchbookVisible" :close-on-click-modal="false" > 
+        <div style="width:100%;height:1px;background-color:#CCC;margin-bottom:20px;"></div>
+        <el-form :model="batchForm" size="small" label-width="100px"  ref="batchForm">
+          <el-col :span="20" class="bookadd">
             <el-form-item label="图书书架" prop="shelfName">
-              <el-select style="width:100%;" v-model="editForm.shelfName" placeholder="请选择" clearable>
+              <el-select  v-model="batchForm.shelfName" placeholder="请选择" clearable>
                   <el-option label="请选择" value=""></el-option>
                   <el-option v-for="item in bookshelfname" :value='item.id' :key="item.index" :label="item.shelfname">
                       {{item.shelfname}}
                   </el-option>
               </el-select>
             </el-form-item>
+          </el-col>
+          <el-col :span="20" class="bookadd"> 
             <el-form-item label="层数" prop="shelfNum">
-              <el-select style="width:100%;" v-model="editForm.shelfNum" placeholder="请选择" clearable>
+              <el-select  v-model="batchForm.shelfNum" placeholder="请选择" clearable>
                   <el-option label="请选择" value=""></el-option>
                   <el-option v-for="item in bookshelfnum" :value='item.id' :key="item.index" :label="item.shelfnum">
                     {{item.shelfnum}}
                   </el-option>
               </el-select>
             </el-form-item>
+          </el-col>
         </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click.native="resetForm('editForm')" size="small">取消</el-button>
-          <el-button type="primary" @click.native="editSubmit" size="small">提交</el-button>
-        </div>
-      </el-dialog>
-
-      <!--图书新增弹框-->
-      <el-dialog center title="新书上架" class="bookstock" custom-class="bookStock" :visible.sync ="addFormVisible" :close-on-click-modal="false" >
-        <el-form :model="addForm" size="small" label-width="100px" :rules="addFormRules" ref="addForm">
-          <el-form-item label="图书编码" prop="bookUuid">
-            <el-input v-model="addForm.bookUuid" auto-complete="off"></el-input>
-          </el-form-item>
-          <el-form-item label="图书名称" prop="bookName">
-            <el-input v-model="addForm.bookName" auto-complete="off"></el-input>
-          </el-form-item>
-          <el-form-item label="图书类别:" prop="bookCategory">
-                <el-select  style="width: 100%;" v-model="addForm.bookCategory" placeholder="请选择">
-                    <el-option label="请选择" value=""></el-option>
-                    <el-option v-for="item in bookcategory" :value='item.id' :key="item.id" :label="item.mangeName">
-                        {{item.mangeName}}
-                    </el-option>
-                </el-select>
-          </el-form-item>
-          <el-form-item label="出版社:" prop="bookPublisher">
-            <el-input v-model="addForm.bookPublisher" ></el-input>
-          </el-form-item>
-          <el-form-item label="单价:" prop="bookPrice">
-            <el-input v-model.number="addForm.bookPrice" ></el-input>
-          </el-form-item>
-          <el-form-item label="库存数量:" prop="bookStorage">
-            <el-input-number v-model.number="addForm.bookStorage" :min=1 ></el-input-number><span style="padding-left:10px">本</span>
-          </el-form-item>
-          <el-form-item label="图书书架" prop="shelfName">
-            <el-select style="width:100%;" v-model="addForm.shelfName" placeholder="请选择" clearable>
-                <el-option label="请选择" value=""></el-option>
-                <el-option v-for="item in bookshelfname" :value='item.id' :key="item.index" :label="item.shelfname">
-                    {{item.shelfname}}
-                </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="层数" prop="shelfNum">
-            <el-select style="width:100%;" v-model="addForm.shelfNum" placeholder="请选择" clearable>
-                <el-option label="请选择" value=""></el-option>
-                <el-option v-for="item in bookshelfnum" :value='item.id' :key="item.index" :label="item.shelfnum">
-                  {{item.shelfnum}}
-                </el-option>
-            </el-select>
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button size="small" @click.native="addFormVisible = false">取消</el-button>
-          <el-button size="small" type="primary" @click.native="addSubmit" :loading="addLoading">提交</el-button>
-        </div>
-      </el-dialog>
-
-      <!--图书处理弹框-->
-      <el-dialog center title="图书处理" class="bookstock" custom-class="bookStock" :visible.sync ="handleFormVisible" :close-on-click-modal="false" >
-        <el-form :model="handleForm" size="small" label-width="100px" :rules="handleFormRules" ref="handleForm">
-          <el-form-item label="" prop="bookName">
-            图书<span style="color:red;font-size:16px;">{{handleForm.bookName}}</span>一共<span style="color:red;font-size:16px;">{{handleForm.bookStorage}}</span>本
-          </el-form-item>
-          <el-form-item label="处理类型:" prop="dealType">
-                <el-select v-model="handleForm.dealType" placeholder="请选择">
-                    <el-option label="请选择" value=""></el-option>
-                   <el-option v-for="item in handlebooks" :value='item.val' :key="item.val" :label="item.name">
-                        {{item.name}}
-                    </el-option>
-                </el-select>
-          </el-form-item>
-          <el-form-item label="处理本数:" prop="dealNum">
-            <el-input-number v-model="handleForm.dealNum" :min="mindealNum" :max="maxdealNum"></el-input-number><span style="padding-left:10px">本</span>
-          </el-form-item>
-          <el-form-item label="备注:" prop="dealRemark">
-            <el-input type="textarea" :autosize="{ minRows: 4, maxRows: 6}" v-model="handleForm.dealRemark" ></el-input>
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button size="small" @click.native="handleFormVisible = false">取消</el-button>
-          <el-button size="small" type="primary" @click.native="dealSubmit" :loading="addLoading">提交</el-button>
-        </div>
-      </el-dialog>
-
-      <!--批量修改书架/层数 弹框-->
-      <el-dialog center title="批量修改" class="bookstock" custom-class="bookStock" :visible.sync ="batchbookVisible" :close-on-click-modal="false" >
-        <el-form :model="batchForm" size="small" label-width="100px"  ref="batchForm">
-          <el-form-item label="图书书架" prop="shelfName">
-            <el-select  v-model="batchForm.shelfName" placeholder="请选择" clearable>
-                <el-option label="请选择" value=""></el-option>
-                <el-option v-for="item in bookshelfname" :value='item.id' :key="item.index" :label="item.shelfname">
-                    {{item.shelfname}}
-                </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="层数" prop="shelfNum">
-            <el-select  v-model="batchForm.shelfNum" placeholder="请选择" clearable>
-                <el-option label="请选择" value=""></el-option>
-                <el-option v-for="item in bookshelfnum" :value='item.id' :key="item.index" :label="item.shelfnum">
-                  {{item.shelfnum}}
-                </el-option>
-            </el-select>
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button size="small" @click.native="batchbookVisible = false">取消</el-button>
+        <div slot="footer" class="dialog-footer" style="text-align:right;">
+          <!-- <el-button size="small" @click.native="batchbookVisible = false">取消</el-button> -->
           <el-button size="small" type="primary" @click.native="batchSubmit" >提交</el-button>
         </div>
       </el-dialog>
@@ -489,7 +541,6 @@ export default {
       this.$nextTick(function() {
           that.$refs.editForm.clearValidate();
       })
-      // this.editForm = Object.assign({}, row);
       this.editForm={
         id:row.id,
         bookUuid:row.bookUuid,
@@ -502,20 +553,14 @@ export default {
         bookStorage1:Number(row.bookStorage),
         bookStorage:0,
       };
-      
-      // this.$refs.editForm.clearValidate();
     },
     //关闭编辑对话框前的回调
     closeDialog(){
       this.editFormVisible=false;
-      // this.resetForm('editForm')
-      // this.$refs.editForm.clearValidate();
     },
     //取消关闭编辑对话框
     resetForm(formName){
       this.editFormVisible=false;
-      // this.$refs.editForm.clearValidate();
-      // this.$refs[formName].clearValidate();
     },  
     //图书编辑界面提交
     editSubmit:function(){
@@ -734,7 +779,16 @@ export default {
  /* .demo-form-inline .el-form-item__content .el-input{
     max-width: 180px;
  } */
+ .bookadd{
+   float:none;
+   margin: 0 auto;
+ }
  .bookstock .bookStock{
-   width: 400px;
+    width: 420px;
+    border: 1px solid #19BD96;
+    border-radius: 10px;
+ }
+ .bookstock .el-dialog__body{
+   padding:0px;
  }
 </style>

@@ -95,7 +95,7 @@ export default {
               that.$message.success({showClose:true,message:"图书类别新增成功",duration:2000});
               that.inputVisible=false;
               that.inputValue="";
-              that.search()
+              that.search();
             }
         }).catch((err)=>{  
           

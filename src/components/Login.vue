@@ -58,11 +58,12 @@
 //                that.$router.options.routes = that.$store.getters.routers;
                 that.$router.push({path: '/'});
               } else {
-                that.$message.error({showClose: true, message: result.errmsg || '登录失败！账号或密码错误', duration: 2000});
+                that.$message.error({showClose: true, message: '登录失败！账号或密码错误', duration: 2000});
               }
             }, function (err) {
               that.loading = false;
-              that.$message.error({showClose: true, message: err.toString(), duration: 2000});
+              // err.toString()
+              that.$message.error({showClose: true, message: "连接服务器失败！请稍后再试", duration: 2000});
             }).catch(function (error) {
               that.loading = false;
               that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
@@ -79,11 +80,9 @@
 <style>
   body {
     /* background: #DFE9FB; */
-    background-image: url('../../static/loginbg.jpg');
-  }
-  /* .loginbox{
-    
-  } */
+    background: url('../../static/loginbg.jpg') no-repeat;
+    background-size: 100% 100%;
+  };
 </style>
 <style lang="scss" scoped>
   .login-container {
@@ -97,7 +96,7 @@
     padding: 35px 35px 15px 35px;
     background: #fff;
     border: 1px solid #eaeaea;
-    box-shadow: 0 0 25px #cac6c6;
+    box-shadow: 0 0 15px #cac6c6;
     background: -ms-linear-gradient(top, #ace, #00C1DE); /* IE 10 */
     background: -moz-linear-gradient(top, #ace, #00C1DE); /*火狐*/
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#ace), to(#00C1DE)); /*谷歌*/
@@ -106,9 +105,9 @@
 
     position:absolute; 
     top:50%; 
-    left:50%; 
+    left:50%;
     margin-left:-211px; 
-    margin-top:-178px;
+    margin-top:-151.5px;
 
     .title {
       margin: 0px auto 40px auto;

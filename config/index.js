@@ -39,13 +39,13 @@ module.exports = {
           '^/api': '/api'
         }
       },
-      '/info': {
-        changeOrigin: true,
-        target: 'http://zfystu.top:80',
-        pathRewrite: {
-          '^/info': ''
-        }
-      },
+      // '/info': {
+      //   changeOrigin: true,
+      //   target: 'http://zfystu.top:80',
+      //   pathRewrite: {
+      //     '^/info': ''
+      //   }
+      // },
       // '/info': {
       //   changeOrigin: true,
       //   target: 'http://120.77.174.250:8085',

@@ -22,12 +22,14 @@ axios.interceptors.response.use(function (response) {
   if (response.data.status) {
     if (parseInt(response.data.status) === 42001) {
       //未登录
+      window.location.href = `${window.location.origin}/login`
       bus.$emit('goto', '/login')
     }
   }
   return response;
 }, function (error) {
   // Do something with response error
+  window.location.href = `${window.location.origin}/login`
   bus.$emit('goto', '/login')
   return Promise.reject(error);
 });

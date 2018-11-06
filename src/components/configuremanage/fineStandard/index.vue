@@ -32,7 +32,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td style="text-align:center;">损坏罚金</td>
+                  <td style="text-align:center;">损坏赔偿</td>
                   <td>
                     <el-col :span="24" style="padding: 5px;">
                        <span>一般损坏(书面不整洁),损坏罚金=</span>

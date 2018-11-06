@@ -6,10 +6,10 @@
     <el-row :gutter="20">
       <el-col  class="warp-main">
         <el-col :span="13">
-          <div class="method_wrap">
-              <span class="title">读者信息</span>
+          <fieldset class="readerDeatil" ref="readDetail"> 
+              <legend class="readerDeatil_title" align="center">读者信息</legend>
               <el-form :inline="true" :model="readers" ref="readers" :rules="readrules" size='small' class="book-form-inline" style="text-align: center;" label-width="100px">
-                <el-form-item label="读者编号">
+                <el-form-item label="读者编号" prop="readerId">
                   <el-input  v-model="readers.readerId"  placeholder="" clearable></el-input>
                 </el-form-item>
                 <el-form-item>
@@ -17,9 +17,14 @@
                   <el-button type="primary" @click="readerSearch">查看</el-button>
                 </el-form-item>
               </el-form>
-          </div>
-          <div class="method_wrap" ref="method"  style="min-height:412px;margin-top:30px;">
-              <span class="title">借阅记录</span>
+              <!-- <div class="method_wrap" ref="readDetail">
+                  <span class="title">读者信息</span>
+              </div>     -->
+          </fieldset>
+          <fieldset class="borrowDeatil" ref="method" :style="BRhe"> 
+              <legend class="borrowDeatil_title" align="center">借阅信息</legend>
+          <!-- <div class="method_wrap" ref="method" :style="BRhe">
+              <span class="title">借阅记录</span> -->
               <div  v-loading="loading" element-loading-text="拼命加载中">
                   <!--借阅记录列表-->
                   <el-table v-show="borrowtableTrue" :data="borrowsbook" size="small" border highlight-current-row empty-text="暂无记录"  style="width: 100%;">
@@ -32,12 +37,15 @@
                   <el-pagination v-show="this.borrowsbook.length !=0" style="text-align: right;" @current-change="borrowCurrentChange" background layout="prev, pager, next,jumper"  :page-size="10" :total="total1">
                   </el-pagination>
               </div>
-          </div>
+          </fieldset>
+          <!-- </div> -->
         </el-col>
         <el-col :span="11">
-          <div class="method_wrap_right" style="min-height:518px;">
-              <span class="title">图书信息</span>
-              <el-form :inline="true" :model="books" size='small' style="margin: 15px 0;" class="book-form-inline" lable-width="70px">
+          <fieldset class="readerDeatil" :style="BDhe"> 
+              <legend class="readerDeatil_title" align="center">图书信息</legend>
+          <!-- <div class="method_wrap_right" :style="BDhe">
+              <span class="title">图书信息</span>style="margin: 15px 0;" -->
+              <el-form :inline="true" :model="books" size='small'  class="book-form-inline" lable-width="70px">
                 <el-form-item label="图书编码">
                   <el-input  style="width:130px;"  v-model="books.bookid" placeholder="" clearable></el-input>
                 </el-form-item>
@@ -69,7 +77,8 @@
                    background layout="prev, pager, next,jumper"  :page-size="10" :total="total2">
                   </el-pagination>
               </div>
-          </div>
+          </fieldset>
+          <!-- </div> -->
         </el-col>
         <!--图书借出弹框 :rules="edituserForm"-->
           <el-dialog center title="选择归还日期" :visible.sync ="lendFormVisible" :close-on-click-modal="false" width="400px">
@@ -106,11 +115,9 @@ import API from '../../api/api_book';
 export default {
 
   data() {
-    var idCard1=(rule,value,callback)=>{
+    var idCard=(rule,value,callback)=>{
       let reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
-        if(value === ''){
-          callback(new Error('读者编号不能为空'))
-        }else if(!reg.test(value)){
+        if(!reg.test(value)){
           callback(new Error('请输入正确的读者编号'));
         }else{
           callback()
@@ -133,10 +140,10 @@ export default {
       readers:{
         readerId:'',
       },
+      //读者编号验证规则
       readrules:{
         readerId:[
-          { required: true, message: '请选择活动区域', trigger: 'blur' }
-          // { validator: idCard1,trigger: 'blur' },
+          { validator: idCard,trigger: 'blur' },
         ]
       },
       //图书表单
@@ -144,6 +151,7 @@ export default {
         bookid:'',
         bookname:'',
       },
+      //借出表单数据
       lendform:{
         nowdate:'',
         backdate:'',
@@ -154,11 +162,21 @@ export default {
       //库存最大数和最小数
       stockmax:0,
       stockmin:1,
+      //借出表单验证规则
       lendrules:{
         backdate:[
           { type: 'date', required: true, message: '请选择归还日期', trigger: 'change' }
         ]
       },
+      //借阅记录高度
+      BRhe:{
+        marginTop:'30px',
+        minHeight:'400px',
+      },
+      //图书信息盒子高度
+      BDhe:{
+        minHeight:'400px',
+      }
     }
   },
   components: {},
@@ -181,11 +199,15 @@ export default {
     readerSearch(){
       this.total1=0;
       this.page1=1;
-      if(this.readers.readerId ==""){
+      let that=this;
+      if(this.readers.readerId == "" ){
         this.$message.error({showClose:true,message:'请录入读者编号进行查看',duration:1500});
-        // this.recordsearch();
       }else{
-        this.recordsearch();
+        this.$refs.readers.validate((valid) => {
+          if (valid) {
+            that.recordsearch();
+          }
+      });
       }
     },
     //借阅记录查询列表事件
@@ -206,6 +228,8 @@ export default {
           that.borrowtableTrue=true;
         }else if(result && result.status === "108"){
           that.$message.error({showClose:true,message:"该用户未配置账户，请到用户管理中配置账号",duration:2000});
+        }else{
+          that.$message.error({showClose:true,message:"查找失败 !请稍后再试",duration:2000});
         }
       },(err)=>{
         that.loading=false;
@@ -328,7 +352,14 @@ export default {
     
   },
   mounted(){
-    // var heightCss = window.getComputedStyle(this.$refs.method).height; // ？px
+    // BRhe
+    let that = this;
+    this.$nextTick(function () {
+      let bodyheight=document.documentElement.clientHeight; //获取整体高度
+      let readheight=that.$refs.readDetail.offsetHeight;
+      that.BRhe.minHeight=bodyheight-readheight-50-46-30-30+'px'; //动态设置借阅记录表格高度
+      that.BDhe.minHeight=bodyheight-50-60-30+'px';
+    })
     
   }
 }
@@ -342,40 +373,48 @@ export default {
     border-radius: 4px;
     min-height: 36px;
   }
-  .method_wrap{
-    position: relative;
+  .readerDeatil{
     border: 1px solid #19BD96;
-    padding: 20px;
-    box-sizing: border-box;
+    background-color: #fff;
+    padding-bottom: 20px;
+    padding-top: 10px;
+  }
+  .readerDeatil .readerDeatil_title{
+    text-align: center;
+    margin: auto;
+    padding: 0 0.5em;
+    font-size: 16px;
+    font-weight: 700;
+    color: #666666;
+  }
+  .borrowDeatil{
+    border: 1px solid #19BD96;
     background-color: #fff;
   }
-  .method_wrap .title{
-      position: absolute;
-      font-size: 16px;
-      font-weight: 700;
-      color: #666666;
-      top: -1em;
-      left: 44%;
-      line-height: 2em;
-      padding: 0 0.5em;
-      background-color: #ffffff;
+  .borrowDeatil .borrowDeatil_title{
+    text-align: center;
+    margin: auto;
+    padding: 0 0.5em;
+    font-size: 16px;
+    font-weight: 700;
+    color: #666666;
   }
-  .method_wrap_right{
-    position: relative;
-    border: 1px solid #19BD96;
-    padding: 20px;
-    box-sizing: border-box;
-    background-color: #fff;
-  }
-  .method_wrap_right .title{
-      position: absolute;
-      font-size: 16px;
-      font-weight: 700;
-      color: #666666;
-      top: -1em;
-      left: 41%;
-      line-height: 2em;
-      padding: 0 0.5em;
-      background-color: #ffffff;
-  }
+  // .method_wrap_right{
+  //   position: relative;
+  //   border: 1px solid #19BD96;
+  //   padding: 20px;
+  //   box-sizing: border-box;
+  //   background-color: #fff;
+  // }
+  // .method_wrap_right .title{
+  //     position: absolute;
+  //     font-size: 16px;
+  //     font-weight: 700;
+  //     color: #666666;
+  //     top: -1em;
+  //     left: 41%;
+  //     line-height: 2em;
+  //     padding: 0 0.5em;
+  //     background-color: #ffffff;
+  // }
 </style>

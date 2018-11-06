@@ -6,7 +6,7 @@
                 <el-col :xl="4" :lg="5" :md="6" :sm="8">
                     <el-input size="small" placeholder="请输入读者编号/姓名" v-model="readerInput" clearable>
                     </el-input>
-                </el-col>
+                </el-col> 
                 <span style="font-size:14px;line-height: 32px;float:left;padding-left: 10px;">所属部门</span>
                 <el-col :xl="4" :lg="5" :md="6" :sm="8">
                     <el-input size="small" placeholder="请输入部门" v-model="readerdepartment" clearable>
@@ -53,82 +53,85 @@
             </el-col>
         </el-col>
         <!--用户新增弹框-->
-          <el-dialog center class="userDialog" custom-class="userdialog" title="新增" :visible.sync ="adduserFormVisible" :close-on-click-modal="false" >
-            <el-form :model="adduserForm" size="small" label-width="80px" :inline="false"  ref="adduserForm" :rules="adduserRules">
-              <el-form-item label="读者编号" prop="userid">
-                <el-col :span="20" style="padding-left:0px;">
-                  <el-input v-model="adduserForm.userid" auto-complete="off" clearable></el-input>
-                </el-col>
-              </el-form-item>
-              <el-form-item label="读者姓名" prop="username">
-                <el-col :span="20" style="padding-left:0px;">
-                  <el-input v-model="adduserForm.username" auto-complete="off" clearable></el-input>
-                </el-col>
-              </el-form-item>
-              <el-form-item label="读者性别" prop="usersex">
-                <el-col :span="20" style="padding-left:0px;">
+          <el-dialog center class="userDialog" custom-class="userdialog" title="新增读者" :visible.sync ="adduserFormVisible" :close-on-click-modal="false" >
+            <div style="width:100%;height:1px;background-color:#CCC;margin-bottom:20px;"></div>
+            <el-form :model="adduserForm" size="small" label-width="80px" ref="adduserForm" :rules="adduserRules">
+              <el-col :span="20" class="userFormDialog">
+                <el-form-item label="读者编号" prop="userid">
+                    <el-input v-model="adduserForm.userid" auto-complete="off" clearable></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="20" class="userFormDialog">
+                <el-form-item label="读者姓名" prop="username">
+                    <el-input v-model="adduserForm.username" auto-complete="off" clearable></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="20" class="userFormDialog">
+                <el-form-item label="读者性别" prop="usersex">
                   <el-radio v-model="adduserForm.usersex" label="1">男</el-radio>
                   <el-radio v-model="adduserForm.usersex" label="0">女</el-radio>
-                </el-col>
-              </el-form-item>
-              <el-form-item label="读者电话" prop="userphone">
-                <el-col :span="20" style="padding-left:0px;">
+                </el-form-item>
+              </el-col>
+              <el-col :span="20" class="userFormDialog">
+                <el-form-item label="读者电话" prop="userphone">
                   <el-input v-model="adduserForm.userphone" auto-complete="off" clearable></el-input>
-                </el-col>
-              </el-form-item>
-              <el-form-item label="所属部门" prop="userdepartment">
-                <el-col :span="20" style="padding-left:0px;">
+                </el-form-item>
+              </el-col>
+              <el-col :span="20" class="userFormDialog">
+                <el-form-item label="所属部门" prop="userdepartment">
                   <el-input v-model="adduserForm.userdepartment" auto-complete="off" clearable></el-input>
-                </el-col>
-              </el-form-item>
+                </el-form-item>
+              </el-col>
             </el-form>
-            <div slot="footer" class="dialog-footer">
-              <el-button size="small" @click.native="adduserFormVisible = false">取消</el-button>
-              <el-button type="primary" size="small" @click.native="addSubmit" :loading="addLoading">提交</el-button>
+            <div slot="footer" class="dialog-footer" style="text-align:right;">
+              <!-- <el-button size="small" @click.native="adduserFormVisible = false">取消</el-button> -->
+              <el-button type="primary" size="small" @click.native="addSubmit" :loading="addLoading">保存</el-button>
             </div>
           </el-dialog>
         <!--用户编辑弹框  -->
-          <el-dialog center class="userDialog" custom-class="userdialog" title="编辑" :visible.sync ="edituserFormVisible" :close-on-click-modal="false" >
+          <el-dialog center class="userDialog" custom-class="userdialog" title="编辑读者信息" :visible.sync ="edituserFormVisible" :close-on-click-modal="false" >
+            <div style="width:100%;height:1px;background-color:#CCC;margin-bottom:20px;"></div>
             <el-form :model="edituserForm" size="small" label-width="80px"  ref="edituserForm" :rules="edituserRules">
-              <el-form-item label="读者编号" prop="userid">
-                <el-col :span="20" style="padding-left:0px;">
-                  <span>{{edituserForm.userid}}</span>
-                </el-col>
-              </el-form-item>
-              <el-form-item label="读者姓名" prop="username">
-                <el-col :span="20" style="padding-left:0px;">
+              <el-col :span="20" class="userFormDialog">
+                <el-form-item label="读者编号" prop="userid">
+                    <span>{{edituserForm.userid}}</span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="20" class="userFormDialog">
+                <el-form-item label="读者姓名" prop="username">
                   <el-input v-model="edituserForm.username" auto-complete="off" clearable></el-input>
-                </el-col>
-              </el-form-item>
-              <el-form-item label="读者性别" prop="usersex">
-                <el-col :span="20" style="padding-left:0px;">
-                  <el-radio v-model="edituserForm.usersex" label="1">男</el-radio>
-                  <el-radio v-model="edituserForm.usersex" label="0">女</el-radio>
-                </el-col>
-              </el-form-item>
-              <el-form-item label="读者电话" prop="userphone">
-                <el-col :span="20" style="padding-left:0px;">
-                  <el-input v-model="edituserForm.userphone" auto-complete="off" clearable></el-input>
-                </el-col>
-              </el-form-item>
-              <el-form-item label="所属部门" prop="userdepartment">
-                <el-col :span="20" style="padding-left:0px;">
-                  <el-input v-model="edituserForm.userdepartment" auto-complete="off" clearable></el-input>
-                </el-col>
-              </el-form-item>
+                </el-form-item>
+              </el-col>
+              <el-col :span="20" class="userFormDialog">
+                <el-form-item label="读者性别" prop="usersex">
+                    <el-radio v-model="edituserForm.usersex" label="1">男</el-radio>
+                    <el-radio v-model="edituserForm.usersex" label="0">女</el-radio>
+                </el-form-item>
+              </el-col>
+              <el-col :span="20" class="userFormDialog">
+                <el-form-item label="读者电话" prop="userphone">
+                    <el-input v-model="edituserForm.userphone" auto-complete="off" clearable></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="20" class="userFormDialog">
+                <el-form-item label="所属部门" prop="userdepartment">
+                    <el-input v-model="edituserForm.userdepartment" auto-complete="off" clearable></el-input>
+                </el-form-item>
+              </el-col>
             </el-form>
-            <div slot="footer" class="dialog-footer">
-              <el-button size="small" @click.native="edituserFormVisible = false">取消</el-button>
-              <el-button type="primary" size="small" @click.native="editSubmit">提交</el-button>
+            <div slot="footer" class="dialog-footer" style="text-align:right;">
+              <!-- <el-button size="small" @click.native="edituserFormVisible = false">取消</el-button> -->
+              <el-button type="primary" size="small" @click.native="editSubmit">保存</el-button>
             </div>
           </el-dialog>
            <!--批量导入用户信息弹框 :rules="edituserForm"-->
           <el-dialog center class="userDialog" custom-class="userdialog" title="批量导入用户" :close-on-press-escape="true" :visible.sync ="batchimportVisible" :close-on-click-modal="false" :before-close="closeDialog">
-            <div style="width: 80%;margin:auto;text-align: center;">
+            <div style="width:100%;height:1px;background-color:#CCC;margin-bottom:20px;"></div>
+            <div style="width: 80%;margin:auto;text-align: center;margin-bottom: 10px;">
                 <span style="float:left;line-height:40px;padding-right: 25px;">文件上传</span>
                 <el-upload style="padding-right: 80px;margin-bottom: 10px;" ref="upload" accept=".xls,.xlsx" class="upload-demo" action="/userinfo/uploadUsers" 
                 :on-change="uploadChange" :on-success="uploadsuccess" :limit="1" :before-upload="uploadbefore">
-                  <el-button  type="primary" icon="el-icon-upload">点击上传</el-button>
+                  <el-button style="width:140px;" type="primary" icon="el-icon-upload">点击上传</el-button>
                 </el-upload>
                 <a href="../../../../static/userModule.xls" download="用户批量导入表">点击下载导入模板</a>
                 <div v-show="chongfu1" style="text-align: left;padding:2px 0;">
@@ -517,7 +520,6 @@ export default {
 }
 </script>
 <style lang="scss">
-.wrapper{}
 .usertable .el-switch{
     padding-bottom: 4px;
   }
@@ -526,7 +528,16 @@ export default {
   }
 </style>
 <style>
+  .userFormDialog{
+    float:none;
+    margin: 0 auto;
+  }
   .userDialog .userdialog{
     width: 400px;
+    border: 1px solid #19BD96;
+    border-radius: 10px;
   }
+  .userDialog .el-dialog__body{
+   padding:0px;
+ }
 </style>

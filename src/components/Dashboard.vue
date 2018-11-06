@@ -102,7 +102,7 @@
          <!-- </el-row> -->
       <!-- </section> -->
       <el-row :gutter="10">
-        <el-col :xl="14" :lg="14" :md="14">
+        <el-col :xl="16" :lg="16" :md="16">
             <div class="borderBox" ref="threeTotal">
               <el-row>
                 <el-col :xl="8" :lg="8" :md="8" style="padding: 0 20px;">
@@ -167,7 +167,7 @@
               </el-row>
             </div>
         </el-col>
-        <el-col :xl="10" :lg="10" :md="10">
+        <el-col :xl="8" :lg="8" :md="8">
             <div class="borderBox">
               <ul class="tabul">
                 <li @click="toggleTab(index,tab.val)" v-for="(tab,index) in tabs" :key="index" :class="{active:active === index}" class="tabli">
@@ -428,15 +428,17 @@
           height:'0px'
         },
         tabs:[
-        {
-          name:'图书借阅榜',
-          val:1,
-        },
-        {
-          name:'图书狂人榜',
-          val:2,
-        },
-      ]
+          {
+            name:'图书借阅榜',
+            val:1,
+          },
+          {
+            name:'图书狂人榜',
+            val:2,
+          },
+        ],
+        // loadingBar:false,
+        // loadingPie:false,
         
       };
     },
@@ -447,11 +449,7 @@
       this.$nextTick(function () {
         let bodyHe=document.documentElement.clientHeight; //获取整体高度
         let index_right=bodyHe-that.$refs.threeTotal.offsetHeight-50-20-20-39-20-13; 
-        // console.log(index_right)
-        // console.log(that.$refs.threeTotal.offsetHeight)
         that.index_right.height=index_right+"px";
-        // that.$refs.index_right.style.height=bodyHe+'px';
-        // that.stockTablehe=bodyHe-that.$refs.stock_top.$el.offsetHeight-50-20-32-32-21; //动态设置归还记录表格高度
       })
       //  let chart=Highcharts.chart('chartPie',{
          
@@ -482,7 +480,7 @@
               that.categorybook(result.data.pie)
           }
         }, function (err) {
-          that.$message.error({showClose: true, message: err.toString(), duration: 2000});
+          that.$message.error({showClose: true, message: '服务器异常！请稍后再试', duration: 2000});
         }).catch(function (error) {
           that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
         });
@@ -498,7 +496,7 @@
             that.books = result.data;
           }
         }, function (err) {
-          that.$message.error({showClose: true, message: err.toString(), duration: 2000});
+          that.$message.error({showClose: true, message: '服务器异常！请稍后再试', duration: 2000});
         }).catch(function (error) {
           that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
         });

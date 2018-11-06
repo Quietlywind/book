@@ -9,22 +9,22 @@
         </el-col>
     </el-row> -->
     <el-row style="width:100%">
-      <div class="wrap-center" style="width:50%;margin:0 auto;background-color:#fff;">
+      <div class="wrap-center" style="width:30%;margin:0 auto;background-color:#fff;">
           <div style="padding:10px 0px;border-bottom: 1px solid #ccc;width:100%;font-size:18px;text-align:center;">
             <span>新书上架</span>
           </div>
           <el-form style="padding:20px 0;" status-icon :rules="newbookRules" :model="newbook" ref="newbook" size='small' label-width="80px">
-              <el-col :md="16" class="newbookdiv">
+              <el-col :md="20" class="newbookdiv">
                 <el-form-item label="图书编码" prop="bookid">
                   <el-input v-model="newbook.bookid" placeholder="请输入图书编码" clearable></el-input>
                 </el-form-item>
               </el-col>
-              <el-col :md="16" class="newbookdiv">
+              <el-col :md="20" class="newbookdiv">
                 <el-form-item label="图书名称" prop="bookname">
                   <el-input v-model="newbook.bookname" placeholder="请输入图书名称" clearable></el-input>
                 </el-form-item>
               </el-col>
-              <el-col :md="16" class="newbookdiv">
+              <el-col :md="20" class="newbookdiv">
                 <el-form-item label="图书类别" prop="bookregion">
                   <el-select style="width:100%;" v-model="newbook.bookregion" placeholder="请选择" clearable>
                     <el-option label="请选择" value=""></el-option>
@@ -34,22 +34,22 @@
                   </el-select>
                 </el-form-item>
               </el-col>
-              <el-col :md="16" class="newbookdiv" >
+              <el-col :md="20" class="newbookdiv" >
                 <el-form-item label="出版社" prop="bookpress">
                   <el-input v-model="newbook.bookpress" placeholder="请输入出版社" clearable></el-input>
                 </el-form-item>
               </el-col>
-              <el-col :md="16" class="newbookdiv">
+              <el-col :md="20" class="newbookdiv">
                 <el-form-item label="单价" prop="bookprice">
                   <el-input v-model.number="newbook.bookprice" placeholder="请输入单价" clearable></el-input>
                 </el-form-item>
               </el-col>
-              <el-col :md="16" class="newbookdiv">
+              <el-col :md="20" class="newbookdiv">
                 <el-form-item label="库存数量:" prop="bookStorage">
                   <el-input-number v-model.number="newbook.bookStorage" :min=1 ></el-input-number>
                 </el-form-item>
               </el-col>
-              <el-col :md="16" class="newbookdiv">
+              <el-col :md="20" class="newbookdiv">
                   <div style="width:50%;display: inline-block;">
                     <el-form-item label="层数" prop="bookshelfnum">
                       <el-select  v-model="newbook.bookshelfnum" placeholder="请选择" clearable>
@@ -71,7 +71,7 @@
                     </el-form-item>
                   </div>
               </el-col>
-              <el-col :md="16" class="newbookdiv" style="text-align:right;">
+              <el-col :md="20" class="newbookdiv" style="text-align:right;">
                 <el-button size="small" @click="addbook" type="primary">保存</el-button>
               </el-col>
           </el-form>
@@ -230,7 +230,7 @@ export default {
 
 <style scoped>
 .wrap-center{
-  border: 1px solid #9ED8D3;
+  border: 1px solid #19BD96;
   border-radius: 10px;
 }
 .newbookdiv{

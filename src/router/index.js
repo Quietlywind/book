@@ -51,7 +51,8 @@ let router = new Router({
       name: '新书上架',
       menuShow: true,
       leaf: true, // 只有一个节点
-      iconCls: 'iconfont icon-users', // 图标样式class
+      // iconCls: 'iconfont icon-users', // 图标样式class
+      iconCls: 'iconfont icon-shuji',
       children: [
         {path: '/book/addbook', component: addbook, name: '新书上架', menuShow: true}
       ]
@@ -118,6 +119,10 @@ let router = new Router({
       children: [
         {path: '/configuremanage/index', component: configuremanage, name: '配置管理', menuShow: true},
       ]
+    },
+    {
+      path: "*",
+      redirect: "/login"
     }
   ]
 })
