@@ -87,7 +87,7 @@ export default {
       let inputValue=this.inputValue;
       let that=this;
       if(inputValue !=""){
-        axios.post('/mange/insert',{
+        axios.post('/info/mange/insert',{
             mangeType:"book_type",
             mangeName:inputValue
         }).then((res)=>{

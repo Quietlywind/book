@@ -129,7 +129,7 @@
             <div style="width:100%;height:1px;background-color:#CCC;margin-bottom:20px;"></div>
             <div style="width: 80%;margin:auto;text-align: center;margin-bottom: 10px;">
                 <span style="float:left;line-height:40px;padding-right: 25px;">文件上传</span>
-                <el-upload style="padding-right: 80px;margin-bottom: 10px;" ref="upload" accept=".xls,.xlsx" class="upload-demo" action="/userinfo/uploadUsers" 
+                <el-upload style="padding-right: 80px;margin-bottom: 10px;" ref="upload" accept=".xls,.xlsx" class="upload-demo" action="/info/userinfo/uploadUsers" 
                 :on-change="uploadChange" :on-success="uploadsuccess" :limit="1" :before-upload="uploadbefore">
                   <el-button style="width:140px;" type="primary" icon="el-icon-upload">点击上传</el-button>
                 </el-upload>
@@ -426,7 +426,7 @@ export default {
               username:para.username,
               usersex:para.usersex,
               userphone:para.userphone,
-              userdepartment:para.userphone
+              userdepartment:para.userdepartment
             };
             API.adduser(params).then((result)=>{
               that.loading=false;

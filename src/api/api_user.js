@@ -31,29 +31,29 @@ export default {
 
 
 
-  // //登录
-  // login : params =>{
-  //   return API.POST('/info/lib/login',params)
-  // },
-  // //登出
-  // logout : params =>{
-  //   return API.POST('/info/lib/logout',params)
-  // },
-  // //修改个人密码信息
-  // editPass: params =>{
-  //   return API.POST('/info/lib/updatePsd',params)
-  // },
-
   //登录
   login : params =>{
-    return API.POST('/lib/login',params)
+    return API.POST('/info/lib/login',params)
   },
   //登出
   logout : params =>{
-    return API.POST('/lib/logout',params)
+    return API.POST('/info/lib/logout',params)
   },
   //修改个人密码信息
   editPass: params =>{
-    return API.POST('/lib/updatePsd',params)
-  }
+    return API.POST('/info/lib/updatePsd',params)
+  },
+
+  // //登录
+  // login : params =>{
+  //   return API.POST('/lib/login',params)
+  // },
+  // //登出
+  // logout : params =>{
+  //   return API.POST('/lib/logout',params)
+  // },
+  // //修改个人密码信息
+  // editPass: params =>{
+  //   return API.POST('/lib/updatePsd',params)
+  // }
 }

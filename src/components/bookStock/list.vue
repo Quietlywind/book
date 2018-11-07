@@ -57,12 +57,10 @@
           </template>
         </el-table-column>
         <el-table-column label="操作" width="150" align="center">
-          <template slot-scope="scope">
-            <el-button size="small" type="text" @click="showEditDialog(scope.$index,scope.row)">编辑</el-button>
-            <!-- <template slot-scope="scope" v-if="Number(scope.row.bookRemain) != 0"> -->
-                <el-button type="text"  size="small" @click="delBook(scope.$index,scope.row)">处理</el-button>
-            <!-- </template> -->
-          </template>
+            <template slot-scope="scope" >
+                <el-button size="small" type="text" @click="showEditDialog(scope.$index,scope.row)">编辑</el-button>
+                <el-button type="text" v-if="scope.row.bookRemain"  size="small" @click="delBook(scope.$index,scope.row)">处理</el-button>
+            </template>
         </el-table-column>
       </el-table>
       <!--表格分页工具条-->

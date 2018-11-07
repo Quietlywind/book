@@ -141,7 +141,7 @@ export default {
           if (valid) {
             let para = {
               bookUuid:that.newbook.bookid,
-              bookName:that.newbook.bookid,
+              bookName:that.newbook.bookname,
               bookCategory:that.newbook.bookregion,
               bookPublisher:that.newbook.bookpress,
               bookPrice:that.newbook.bookprice,
@@ -149,6 +149,7 @@ export default {
               shelfNum:that.newbook.bookshelfnum,
               bookStorage:that.newbook.bookStorage,
             }
+            // let para = Object.assign({}, this.newbook);
             API.addbookstock(para).then(function (result) {
               if (result && result.status === "101") {
                 that.$message.success({showClose: true, message: '新书上架成功', duration: 2000});

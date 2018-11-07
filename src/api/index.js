@@ -34,6 +34,7 @@ axios.interceptors.response.use(function (response) {
   return Promise.reject(error);
 });
 
+
 //基地址
 let base = '';  //接口代理地址参见：config/index.js中的proxyTable配置
 

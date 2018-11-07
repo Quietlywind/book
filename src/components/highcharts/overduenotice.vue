@@ -82,7 +82,7 @@ export default {
     },
     //导出按钮
     onexport(){
-       window.location='/record/exportOver';
+       window.location='/info/record/exportOver';
        this.$message.success({showClose:true,message:"导出逾期通知成功",duration:2000});
     },
     //是否通知开关事件

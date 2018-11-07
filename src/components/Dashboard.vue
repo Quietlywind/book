@@ -160,7 +160,6 @@
                         <a href="JavaScript:;">罚金详情<i class="el-icon-d-arrow-right"></i></a>
                       </div>
                     </div>
-                    <!-- <x-charts :id="id1" :option="option1" ></x-charts> -->
                     <div id="chartBar" :style="index_right"></div>
                   </div>
                 </el-col>
@@ -451,12 +450,6 @@
         let index_right=bodyHe-that.$refs.threeTotal.offsetHeight-50-20-20-39-20-13; 
         that.index_right.height=index_right+"px";
       })
-      //  let chart=Highcharts.chart('chartPie',{
-         
-      //  });
-      //  this.chartBar=new Highcharts.chart('chartBar',{
-        
-      //  })
     },
     methods: {
       toggleTab(i,v){

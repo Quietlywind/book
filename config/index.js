@@ -46,13 +46,13 @@ module.exports = {
       //     '^/info': ''
       //   }
       // },
-      // '/info': {
-      //   changeOrigin: true,
-      //   target: 'http://120.77.174.250:8085',
-      //   pathRewrite: {
-      //     '^/info': ''
-      //   }
-      // },
+      '/info': {
+        changeOrigin: true,
+        target: 'http://120.77.174.250:8085',
+        pathRewrite: {
+          '^/info': ''
+        }
+      },
     },
     // CSS Sourcemaps off by default because relative paths are "buggy"
     // with this option, according to the CSS-Loader README
